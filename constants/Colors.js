@@ -1,6 +1,6 @@
 const tintColorLight = '#2f95dc';
 const tintColorDark = '#fff';
-
+const orange = '#FF843C';
 export default {
   light: {
     text: '#000',
