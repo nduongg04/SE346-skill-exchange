@@ -1,11 +1,12 @@
 import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native";
+import { ScreenHeaderBtn } from "@components/common";
 
 const Home = () => {
 	return (
-		<View>
-			<Text>Home</Text>
-		</View>
+		<SafeAreaView>
+			<ScreenHeaderBtn />
+		</SafeAreaView>
 	);
 };
 
