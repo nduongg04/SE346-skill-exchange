@@ -1,15 +1,15 @@
-import backLoading from "../assets/icons/backLoading.png";
-import cancel from "../assets/icons/cancel.png";
-import chat_not_focused from "../assets/icons/chat_not_focused.png";
-import chat_focused from "../assets/icons/chat_focused.png";
-import home_focused from "../assets/icons/home_focused.png";
-import home_not_focused from "../assets/icons/home_not_focused.png";
-import notification_focused from "../assets/icons/notification_focused.png";
-import notification_not_focused from "../assets/icons/notification_not_focused.png";
-import profile_focused from "../assets/icons/profile_focused.png";
-import profile_not_focused from "../assets/icons/profile_not_focused.png";
-import search from "../assets/icons/search.png";
-import tickCircle from "../assets/icons/tickCircle.png";
+import backLoading from "../assets/icons/backLoading.svg";
+import cancel from "../assets/icons/cancel.svg";
+import chat_not_focused from "../assets/icons/chat_not_focused.svg";
+import chat_focused from "../assets/icons/chat_focused.svg";
+import home_focused from "../assets/icons/home_focused.svg";
+import home_not_focused from "../assets/icons/home_not_focused.svg";
+import notification_focused from "../assets/icons/notification_focused.svg";
+import notification_not_focused from "../assets/icons/notification_not_focused.svg";
+import profile_focused from "../assets/icons/profile_focused.svg";
+import profile_not_focused from "../assets/icons/profile_not_focused.svg";
+import search from "../assets/icons/search.svg";
+import tickCircle from "../assets/icons/tickCircle.svg";
 
 export default {
     backLoading,

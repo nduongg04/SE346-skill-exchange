@@ -4,7 +4,7 @@
     "slug": "skill-exchange",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/favicon.svg",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {

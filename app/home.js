@@ -1,13 +1,12 @@
 import { View, Text } from "react-native";
-import { SafeAreaView, ScrollView } from "react-native";
+import { SafeAreaView } from "react-native";
 import { Stack } from "expo-router";
 
-import favicon from "@assets/favicon.png";
+import favicon from "@assets/favicon.svg";
 import { ProfileCard, ScreenHeaderBtn } from "../components";
 import { COLORS, icons } from "@constants";
 import { gestureHandlerRootHOC } from "react-native-gesture-handler";
-import { Image } from "expo-image";
-import dice from "@assets/icons/dice.png";
+import { CircleButton } from "@components";
 
 const Card = () => gestureHandlerRootHOC(() => <ProfileCard />);
 
@@ -29,8 +28,7 @@ const Home = () => {
 				}}
 			/>
 
-            <Text>Hi</Text>
-			
+			<CircleButton iconUrl={icons.backLoading} width={60} height={60} />
 		</SafeAreaView>
 	);
 };

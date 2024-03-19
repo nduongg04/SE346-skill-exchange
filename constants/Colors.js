@@ -8,6 +8,7 @@ const COLORS = {
 	lightGreen: "#4ECB71",
 	lightPeach: "#FFBE98",
 	darkerGray: "#333333",
+    darkPurple: "#C0C4EA"
 };
 
 export default COLORS;
