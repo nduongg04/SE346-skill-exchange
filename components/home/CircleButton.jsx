@@ -1,32 +1,15 @@
 import { TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
 import { COLORS } from "@constants";
+import styles from "./circlebutton.style";
 
-const CircleButton = ({ iconUrl, width, height }) => {
-    const borderRadius = 10000;
+const CircleButton = ({ iconUrl, width, height, borderRadius = 1000, handlePress }) => {
     const widthIcon = width / 2;
     const heightIcon = height / 2;
 
     return (
         <TouchableOpacity
-            style={{
-                width: width,
-                height: height,
-                backgroundColor: COLORS.lightWhite,
-                borderRadius: borderRadius,
-                justifyContent: "center",
-                alignItems: "center",
-
-                shadowColor: "#0018FF",
-                shadowOffset: {
-                    width: 0,
-                    height: 2,
-                },
-                shadowOpacity: 0.25,
-                shadowRadius: 3.84,
-
-                elevation: 6,
-            }}
+            style={styles.button(width, height, borderRadius)}
         >
             <Image
                 source={iconUrl}
