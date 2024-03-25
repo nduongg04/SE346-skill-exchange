@@ -1,5 +1,6 @@
-import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
+import { Stack } from "expo-router/stack";
+
 const Layout = () => {
 	const [fontsLoaded] = useFonts({
 		NotoExtraBold: require("../assets/fonts/NotoSansSymbols-ExtraBold.ttf"),
@@ -14,7 +15,11 @@ const Layout = () => {
 		return null;
 	}
 
-	return <Stack />;
+	return (
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        </Stack>
+      );
 };
 
 export default Layout;
