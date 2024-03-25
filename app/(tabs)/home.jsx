@@ -1,17 +1,12 @@
-import { View, Text } from "react-native";
-import { SafeAreaView } from "react-native";
+import { View, Text, SafeAreaView } from "react-native";
 import { Stack } from "expo-router";
 import favicon from "@assets/favicon.svg";
-import { ProfileCard, ScreenHeaderBtn } from "../components";
+import { ProfileCard, ScreenHeaderBtn } from "../../components";
 import { COLORS, icons } from "@constants";
-import { gestureHandlerRootHOC } from "react-native-gesture-handler";
 import { CircleButton } from "@components";
-import NavBar from "@components/NavBar";
 import { Dimensions } from "react-native";
 import Suzy from "@assets/icons/Suzy.png";
-
-// const Card = () => gestureHandlerRootHOC(() => <ProfileCard />);
-
+import { useState } from "react";
 const Home = () => {
 	const screenWidth = Dimensions.get("window").width;
 	const screenHeight = Dimensions.get("window").height;
@@ -23,26 +18,33 @@ const Home = () => {
 		console.log("swiped right");
 	};
 
-	const backButtonSize = (screenWidth / 100) * 18;
-
+	const [backButtonSize, setBackButtonSize] = useState(
+		(screenWidth / 100) * 18
+	);
 	return (
-		<SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
+		<SafeAreaView
+			style={{ flex: 1, backgroundColor: COLORS.lightWhite, width: "100%" }}
+		>
 			<Stack.Screen
 				options={{
+					title: "Home",
 					headerStyle: { backgroundColor: COLORS.lightWhite },
 					headerShadowVisible: false,
 					headerLeft: () => (
-						<ScreenHeaderBtn
-							iconUrl={favicon}
-							dimension={40}
-							string="SkillExchange"
-						/>
+						<View style={{ marginLeft: 10 }}>
+							<ScreenHeaderBtn
+								iconUrl={favicon}
+								dimension={40}
+								string="SkillExchange"
+								style={{ marginLeft: 10 }}
+							/>
+						</View>
 					),
 					headerTitle: "",
 				}}
 			/>
-			<View style={{ height: "100%", width: "100%",  justifyContent: "flex-end"}}>
-				<View style={{ margin: 5,marginBottom: 0, height: "75%" }}>
+			<View style={{ height: "100%", width: "100%" }}>
+				<View style={{ marginTop: 10, height: "80%" }}>
 					<ProfileCard
 						username={"Bae Suzy"}
 						userTopicSkill={[
@@ -62,19 +64,13 @@ const Home = () => {
 
 				<View
 					style={{
-                        height: "15%",
+						flex: 1,
 						flexDirection: "row",
 						justifyContent: "center",
-                        alignItems: "center",
+						alignItems: "center",
 						gap: (screenWidth / 100) * 7,
 					}}
 				>
-					<CircleButton
-						iconUrl={icons.backLoading}
-						width={backButtonSize}
-						height={backButtonSize}
-						handlePress={() => {}}
-					/>
 					<CircleButton
 						iconUrl={icons.cancel}
 						width={backButtonSize}
@@ -84,15 +80,18 @@ const Home = () => {
 					/>
 
 					<CircleButton
+						iconUrl={icons.backLoading}
+						width={backButtonSize - 13}
+						height={backButtonSize - 13}
+						handlePress={() => {}}
+					/>
+
+					<CircleButton
 						iconUrl={icons.tickCircle}
 						width={backButtonSize}
 						height={backButtonSize}
 						handlePress={() => {}}
 					/>
-				</View>
-
-				<View style={{ height: "10%" }}>
-					<NavBar />
 				</View>
 			</View>
 		</SafeAreaView>

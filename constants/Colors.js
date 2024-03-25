@@ -11,6 +11,7 @@ const COLORS = {
 	darkerGray: "#333333",
 	darkPurple: "#C0C4EA",
     orange: "#FF995E",
+    lightGray: "#E5E5E5",
 };
 
 export default COLORS;

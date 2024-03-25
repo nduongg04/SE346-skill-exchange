@@ -9,6 +9,7 @@ const CircleButton = ({ iconUrl, width, height, borderRadius = 1000, handlePress
 
     return (
         <TouchableOpacity
+            activeOpacity={0.2}
             style={styles.button(width, height, borderRadius)}
         >
             <Image
