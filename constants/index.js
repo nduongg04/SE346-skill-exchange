@@ -1,4 +1,4 @@
-import COLORS from "./colors";
+import COLORS from "./Colors";
 import icons from "./icons";
 
 export { icons, COLORS };
