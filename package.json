@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.0",
+    "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/native": "^6.0.2",
     "@shopify/react-native-skia": "0.1.221",
     "expo-font": "~11.10.3",
@@ -28,9 +29,14 @@
     "nativewind": "^2.0.11",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+<<<<<<< HEAD
     "react-native": "^0.73.6",
+=======
+    "react-native": "0.73.4",
+    "react-native-deck-swiper": "^2.0.17",
+>>>>>>> 0603dc8e409c1919d4c8eb54bf273950fad81d46
     "react-native-gesture-handler": "~2.14.0",
-    "react-native-safe-area-context": "4.8.2",
+    "react-native-safe-area-context": "^4.8.2",
     "react-native-screens": "~3.29.0",
     "react-native-shadow": "^1.2.2",
     "react-native-svg": "14.1.0",

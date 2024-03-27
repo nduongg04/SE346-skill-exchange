@@ -47,7 +47,7 @@ const ProfileCard = ({
 			>
 				<View style={{height: "50%"}}/>
 				<ImageBackground
-					source={icons.transparent_background1}
+					source={icons.transparent_background}
 					resizeMode="stretch"
 					style={{ flex: 1 }}
 				>
@@ -105,7 +105,7 @@ const ProfileCard = ({
 								</Text>
 							</View>
 
-							<View style={{}}>
+							<View>
 								<Text style={{ fontFamily: "NotoExtraBold", fontSize: 13, color: COLORS.lightWhite, marginBottom: 5}}>
 									Description:
 								</Text>
