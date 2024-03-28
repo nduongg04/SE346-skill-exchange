@@ -11,8 +11,6 @@ import { CircleButton } from '../../components';
 import { Dimensions } from "react-native";
 import { COLORS, icons } from "../../constants";
 import { Stack } from "expo-router";
-import Category from '../../Search_Tutorials_Tab/Category/Category';
-import Data from '../../Search_Tutorials_Tab/Data_Topic_List';
 import Topic_List from '../../Search_Tutorials_Tab/Topic_List';
 import Topic_Remarkable_List from '../../Search_Tutorials_Tab/Topic_Remarkable_List';
 
