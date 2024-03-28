@@ -1,5 +1,5 @@
 import Category from "./Category/Category"
-import Suzy from './assets/icons/Suzy.png'
+import Suzy from 'assets/icons/Suzy.png'
 const Data = [
     { id: '1', Category: <Category imageUri={Suzy} name="1" /> },
     { id: '2', Category: <Category imageUri={Suzy} name="2" /> },
