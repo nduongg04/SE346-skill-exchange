@@ -21,7 +21,7 @@
     "expo-image": "~1.10.6",
     "expo-linking": "~6.2.2",
     "expo-router": "^3.4.8",
-    "expo-splash-screen": "^0.10.3",
+    "expo-splash-screen": "^0.26.4",
     "expo-status-bar": "~1.11.1",
     "expo-system-ui": "~2.9.3",
     "expo-web-browser": "~12.8.2",
@@ -29,12 +29,8 @@
     "nativewind": "^2.0.11",
     "react": "18.2.0",
     "react-dom": "18.2.0",
-<<<<<<< HEAD
     "react-native": "^0.73.6",
-=======
-    "react-native": "0.73.4",
     "react-native-deck-swiper": "^2.0.17",
->>>>>>> 0603dc8e409c1919d4c8eb54bf273950fad81d46
     "react-native-gesture-handler": "~2.14.0",
     "react-native-safe-area-context": "^4.8.2",
     "react-native-screens": "~3.29.0",
@@ -48,7 +44,7 @@
     "@types/react": "~18.2.45",
     "babel-plugin-module-resolver": "^5.0.0",
     "jest": "^29.2.1",
-    "jest-expo": "^50.0.3",
+    "jest-expo": "^50.0.4",
     "react-test-renderer": "18.2.0",
     "tailwindcss": "^3.3.2"
   },

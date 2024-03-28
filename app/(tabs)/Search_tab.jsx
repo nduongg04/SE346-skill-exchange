@@ -7,14 +7,14 @@ import {
   FlatList,
   SafeAreaView,
 } from 'react-native';
-import { CircleButton } from '../components';
+import { CircleButton } from '../../components';
 import { Dimensions } from "react-native";
-import { COLORS, icons } from "../constants";
+import { COLORS, icons } from "../../constants";
 import { Stack } from "expo-router";
-import Category from './Category/Category';
-import Data from './Data_Topic_List';
-import Topic_List from './Topic_List';
-import Topic_Remarkable_List from './Topic_Remarkable_List';
+import Category from '../../Search_Tutorials_Tab/Category/Category';
+import Data from '../../Search_Tutorials_Tab/Data_Topic_List';
+import Topic_List from '../../Search_Tutorials_Tab/Topic_List';
+import Topic_Remarkable_List from '../../Search_Tutorials_Tab/Topic_Remarkable_List';
 
 
 const Search_Tutorial_Tab = () => {
@@ -49,6 +49,37 @@ const Search_Tutorial_Tab = () => {
             </View>
           </View>
       </ScrollView>
+      <View
+					style={{
+						flex: 1,
+						flexDirection: "row",
+						justifyContent: "center",
+						alignItems: "center",
+						gap: (screenWidth / 100) * 7,
+					}}
+				>
+					<CircleButton
+						iconUrl={icons.cancel}
+						width={backButtonSize}
+						height={backButtonSize}
+						handlePress={() => {}}
+						style={{ flex: 1 }}
+					/>
+
+					<CircleButton
+						iconUrl={icons.backLoading}
+						width={backButtonSize - 13}
+						height={backButtonSize - 13}
+						handlePress={() => {}}
+					/>
+
+					<CircleButton
+						iconUrl={icons.tickCircle}
+						width={backButtonSize}
+						height={backButtonSize}
+						handlePress={() => {}}
+					/>
+				</View>
     </SafeAreaView>
     
   )
