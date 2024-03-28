@@ -2,13 +2,6 @@ import React from 'react';
 import { View, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import Data from "./Data_Topic_List";
 
-const ListItem = ({ category }) => (
-    <TouchableOpacity onPress={() => console.log('Item pressed')}>
-        <View style={styles.itemContainer}>
-            {category}
-        </View>
-    </TouchableOpacity>
-);
 
 const renderItem = ({ item }) => (
     <ListItem category={item.Category} />
