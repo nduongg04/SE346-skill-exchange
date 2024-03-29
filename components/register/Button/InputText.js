@@ -2,6 +2,7 @@ import { scale } from "react-native-size-matters";
 import { COLORS } from "../../../constants";
 import { Text, View, StyleSheet, TextInput } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { IconFill, IconOutline } from "@ant-design/icons-react-native";
 import React, { useState } from "react";
 const InputText = ({
     label,
@@ -14,17 +15,17 @@ const InputText = ({
     const [isFocused, setIsFocused] = useState(false);
     const [hidePassword, setHidePassword] = useState(password);
     return(
-        <View style={{margin: 5, paddingHorizontal: 10}} >
-            <Text style={styles.label}>{label}</Text>
+        <View style={{marginVertical:  5, marginHorizontal: 10, paddingHorizontal: 10}} >
+            {label&&<Text style={styles.label}>{label}</Text>}
             <View style={[styles.inputContainer, 
                 {borderColor: error
                 ? COLORS.red
                 : isFocused 
-                ? COLORS.darkBlue 
+                ? COLORS.black 
                 : COLORS.light}]}>
-                <AntDesign 
+                <IconOutline 
                     name={iconName} 
-                    size={20} 
+                    size={scale(14)} 
                     color={COLORS.gray} 
                     style={{marginRight: 10}} />
                 <TextInput
@@ -38,10 +39,11 @@ const InputText = ({
                     onBlur={() => setIsFocused(false)}
                     style={{color: COLORS.black, flex: 1, fontFamily: 'AbhayaLibre-Regular'}}
                     />
+                
                 {password && 
-                    <AntDesign 
-                        name='eye'
-                        size={20} 
+                    <IconOutline 
+                        name={hidePassword ? 'eye-invisible' : 'eye'} 
+                        size={scale(16)} 
                         color={COLORS.gray} 
                         onPress={() => setHidePassword(!hidePassword)} />}
             </View>

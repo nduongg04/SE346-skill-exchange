@@ -10,7 +10,8 @@ const COLORS = {
     darkBlue: '#7978B5',
     light: '#F3F4FB',
     grey: '#BABBC3',
-    blue: '#5D5FEE'
+    blue: '#5D5FEE',
+    green: '#4AA96C'
 };
 
 export { COLORS };

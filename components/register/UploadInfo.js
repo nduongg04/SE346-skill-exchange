@@ -1,5 +1,5 @@
 import GradienLayout from "./TemplateLayout/GradientLayout";
-import { Text, View, Modal, TouchableOpacity, Platform } from "react-native";
+import { Text, View, Modal, TouchableOpacity, Platform, ActivityIndicator } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import styles from "./style";
 import { COLORS } from "../../constants";
@@ -8,7 +8,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import React from "react";
 import BackButton from "./Button/BackButton";
 import CustomButton from "./Button/CustomButton";
-import { TextInput } from "react-native-gesture-handler";
+import InputText from "./Button/InputText";
+import { ScrollView, TextInput } from "react-native-gesture-handler";
 import Policy from "./Policy";
 class ChooseTopic extends React.Component {
   state = {
@@ -19,7 +20,13 @@ class ChooseTopic extends React.Component {
       birthDay: null,
       date: new Date(),
       showPicker: false,
-      showPolicy: false
+      showPolicy: false,
+      emailError: null,
+      passwordError: null,
+      confirmPasswordError: null,
+      phoneNumberError: null,
+      birthDayError: null,
+      loading: false,
     }
   tooglePicker = () => {
     this.setState({showPicker: !this.state.showPicker});
@@ -27,7 +34,7 @@ class ChooseTopic extends React.Component {
   tooglePolicy = () => {
     this.setState({showPolicy: !this.state.showPolicy});
   }
-  onChange = ({type}, selectedDate) => {
+  onDateChange = ({type}, selectedDate) => {
       this.tooglePicker();
       const currentDate = selectedDate;
       this.setState({date: currentDate});
@@ -44,7 +51,7 @@ class ChooseTopic extends React.Component {
   };
 
   validatePassword = (password) => {
-      const regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+      const regex = /^.{8,}$/;
       return regex.test(password);
   };
   validatePhoneNumber = (phoneNumber) => {
@@ -55,18 +62,35 @@ class ChooseTopic extends React.Component {
     const email = this.state.email;
     const password = this.state.password;
     const confirmPassword = this.state.confirmPassword;
+    const phoneNumber = this.state.phoneNumber;
     const birthDay = this.state.birthDay;
-    if(!confirmPassword || !password || !email || !birthDay ) {
-      alert('Please fill in all the information');
-    } else {
+    let check=true;
       if(password !== this.state.confirmPassword) {
-        alert('Password does not match');
+        check=false;
+        this.setState({confirmPasswordError: 'Password does not match'});
+      } 
+      if(!this.validateEmail(email)) {
+        check=false;
+        this.setState({emailError: 'Invalid email address'});
       }
-      else{
+      if(!this.validatePassword(password)) {
+        check=false;
+        this.setState({passwordError: 'Password must contain at least 8 characters'});
+      }
+      if(!this.validatePhoneNumber(phoneNumber)) {
+        check=false;
+        this.setState({phoneNumberError: 'Invalid phone number'});
+      }
+      if(birthDay === null) {
+        check=false;
+        this.setState({birthDayError: 'Please choose your birthday'});
+      }
+      if(check) {
+        this.setState({loading: true});
+        setTimeout(() => {this.setState({loading: false});}, 5000);
         alert('Register successfully');
         alert(JSON.stringify(params));
-      }
-    }
+      }   
   }
   render() {
     const passing = this.props.route.params;
@@ -84,61 +108,73 @@ class ChooseTopic extends React.Component {
       description: passing.description,
     }
     return (
-      <GradienLayout innerStyle={{height: scale(550)}}>
+      <GradienLayout innerStyle={{height: scale(600)}}>
         <BackButton onPress={() => this.props.navigation.goBack()}></BackButton>
-        <Text style={[styles.text_center, {marginBottom: 10}]}>YOUR ACCOUNT</Text>
-        
-        <Text style={styles.infoText}>Email</Text>
-        <TextInput
-         onChangeText={(text) => this.setState({email: text})}
-         value={this.state.email}
-          style={styles.inputText}
-          placeholder="Your email address">
-        </TextInput>
+        <Text style={[styles.text_center, {marginTop: 5}]}>YOUR ACCOUNT</Text>
+        <ScrollView style={{marginVertical: 10}}>
 
-        <Text style={styles.infoText}>Password</Text>
-        <TextInput
-          onChangeText={(text) => this.setState({password: text})}
-          value={this.state.password}
-          style={styles.inputText}
-          placeholder="Password" 
-          secureTextEntry></TextInput>
-        
-        <Text style={styles.infoText}>Confirm Password</Text>
-        <TextInput
-          onChangeText={(text) => this.setState({confirmPassword: text})}
-          value={this.state.confirmPassword}
-          style={styles.inputText}
-          placeholder="Password" 
-          secureTextEntry></TextInput>
-        <Text style={styles.infoText}>Phone Number</Text>
-        <TextInput
-         onChangeText={(text) => this.setState({phoneNumber: text})}
-         value={this.state.phoneNumber}
-          style={styles.inputText}
-          placeholder="Your phone number">
-        </TextInput>
-        <Text style={styles.infoText}>Birthday</Text>
-        <TouchableOpacity onPress={()=>this.tooglePicker()}>
-          <Text style={[styles.inputText]} >
-            {this.state.birthDay ? this.state.birthDay : "Birthday"}
-          </Text>
-        </TouchableOpacity>
-        
+          <InputText 
+            placeholder='Enter your email address'
+            label='Email'
+            error={this.state.emailError}
+            onFocus={()=>this.setState({emailError: null})}
+            iconName='mail'
+            onChangeText={(text)=>this.setState({email: text})}/>
+          <InputText 
+            placeholder='Enter your password'
+            label='Password'
+            error={this.state.passwordError}
+            onFocus={()=>this.setState({passwordError: null})}
+            password={true}
+            iconName='lock'
+            onChangeText={(text)=>this.setState({password: text})}/>
+          
+          <InputText 
+            placeholder='Confirm your password'
+            label='Confirm Password'
+            error={this.state.confirmPasswordError}
+            onFocus={()=>this.setState({confirmPasswordError: null})}
+            password={true}
+            iconName='lock'
+            onChangeText={(text)=>this.setState({confirmPassword: text})}/>
+          <InputText 
+            placeholder='Your phone number'
+            label='Phone Number'
+            error={this.state.phoneNumberError}
+            onFocus={()=>this.setState({phoneNumberError: null})}
+            iconName='phone'
+            keyboardType='numeric'
+            onChangeText={(text)=>this.setState({phoneNumber: text})}/>
+          <TouchableOpacity onPress={
+            ()=>{
+              this.tooglePicker();
+              this.setState({birthDayError: null})
+            }
+            }>
+            <InputText
+              placeholder='Your birthday'
+              label='Birthday'
+              error={this.state.birthDayError}
+              editable={false}
+              iconName='calendar'
+              value={this.state.birthDay? this.state.birthDay : "Your Birthday"}
+              />
+          </TouchableOpacity>
+        </ScrollView>
         {this.state.showPicker && <DateTimePicker
           display="spinner"
           value={this.state.date}
           mode="date"
           minimumDate={new Date(1900, 1, 1)}
           maximumDate={new Date()}
-          onChange={(event, selectedDate)=>this.onChange(event, selectedDate)}/>}
+          onChange={(event, selectedDate)=>this.onDateChange(event, selectedDate)}/>}
         
         <Text style={[styles.termText]}>By signing up you are agreeing our</Text>
         <TouchableOpacity onPress={()=>this.tooglePolicy()}>
           <Text style={[styles.termText, {color: COLORS.orange, textDecorationLine: 'underline'}]}>Terms of Service and Privacy Policy</Text>
         </TouchableOpacity>
         
-        <CustomButton text='Finish' onPress={()=>this.finishRegister()}></CustomButton>   
+        <CustomButton text='Finish' onPress={()=>this.finishRegister()} style={{marginBottom: 10}}></CustomButton>   
         <Modal 
           transparent={true}
           visible={this.state.showPolicy}

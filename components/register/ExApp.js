@@ -9,6 +9,7 @@ import UploadCertification from './UploadCertification';
 import ChooseTopic from './ChooseTopic';
 import UploadInfo from './UploadInfo';
 import Login from '../login/login';
+import ForgotPassword from '../login/ForgotPassword';
 import { GestureHandlerRootView} from 'react-native-gesture-handler'
 const Stack = createStackNavigator();
 
@@ -25,6 +26,10 @@ function ExApp() {
           component={Login}
           options={{headerShown: false}}
         />
+        <Stack.Screen
+          name="ForgotPassword"
+          component={ForgotPassword}
+          options={{headerShown: false}}/>
         <Stack.Screen 
           name="UploadPhoto" 
           component={UploadPhoto} 
@@ -53,5 +58,4 @@ function ExApp() {
     </NavigationContainer>
   );
 }
-
 registerRootComponent(ExApp);

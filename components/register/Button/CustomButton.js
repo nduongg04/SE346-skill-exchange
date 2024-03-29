@@ -3,7 +3,10 @@ import { COLORS } from "../../../constants";
 const CustomButton = ({ 
     onPress, 
     text,
-    style
+    style,
+    margin = true,
+    textColor = COLORS.lightWhite,
+    backgroundColor = COLORS.orange
 }) => {
     return (
         <TouchableOpacity style={[{ 
@@ -12,8 +15,9 @@ const CustomButton = ({
                 alignSelf: 'flex-end',        
                 borderRadius: 25,
                 width: 80, height: 33,
-                marginTop: 10,
-                marginRight: 30 }, {backgroundColor: COLORS.orange}, style]}
+                marginTop: margin? 10 : 0,
+                marginRight: margin ? 30: 0,
+                backgroundColor: backgroundColor }, style]}
                 onPress={onPress}>
         <Text 
             style={[{
@@ -21,7 +25,7 @@ const CustomButton = ({
                 textAlign: 'center',
                 textAlignVertical: 'center',
                 marginTop: 0,
-                fontFamily: 'Coda-Regular'},{color: COLORS.lightWhite}]}>{text}</Text>
+                fontFamily: 'Coda-Regular'},{color: textColor}]}>{text}</Text>
         </TouchableOpacity>
     )
 }

@@ -1,6 +1,4 @@
-import { registerRootComponent } from 'expo';
 import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import {Dimensions} from 'react-native';
 import { Scale, VerticalScale, scale } from 'react-native-size-matters';
 import * as Font from 'expo-font';
@@ -8,18 +6,37 @@ import customFonts from '../useFonts'
 import {COLORS} from '../../constants'
 import React from 'react';
 import styles from './style';
+import InputText from './Button/InputText';
 import CustomButton from './Button/CustomButton';
 import GradienLayout from './TemplateLayout/GradientLayout';
 export default class EnterName extends React.Component {
     state = {
         fontsLoaded: false,
-        name: ''
+        name: '',
+        nameError: null
     }   
     async _loadFontsAsync() {
         await Font.loadAsync(customFonts);
+        await Font.loadAsync(
+            'antoutline',
+            require('@ant-design/icons-react-native/fonts/antoutline.ttf')
+          );
+        await Font.loadAsync(
+            'antfill',
+            require('@ant-design/icons-react-native/fonts/antfill.ttf')
+        );
         this.setState({ fontsLoaded: true });
       }
-    
+    checkValidName = (name) => {
+        if(name === null || name === '') {
+            this.setState({nameError: 'Name is required'});
+            return false;
+        }
+        else {
+            this.setState({nameError: null});
+            return true;
+        }
+    }
     componentDidMount() {
         this._loadFontsAsync();
       }
@@ -31,7 +48,7 @@ export default class EnterName extends React.Component {
             name: this.state.name
         }
         return (
-            <GradienLayout>
+            <GradienLayout innerStyle={{height: scale(500)}}>
                 <Image
                         source={require('../../assets/images/teamwork.png')}
                         style={styles.image}
@@ -71,30 +88,27 @@ export default class EnterName extends React.Component {
                             fontFamily: 'Coda-Regular'      
                         }}
                         >Register</Text >
-                    <TextInput
-                        style={{height: 45, 
-                                borderRadius: 30, 
-                                width: scale(265),
-                                alignSelf: 'center', 
-                                borderColor: COLORS.black,
-                                borderWidth: 0.5, 
-                                backgroundColor: COLORS.lightGray,
-                                paddingLeft: 30, 
-                                fontSize: 14, 
-                                fontFamily: 'Coda-Regular'                       
-                            }}
-                        onChangeText={(text) => this.setState({name: text})}
-                        value={this.state.name}
-                        placeholder="Your name">
-                    </TextInput>
+                    <InputText
+                        placeholder='Enter your name'
+                        label={null}
+                        error={(this.state.nameError)}
+                        onFocus={()=>this.setState({nameError: null})}
+                        iconName='user'
+                        onChangeText={(text)=>{this.setState({name: text})
+                    
+                    }}
+                        />
                     <CustomButton 
                         text='Next' 
-                        onPress={()=>this.props.navigation.navigate('UploadPhoto', params)}
+                        onPress={()=>{
+                            if(this.checkValidName(this.state.name))
+                            this.props.navigation.navigate('UploadPhoto', params)
+                        }}
                         />
                     <View style={{flex: 1, flexDirection: 'row', 
                                 marginTop: 20, 
                                 justifyContent: 'space-around',
-                                paddingHorizontal: 30,
+                                paddingHorizontal: 25,
                                 }}>
                         <Text 
                             style={{
