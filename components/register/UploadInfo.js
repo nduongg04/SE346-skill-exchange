@@ -19,14 +19,20 @@ class ChooseTopic extends React.Component {
       email: null,
       birthDay: null,
       date: new Date(),
-      showPicker: false,
-      showPolicy: false,
+
+      
       emailError: null,
       passwordError: null,
       confirmPasswordError: null,
       phoneNumberError: null,
       birthDayError: null,
+      
       loading: false,
+      alertMessage: null,
+      showPicker: false,
+      showPolicy: false,
+      showAlert: false,
+      success: false
     }
   tooglePicker = () => {
     this.setState({showPicker: !this.state.showPicker});
@@ -58,7 +64,18 @@ class ChooseTopic extends React.Component {
     const regex = /^0\d{9}$/;
     return regex.test(phoneNumber);
   };
-  finishRegister = () => {
+  uploadCloudinary = async (image) => {
+    // const data = new FormData();
+    // data.append('file', image);
+    // data.append('upload_preset', 'skillexchange');
+    // const response = await fetch('https://api.cloudinary.com/v1_1/skillexchange/image/upload', {
+    //   method: 'POST',
+    //   body: data
+    // });
+    // const json = await response.json();
+    // return json.secure_url;
+  }
+  finishRegister = async (params) => {
     const email = this.state.email;
     const password = this.state.password;
     const confirmPassword = this.state.confirmPassword;
@@ -87,10 +104,27 @@ class ChooseTopic extends React.Component {
       }
       if(check) {
         this.setState({loading: true});
-        setTimeout(() => {this.setState({loading: false});}, 5000);
-        alert('Register successfully');
-        alert(JSON.stringify(params));
-      }   
+        const response = await fetch('https://se346-skillexchangebe.onrender.com/api/v1/user/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(params)});
+          if(response.status == 400){
+            this.setState({alertMessage: response.json().message});
+            this.setState({success: false});
+            this.setState({showAlert: true});
+            this.setState({loading: false});
+          }   
+          else{
+            const json = await response.json();
+            user = json.data;
+            this.setState({alertMessage: 'Welcome' + user.username + 'to Skill Exchange'});
+            this.setState({success: true}); 
+            this.setState({showAlert: true});
+            this.setState({loading: false});
+          }   
+      }
   }
   render() {
     const passing = this.props.route.params;
@@ -101,11 +135,11 @@ class ChooseTopic extends React.Component {
       phoneNumber: this.state.phoneNumber,
       skill: passing.skills,
       birthDay: this.state.birthDay,
-      userTopicSkill: [""],
+      userTopicSkill: [],
       learnTopicSkill : passing.choosenTopic,      
       avatar:  passing.image,
       imageCerti: passing.certification,
-      description: passing.description,
+      description: [passing.description],
     }
     return (
       <GradienLayout innerStyle={{height: scale(600)}}>
@@ -174,13 +208,25 @@ class ChooseTopic extends React.Component {
           <Text style={[styles.termText, {color: COLORS.orange, textDecorationLine: 'underline'}]}>Terms of Service and Privacy Policy</Text>
         </TouchableOpacity>
         
-        <CustomButton text='Finish' onPress={()=>this.finishRegister()} style={{marginBottom: 10}}></CustomButton>   
+        <CustomButton text='Finish' onPress={()=>this.finishRegister(params)} style={{marginBottom: 10}}></CustomButton>   
         <Modal 
           transparent={true}
           visible={this.state.showPolicy}
           onRequestClose={()=>this.tooglePolicy()}>
             <Policy onPress={() =>this.tooglePolicy()}></Policy>
-        </Modal>          
+        </Modal>
+        <Modal
+          transparent={true}
+          visible={this.state.showAlert}>
+          <Notification
+            text={this.state.alertMessage}
+            iconName={!this.state.success?'warning':'check-circle'}
+            iconColor={!this.state.success? COLORS.red: COLORS.green}
+            buttonColor={COLORS.skyBlue}
+            onPress={()=>this.state.success
+              ?this.setState({showAlert: false})
+              : this.props.navigation.navigate('Login') }/>
+          </Modal>          
       </GradienLayout>
     );
   }

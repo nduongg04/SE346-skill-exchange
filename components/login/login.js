@@ -17,9 +17,13 @@ class Login extends React.Component {
     errorEmail: null,
     errorPassword: null,
     showPolicy: false,
-    showMessage: false
+    showMessage: false,
+    user: null,
+    username: null,
+    accessToken: null,
+    refeshToken: null
   }
-  handleLogIn = () => {
+  handleLogIn = async () => {
     if(this.state.email === null || this.state.email === '') {
       this.setState({errorEmail: 'Email is required'});
     }
@@ -29,7 +33,31 @@ class Login extends React.Component {
     }
     else
       {
-        this.setState({showMessage: true});
+        const response = await fetch('https://se346-skillexchangebe.onrender.com'+'/api/v1/user/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email: this.state.email,
+            password: this.state.password
+          })});
+          if(response.status == 400){
+            alert('Wrong email or password');
+          }
+          else
+          if(response.status == 404){
+            alert('User not found');
+          }
+          else{
+            const json = await response.json();
+            this.setState({user: json.data}); 
+            this.setState({username: json.data.username});
+            this.setState({accessToken: json.access_token});
+            this.setState({refreshToken: json.refresh_token});
+            this.setState({showMessage: true});
+          }         
+
       }
     
   }
@@ -125,7 +153,7 @@ class Login extends React.Component {
           transparent={true}
           visible={this.state.showMessage}>
           <Notification
-            text={'Login success'}
+            text={ 'Welcome ' + this.state.username}
             iconName={'check-circle'}
             iconColor={COLORS.green}
             buttonColor={COLORS.skyBlue}
