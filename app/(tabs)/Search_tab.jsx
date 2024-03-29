@@ -15,7 +15,7 @@ import Topic_List from '../../components/Search_Tutorials_Tab/Topic_List';
 import Topic_Remarkable_List from '../../components/Search_Tutorials_Tab/Topic_Remarkable_List';
 
 
-const Search_Tutorial_Tab = () => {
+const Search_Tab = () => {
   const screenWidth = Dimensions.get("window").width;
 	const screenHeight = Dimensions.get("window").height;
   const backButtonSize = (screenWidth / 100) * 18;
@@ -84,4 +84,4 @@ const Search_Tutorial_Tab = () => {
 
 };
 
-export default Search_Tutorial_Tab;
+export default Search_Tab;
