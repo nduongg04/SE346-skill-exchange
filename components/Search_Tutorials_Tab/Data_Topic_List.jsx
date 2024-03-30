@@ -1,4 +1,4 @@
-import Category from "./Category/Category"
+
 import Suzy from 'assets/icons/Suzy.png'
 const Data = [
     { id: '1', imageUri :{Suzy}  , name :"1"  },

@@ -13,7 +13,8 @@ import { COLORS, icons } from "../../constants";
 import { Stack } from "expo-router";
 import Topic_List from '../../components/Search_Tutorials_Tab/Topic_List';
 import Topic_Remarkable_List from '../../components/Search_Tutorials_Tab/Topic_Remarkable_List';
-
+import { Tag } from '@ant-design/react-native';
+import TagsButton from '../../components/Search_Tutorials_Tab/Topic_Tags/Tags';
 
 const Search_Tab = () => {
   const screenWidth = Dimensions.get("window").width;
@@ -32,10 +33,12 @@ const Search_Tab = () => {
           headerTitle: "",
         }}
       />
-
       <ScrollView scrollEventThrottle ={16}>
           <View style ={{ flex: 1, backgroundColor: COLORS.lightWhite, paddingTop: 20 }}>
-            <View style ={{height: 220, marginTop: 30}}>
+            <View style={{height:220, marginTop: 20}}>
+              <Topic_Remarkable_List/>
+            </View>
+            <View style ={{height: 220, marginTop: 20}}>
               <Topic_List/>
             </View>
             <View style={{marginTop: 20, paddingHorizontal: 20}}>
