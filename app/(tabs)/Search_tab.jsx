@@ -43,7 +43,7 @@ const Search_Tab = () => {
               <Text>__________________________</Text>
             </View>
             <View>
-              <Topic_Remarkable_List/>
+              <Topic_Remarkable_List />
             </View>
           </View>
       </ScrollView>

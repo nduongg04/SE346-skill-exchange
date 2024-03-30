@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import Data from "./Data_Topic_List";
+import { render } from 'react-dom';
 
 
 const renderItem = ({ item }) => (
@@ -8,7 +9,7 @@ const renderItem = ({ item }) => (
 );
 
 const Topic_List = () => {
-    return (
+    render (
         <View style={styles.container}>
             <FlatList
                 data={Data}
