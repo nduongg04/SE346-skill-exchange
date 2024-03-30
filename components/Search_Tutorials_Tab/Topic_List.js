@@ -2,10 +2,11 @@ import React from 'react';
 import { View, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import Data from "./Data_Topic_List";
 import { render } from 'react-dom';
+import Category from './Category/Category';
 
 
 const renderItem = ({ item }) => (
-    <ListItem category={item.Category} />
+    <Category imageUri = {item.imageUri} name = {item.name} />
 );
 
 const Topic_List = () => {
