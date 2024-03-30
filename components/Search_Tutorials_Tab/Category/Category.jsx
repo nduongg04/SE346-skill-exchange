@@ -8,7 +8,6 @@ import {
 import {styles} from './Topic_category_style';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native'; 
-import { styles } from './Topic_category_style'; 
 
 
 class Category extends Component{
