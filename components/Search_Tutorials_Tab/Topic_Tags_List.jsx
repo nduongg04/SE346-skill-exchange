@@ -16,7 +16,6 @@ export default Topic_Tags_List = ()=> {
         <FlatList
             data={Tag_Data}
             renderItem={renderItem}
-            keyExtractor={item => item.id}
             horizontal={false}
             numColumns = {numColumns}
             columnWrapperStyle={styles.columnWrapper}
