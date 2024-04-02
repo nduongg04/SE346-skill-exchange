@@ -1,5 +1,5 @@
 import GradienLayout from "./TemplateLayout/GradientLayout";
-import { Text, View, Modal, TouchableOpacity, Platform, ActivityIndicator } from "react-native";
+import { Text, View, Modal, TouchableOpacity, Platform } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
 import styles from "./style";
 import { COLORS } from "../../constants";
@@ -11,34 +11,47 @@ import CustomButton from "./Button/CustomButton";
 import InputText from "./Button/InputText";
 import { ScrollView, TextInput } from "react-native-gesture-handler";
 import Policy from "./Policy";
+import Spinner from "react-native-loading-spinner-overlay";
+import mime from 'react-native-mime-types';
+import a from "@ant-design/react-native/lib/modal/alert";
 class ChooseTopic extends React.Component {
   state = {
+      //Input fields
       password: null,
       confirmPassword: null,
       phoneNumber: null,
       email: null,
       birthDay: null,
       date: new Date(),
-
-      
+     
+      //Error messages
       emailError: null,
       passwordError: null,
       confirmPasswordError: null,
       phoneNumberError: null,
       birthDayError: null,
       
+      //State of components
       loading: false,
       alertMessage: null,
       showPicker: false,
       showPolicy: false,
       showAlert: false,
-      success: false
+      success: false,
+
+      //Data
+      numCerti: 1,
+      avatar: null,
+      imageCerti: [],
     }
   tooglePicker = () => {
     this.setState({showPicker: !this.state.showPicker});
   }
   tooglePolicy = () => {
     this.setState({showPolicy: !this.state.showPolicy});
+  }
+  toogleAlert = () => {
+    this.setState({showAlert: !this.state.showAlert});
   }
   onDateChange = ({type}, selectedDate) => {
       this.tooglePicker();
@@ -64,16 +77,48 @@ class ChooseTopic extends React.Component {
     const regex = /^0\d{9}$/;
     return regex.test(phoneNumber);
   };
-  uploadCloudinary = async (image) => {
-    // const data = new FormData();
-    // data.append('file', image);
-    // data.append('upload_preset', 'skillexchange');
-    // const response = await fetch('https://api.cloudinary.com/v1_1/skillexchange/image/upload', {
-    //   method: 'POST',
-    //   body: data
-    // });
-    // const json = await response.json();
-    // return json.secure_url;
+  normalizeName = (str) => {
+    const from = "đĐ";
+    const to   = "dD";
+
+    let newStr = str.split('').map((letter) => {
+        const index = from.indexOf(letter);
+        return index !== -1 ? to[index] : letter;
+    }).join('');
+
+    return newStr.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '');
+  }
+  uploadImage = async (imageUri, name) => {
+    const formData = new FormData();
+    const extension = imageUri.split('.').pop();
+    const type = mime.lookup(extension) || 'image/jpeg';
+    formData.append('image', {
+        name: `${name}`,
+        type: type,
+        uri: imageUri,
+    });
+    try{
+      const response = await fetch('https://se346-skillexchangebe.onrender.com/api/v1/image/upload', {
+          method: 'POST',
+          body: formData,
+          headers: {
+              'Content-Type': 'multipart/form-data',
+          },
+      });
+      if(response.ok){
+        const json = await response.json();
+        return json.image;
+      }
+      else{
+        console.log(JSON.stringify(response));
+        alert('Upload image failed: ' + response.status);
+        return false;
+      }
+    }
+    catch(error){
+      alert('Upload image failed: ' + error.message);
+      return false;
+    }
   }
   finishRegister = async (params) => {
     const email = this.state.email;
@@ -104,43 +149,73 @@ class ChooseTopic extends React.Component {
       }
       if(check) {
         this.setState({loading: true});
-        const response = await fetch('https://se346-skillexchangebe.onrender.com/api/v1/user/register', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(params)});
-          if(response.status == 400){
-            this.setState({alertMessage: response.json().message});
-            this.setState({success: false});
-            this.setState({showAlert: true});
-            this.setState({loading: false});
-          }   
+        const passing = this.props.route.params;
+        const name = this.normalizeName(passing.name);
+        const avatar = await this.uploadImage(passing.image, name + 'Avatar');
+        if(avatar === false){
+          this.setState({loading: false});
+          return;
+        }
+        else{
+          this.setState({avatar: avatar});
+        }
+        let imageCerti = [];
+        for(let i = 0; i < passing.certification.length; i++){
+          const certi = await this.uploadImage(passing.certification[i], name + 'Certi' + i);
+          if(certi!==false){
+            imageCerti.push(certi);
+          }
           else{
-            const json = await response.json();
-            user = json.data;
-            this.setState({alertMessage: 'Welcome' + user.username + 'to Skill Exchange'});
-            this.setState({success: true}); 
-            this.setState({showAlert: true});
             this.setState({loading: false});
-          }   
+            return;
+          }       
+        }
+        this.setState({imageCerti: imageCerti});
+        params ={
+          username: passing.name,
+          email: this.state.email, 
+          password: this.state.password,
+          phoneNumber: this.state.phoneNumber,
+          skill: passing.skills,
+          birthDay: this.state.birthDay,
+          userTopicSkill: [],
+          learnTopicSkill : passing.choosenTopic,      
+          avatar:  avatar,
+          imageCerti: imageCerti,
+          description: [passing.description],
+        }
+        try{
+          const response = await fetch('https://se346-skillexchangebe.onrender.com/api/v1/user/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(params)});
+            if(response.status == 400){
+              alert(json.message);
+              this.setState({success: false});
+              this.setState({loading: false});
+            }   
+            else{
+              const json = await response.json();
+              user = json.data;
+              this.setState({loading: false});
+              this.setState({alertMessage: 'Welcome ' + user.username + ' to Skill Exchange'});
+              this.setState({success: true}); 
+              this.toogleAlert();
+            }   
+        }
+        catch(error){
+          console.error('regíter err: '+error);
+          alert('Register failed: ' + error.message);
+          this.setState({loading: false});
+        }
+        finally{
+          this.setState({loading: false});
+        }
       }
   }
   render() {
-    const passing = this.props.route.params;
-    params ={
-      username: passing.name,
-      email: this.state.email, 
-      password: this.state.password,
-      phoneNumber: this.state.phoneNumber,
-      skill: passing.skills,
-      birthDay: this.state.birthDay,
-      userTopicSkill: [],
-      learnTopicSkill : passing.choosenTopic,      
-      avatar:  passing.image,
-      imageCerti: passing.certification,
-      description: [passing.description],
-    }
     return (
       <GradienLayout innerStyle={{height: scale(600)}}>
         <BackButton onPress={() => this.props.navigation.goBack()}></BackButton>
@@ -224,9 +299,14 @@ class ChooseTopic extends React.Component {
             iconColor={!this.state.success? COLORS.red: COLORS.green}
             buttonColor={COLORS.skyBlue}
             onPress={()=>this.state.success
-              ?this.setState({showAlert: false})
+              ?this.toogleAlert()
               : this.props.navigation.navigate('Login') }/>
           </Modal>          
+          <Spinner
+            visible={this.state.loading}
+            textContent={'Loading...'}
+            textStyle={{color: '#FFF'}}
+          />
       </GradienLayout>
     );
   }

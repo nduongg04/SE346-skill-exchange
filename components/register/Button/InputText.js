@@ -37,7 +37,7 @@ const InputText = ({
                         setIsFocused(true);
                     }} 
                     onBlur={() => setIsFocused(false)}
-                    style={{color: COLORS.black, flex: 1, fontFamily: 'AbhayaLibre-Regular'}}
+                    style={{color: COLORS.black, flex: 1}}
                     />
                 
                 {password && 

@@ -33,8 +33,15 @@ export default class EnterName extends React.Component {
             return false;
         }
         else {
-            this.setState({nameError: null});
-            return true;
+            const specialCharsRegex = /[^a-zA-Z0-9\sÀ-ỹ]/;
+            if(specialCharsRegex.test(name)){
+                this.setState({nameError: `Name shouldn't contain special characters`});
+                return false;
+            }
+            else{
+                this.setState({nameError: null});
+                return true;
+            }
         }
     }
     componentDidMount() {
@@ -45,7 +52,7 @@ export default class EnterName extends React.Component {
             return null;
           }
         const params = {
-            name: this.state.name
+            name: this.state.name.trim()
         }
         return (
             <GradienLayout innerStyle={{height: scale(500)}}>
@@ -102,7 +109,7 @@ export default class EnterName extends React.Component {
                         text='Next' 
                         onPress={()=>{
                             if(this.checkValidName(this.state.name))
-                            this.props.navigation.navigate('UploadPhoto', params)
+                                this.props.navigation.navigate('UploadPhoto', params)
                         }}
                         />
                     <View style={{flex: 1, flexDirection: 'row', 
