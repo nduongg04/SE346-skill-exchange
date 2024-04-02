@@ -15,8 +15,11 @@ import Topic_List from '../../components/Search_Tutorials_Tab/Topic_List';
 import Topic_Remarkable_List from '../../components/Search_Tutorials_Tab/Topic_Remarkable_List';
 import { Tag } from '@ant-design/react-native';
 import TagsButton from '../../components/Search_Tutorials_Tab/Topic_Tags/Tags';
+import InputText from '../../components/register/Button/InputText';
+import InputTextBox from '../../components/Search_Tutorials_Tab/Search_Input/InputTextBox';
 
 const Search_Tab = () => {
+  
   const screenWidth = Dimensions.get("window").width;
 	const screenHeight = Dimensions.get("window").height;
   const backButtonSize = (screenWidth / 100) * 18;
@@ -33,6 +36,7 @@ const Search_Tab = () => {
           headerTitle: "",
         }}
       />
+      <InputTextBox />
       <ScrollView scrollEventThrottle ={16}>
           <View style ={{ flex: 1, backgroundColor: COLORS.lightWhite, paddingTop: 20 }}>
             <View style={{height:220, marginTop: 20}}>
