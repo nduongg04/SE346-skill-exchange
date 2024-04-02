@@ -2,6 +2,7 @@ import { render } from "react-dom";
 import InputText from "../../register/Button/InputText";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {search} from "@assets/icons/search.svg"
+import axios from 'axios'; 
 
 const InputTextBox = () => {
     const [query, setQuery] = useState('');
@@ -9,21 +10,36 @@ const InputTextBox = () => {
         Keyboard.show();
     };
   
-    const handleOnChangeText = async (text) => {
+     handleOnChangeText = async (text) => {
       setQuery(text); // Cập nhật giá trị của query
+        
+        // Gọi API sử dụng Axios
+        const getuser = () => { 
+          axios.get('https://se346-skillexchangebe.onrender.com'+'/api/v1/user/find/topic?topics='+text)
+          .then(response => {
+            if(response.status == 404) alert ('Not Found')
+          })
+          .then(result => {
+            const users = result.data.users;
+          })  
+        
+         
   
-      try {
-        // Gọi API GET từ server
-        const response = await fetch()
-  
-        // Xử lý dữ liệu từ server (ví dụ: hiển thị dữ liệu trong cửa sổ thông báo)
-        Alert.alert('API Response', JSON.stringify(data));
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        Alert.alert('Error', 'Failed to fetch data from server');
+        // Chuyển hướng đến màn hình (hoặc component) chứa người dùng
+        this.navigateToUserScreen(users); // Hàm này cần được định nghĩa một cách phù hợp để thực hiện chuyển hướng
+      
+        // Xử lý lỗi nếu có
+        Alert.alert('Error', 'Failed to fetch users. Please try again later.');
+        console.error(error);
+        
       }
     };
-    
+    const navigateToUserScreen = (users) => {
+      // Thực hiện chuyển hướng đến màn hình (hoặc component) chứa người dùng
+      // Điều này có thể bao gồm việc hiển thị danh sách người dùng trên giao diện người dùng, hoặc chuyển hướng đến một màn hình (hoặc component) khác, tùy thuộc vào cách bạn tổ chức ứng dụng của bạn
+      console.log("Navigating to user screen with users:", users);
+      // Ví dụ: navigation.navigate('UserScreen', { users: users });
+    };
   
     return (
       <SafeAreaView>

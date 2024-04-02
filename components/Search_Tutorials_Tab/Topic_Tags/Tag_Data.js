@@ -17,8 +17,7 @@ const TagData = () => {
             throw new Error('Result is empty');
         }
         else{
-            const newData = {title: result}
-            setData(prevData => [...prevData, newData])
+          setData(result)
         }
         })
         .catch(error => {
@@ -29,14 +28,8 @@ const TagData = () => {
 
     fetchData();
   }, []); // Empty dependency array ensures useEffect only runs once on component mount
+  return data;
 
-  return (
-    <div>
-      {data.map((item, index) => (
-        <div key={index}>{item.title}</div>
-      ))}
-    </div>
-  );
 };
 
 export default TagData;
