@@ -10,6 +10,8 @@ import CustomButton from "../register/Button/CustomButton";
 import Policy from "../register/Policy";
 import Notification from "../common/Notification";
 import { ScrollView } from "react-native-gesture-handler";
+import Spinner from "react-native-loading-spinner-overlay";
+import { isLoading } from "expo-font";
 class Login extends React.Component {
   state = {
     email: null,
@@ -21,7 +23,8 @@ class Login extends React.Component {
     user: null,
     username: null,
     accessToken: null,
-    refeshToken: null
+    refeshToken: null,
+    isLoading: false
   }
   handleLogIn = async () => {
     if(this.state.email === null || this.state.email === '') {
@@ -33,31 +36,41 @@ class Login extends React.Component {
     }
     else
       {
-        const response = await fetch('https://se346-skillexchangebe.onrender.com'+'/api/v1/user/login', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: this.state.email,
-            password: this.state.password
-          })});
-          if(response.status == 400){
-            alert('Wrong email or password');
-          }
-          else
-          if(response.status == 404){
-            alert('User not found');
-          }
-          else{
-            const json = await response.json();
-            this.setState({user: json.data}); 
-            this.setState({username: json.data.username});
-            this.setState({accessToken: json.access_token});
-            this.setState({refreshToken: json.refresh_token});
-            this.setState({showMessage: true});
-          }         
-
+        this.setState({isLoading: true});
+        try{
+            const response = await
+              fetch('https://se346-skillexchangebe.onrender.com/api/v1/user/login', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                      email: this.state.email,
+                      password: this.state.password
+                  })
+              });
+            if(response.status == 401){
+              alert('Wrong email or password');
+            }
+            else
+            if(response.status == 404){
+              alert('User not found');
+            }
+            else{
+              const json = await response.json();
+              this.setState({user: json.data}); 
+              this.setState({username: json.data.username});
+              this.setState({accessToken: json.access_token});
+              this.setState({refreshToken: json.refresh_token});
+              this.setState({showMessage: true});
+            }         
+        }
+        catch(error){
+          alert('Something went wrong! Please try again!');
+        }
+        finally{
+          this.setState({isLoading: false});
+        }
       }
     
   }
@@ -67,6 +80,10 @@ class Login extends React.Component {
   render() {
     return (
       <GradienLayout innerStyle={{height: scale(600)}}>
+        <Spinner
+          visible={this.state.isLoading}
+          textContent={'Loading...'}
+          textStyle={{color: COLORS.lightWhite}}/>
         <Image
           source={require('../../assets/images/teamwork.png')}
           style={styles.image}/>
@@ -119,7 +136,7 @@ class Login extends React.Component {
                   borderColor: COLORS.orange,
                   height: scale(35),
                   width: "40%"}}
-            textStyle={{color: COLORS.white}}/>
+            textStyle={{color: COLORS.lightWhite}}/>
           <CustomButton 
             margin={false}
             textColor={COLORS.orange}
