@@ -38,32 +38,37 @@ class Login extends React.Component {
       {
         this.setState({isLoading: true});
         try{
-            const response = await
-              fetch('https://se346-skillexchangebe.onrender.com/api/v1/user/login', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                      email: this.state.email,
-                      password: this.state.password
-                  })
-              });
-            if(response.status == 401){
-              alert('Wrong email or password');
-            }
-            else
-            if(response.status == 404){
-              alert('User not found');
-            }
-            else{
-              const json = await response.json();
-              this.setState({user: json.data}); 
-              this.setState({username: json.data.username});
-              this.setState({accessToken: json.access_token});
-              this.setState({refreshToken: json.refresh_token});
-              this.setState({showMessage: true});
-            }         
+          const response = await Promise.race([
+            fetch('https://se346-skillexchangebe.onrender.com/api/v1/user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: this.state.email,
+                    password: this.state.password
+                })
+            }),
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Request timeout')), 15000)
+            )
+          ]);
+          if(response.status == 401){
+            alert('Wrong email or password');
+          }
+          else
+          if(response.status == 404){
+            alert('User not found');
+          }
+          else{
+            const json = await response.json();
+            this.setState({user: json.data}); 
+            console.log(JSON.stringify(json));
+            this.setState({username: json.data.username});
+            this.setState({accessToken: json.access_token});
+            this.setState({refreshToken: json.refresh_token});
+            this.setState({showMessage: true});
+          }         
         }
         catch(error){
           alert('Something went wrong! Please try again!');

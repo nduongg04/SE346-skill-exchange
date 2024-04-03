@@ -98,7 +98,7 @@ class ChooseTopic extends React.Component {
         uri: imageUri,
     });
     try{
-      const response = await fetch('https://se346-skillexchangebe.onrender.com/api/v1/image/upload', {
+      const response = await fetch('https://se346-skillexchangebe.onrender.com/api/v1/upload/image', {
           method: 'POST',
           body: formData,
           headers: {
