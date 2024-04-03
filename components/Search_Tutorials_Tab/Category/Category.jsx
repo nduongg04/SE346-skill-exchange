@@ -22,7 +22,7 @@ class Category extends Component{
             borderWidth: 0.5, borderColor: '#dddddd'}}>
                 <View style ={{flex: 2, }}>
                     <ImageBackground style = { styles.backgroundImage} source={this.props.imageUri}>
-                        <Text style ={styles.fixToImage}>{this.props.name}</Text>
+                        <Text style ={styles.fixToImage} numberOfLines={1} ellipsizeMode='tail'>{this.props.name}</Text>
                     </ImageBackground>
                 </View>
             </View>

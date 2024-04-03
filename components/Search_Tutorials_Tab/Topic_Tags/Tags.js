@@ -9,7 +9,7 @@ class TagsButton extends Component {
     render (){
         return (
         <TouchableOpacity onPress={this.handleOnPress}  style={styles.button}>
-            <Text style={styles.buttonText}>{this.props.title}</Text>
+            <Text style={styles.buttonText} numberOfLines={1} ellipsizeMode='tail'>{this.props.title}</Text>
         </TouchableOpacity>
         )
     };
