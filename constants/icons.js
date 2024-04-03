@@ -10,9 +10,8 @@ import profile_focused from "../assets/icons/profile_focused.svg";
 import profile_not_focused from "../assets/icons/profile_not_focused.svg";
 import search from "../assets/icons/search.svg";
 import tickCircle from "../assets/icons/tickCircle.svg";
-import transparent_background from "../assets/icons/transparent_background.svg";
 
-import transparent_background1 from "../assets/icons/transparent_background.png";
+import transparent_background from "../assets/icons/transparent_background.png";
 
 import location from "../assets/icons/location.svg";
 
@@ -50,7 +49,6 @@ export default {
     search,
     tickCircle,
     transparent_background,
-    transparent_background1,
     location,
 
     search_icon,

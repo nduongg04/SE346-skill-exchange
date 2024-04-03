@@ -1,5 +1,7 @@
-import { Stack } from "expo-router";
 import { useFonts } from "expo-font";
+import { Stack } from "expo-router/stack";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+
 const Layout = () => {
 	const [fontsLoaded] = useFonts({
 		NotoExtraBold: require("../assets/fonts/NotoSansSymbols-ExtraBold.ttf"),
@@ -14,7 +16,13 @@ const Layout = () => {
 		return null;
 	}
 
-	return <Stack />;
+	return (
+		<SafeAreaProvider>
+			<Stack>
+				<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+			</Stack>
+		</SafeAreaProvider>
+	);
 };
 
 export default Layout;
