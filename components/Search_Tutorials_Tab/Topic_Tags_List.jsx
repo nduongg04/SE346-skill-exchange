@@ -6,7 +6,7 @@ import { render } from 'react-dom';
 
 
 const renderItem = ({ item }) => (
-    < TagsButton title = {item.title} />
+    < TagsButton name = {item.name} />
 );
 
 const numColumns = 3;
