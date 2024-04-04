@@ -1,5 +1,6 @@
 import GradienLayout from "../register/TemplateLayout/GradientLayout";
-import { Text, View, Image, TouchableOpacity, Modal } from "react-native";
+import { Text, View, Image, TouchableOpacity, Modal   } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import styles from "../register/style";
 import { COLORS } from "../../constants";
 import { scale } from "react-native-size-matters";
@@ -22,8 +23,6 @@ class Login extends React.Component {
     showMessage: false,
     user: null,
     username: null,
-    accessToken: null,
-    refeshToken: null,
     isLoading: false
   }
   handleLogIn = async () => {
@@ -50,7 +49,7 @@ class Login extends React.Component {
                 })
             }),
             new Promise((_, reject) =>
-                setTimeout(() => reject(new Error('Request timeout')), 15000)
+                setTimeout(() => reject(new Error('Request timeout')), 30000)
             )
           ]);
           if(response.status == 401){
@@ -64,13 +63,20 @@ class Login extends React.Component {
             const json = await response.json();
             this.setState({user: json.data}); 
             console.log(JSON.stringify(json));
+            try{
+              await AsyncStorage.setItem('user', JSON.stringify(json.data));
+              await AsyncStorage.setItem('accessToken', json.access_token);
+              await AsyncStorage.setItem('refreshToken', json.refresh_token);
+            } catch(error){
+              alert('Store token failed!');
+            }
+
             this.setState({username: json.data.username});
-            this.setState({accessToken: json.access_token});
-            this.setState({refreshToken: json.refresh_token});
             this.setState({showMessage: true});
           }         
         }
         catch(error){
+          console.log(error);
           alert('Something went wrong! Please try again!');
         }
         finally{

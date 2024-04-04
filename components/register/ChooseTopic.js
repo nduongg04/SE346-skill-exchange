@@ -8,6 +8,7 @@ import { scale } from "react-native-size-matters";
 import React from "react";
 import BackButton from "./Button/BackButton";
 import CustomButton from "./Button/CustomButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 class ChooseTopic extends React.Component {
   state = {
     uploadVisible: false,
@@ -43,8 +44,16 @@ class ChooseTopic extends React.Component {
         this.setState({isLoading: false, loadingMore: false});
     }
 }
-  componentDidMount() {
+  componentDidMount = async () =>{
     this.fetchTopic();
+    try{
+      const value = await AsyncStorage.getItem('refreshToken');
+      console.log('refresh token: ' +value);
+    }
+    catch(e){
+      console.log(e);
+    }
+    console.log()
   }
   render() {
     const passing = this.props.route.params;
