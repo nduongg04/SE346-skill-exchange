@@ -178,8 +178,8 @@ class ChooseTopic extends React.Component {
           phoneNumber: this.state.phoneNumber,
           skill: passing.skills,
           birthDay: this.state.birthDay,
-          userTopicSkill: [],
-          learnTopicSkill : passing.choosenTopic,      
+          userTopicSkill: passing.userTopic,
+          learnTopicSkill : passing.topic,      
           avatar:  avatar,
           imageCerti: imageCerti,
           description: [passing.description],
@@ -191,22 +191,26 @@ class ChooseTopic extends React.Component {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify(params)});
-            if(response.status == 400){
+            console.log(response);
+            if(!response.ok){
+              const json = await response.json();
               alert(json.message);
               this.setState({success: false});
               this.setState({loading: false});
             }   
             else{
               const json = await response.json();
+              
               user = json.data;
+              console.log(user);
+              this.setState({success: true}); 
               this.setState({loading: false});
               this.setState({alertMessage: 'Welcome ' + user.username + ' to Skill Exchange'});
-              this.setState({success: true}); 
               this.toogleAlert();
             }   
         }
         catch(error){
-          console.error('regíter err: '+error);
+          console.error('register err: '+error);
           alert('Register failed: ' + error.message);
           this.setState({loading: false});
         }
@@ -298,7 +302,7 @@ class ChooseTopic extends React.Component {
             iconName={!this.state.success?'warning':'check-circle'}
             iconColor={!this.state.success? COLORS.red: COLORS.green}
             buttonColor={COLORS.skyBlue}
-            onPress={()=>this.state.success
+            onPress={()=>!this.state.success
               ?this.toogleAlert()
               : this.props.navigation.navigate('Login') }/>
           </Modal>          

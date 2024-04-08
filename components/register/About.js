@@ -42,7 +42,15 @@ class About extends React.Component {
           >
               
         </TextInput>
-        <CustomButton text='Next' onPress={()=>this.props.navigation.navigate('SkillInput', params)}></CustomButton>             
+        <CustomButton text='Next' onPress={()=>{
+
+          if(this.state.description === ''){
+            alert('Please fill the description');
+            return;
+          }
+          this.props.navigation.navigate('SkillInput', params)
+        }
+          }></CustomButton>             
       </GradienLayout>
     );
   }

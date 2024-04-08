@@ -77,7 +77,7 @@ class Login extends React.Component {
         }
         catch(error){
           console.log(error);
-          alert('Something went wrong! Please try again!');
+          alert('Something went wrong! Please try again!: ' + error);
         }
         finally{
           this.setState({isLoading: false});
