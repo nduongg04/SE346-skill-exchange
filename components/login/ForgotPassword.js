@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Image, Modal} from 'react-native';
+import { View, Text, Image, Modal, ActivityIndicator} from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import GradienLayout from '../register/TemplateLayout/GradientLayout';
 import { COLORS } from '../../constants';
 import styles from '../register/style';
@@ -14,16 +15,25 @@ class ForgotPassword extends React.Component {
         email: null,
         errorMail: null,
         errorPassword: null,
+
         newPassword: null,
         confirmPassword: null,
+
         errorCode: null,
         sended: false,
         existEmail: false,
         code: null,
+
         verified: false,
-        showMessage: false
+        showMessage: false,
+
+        user: null,
+        checkCode: null,
+        resultMessage: null,
+        isLoading: false
     }
-    handleResetPassword = () => {
+
+    handleResetPassword = async () => {
         //Check if password is valid
         if(this.state.newPassword === null || this.state.newPassword === '') {
             this.setState({errorPassword: 'Password is required'});
@@ -38,31 +48,94 @@ class ForgotPassword extends React.Component {
                 }
                 else {
                     //Reset password
-                    this.setState({showMessage: true});
+                    this.setState({isLoading: true});
+                    try {
+                        const response = await fetch('https://se346-skillexchangebe.onrender.com/api/v1/user/changepassword', {
+                            method: 'PATCH',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({
+                                email: this.state.email,
+                                password: this.state.newPassword
+                            })
+                        });
+                    
+                        if (!response.ok) {
+                            alert('Error: ' + response.status);
+                        }
+                        else{
+                            let json;
+                            try{
+                                json = await response.json();
+                                this.setState({ resultMessage: json.message });
+                                this.setState({ showMessage: true });
+                            }
+                            catch(error) {
+                                console.error('Response is not JSON:', response);
+                                throw new Error('Invalid response from server');
+                            }
+                        }
+                    } catch (error) {
+                        alert('Network error: ' + error.message);
+                    } finally{
+                        this.setState({isLoading: false});
+                    }
                 }
         }}
     };
+
     toogleCode = () =>{
         this.setState({sended: true});
     }
-    sendMail = () => {
-        if(this.state.email == null || this.state.email == '') {
-            this.setState({errorMail: 'Email is required'});
-        }
-        else {
-            //Check if email is exist
-            this.setState({existEmail: true});
-            this.toogleCode();
-        }
-    }
+
+    sendMail = async () => {
+            if(this.state.email == null || this.state.email == '') {
+                this.setState({errorMail: 'Email is required'});
+            }
+            else {
+                this.setState({isLoading : true});
+                try{
+                    const response = await fetch('https://se346-skillexchangebe.onrender.com/api/v1/service/sendEmail', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: this.state.email
+                    })});   
+                    const json = await response.json();
+                    if(response.status == 400 || response.status == 404) {
+                        alert('User not found');
+                    }
+                    else{
+                        this.setState({checkCode: json.userCode});
+                        alert('Send code successfully');
+                        this.toogleCode();
+                    }  
+                }
+                catch(error) {
+                    alert('Network error: ' + error.message);
+                } finally{
+                    this.setState({isLoading: false});
+                }
+            }             
+    }    
+    
     checkCode = () => {
         if(this.state.code === null || this.state.code === '') {
             this.setState({errorCode: 'Code is required'});
         }
         else {
             //Check if code is correct
-            this.setState({sended: false});
-            this.setState({verified: true});
+            if(this.state.code !== this.state.checkCode) {
+                this.setState({errorCode: 'Invalid code'});
+            }
+            else{
+                this.setState({sended: false});
+                this.setState({verified: true});
+            }
+
         }
     }
 render() {
@@ -145,7 +218,7 @@ render() {
                     transparent={true}
                     visible={this.state.showMessage}>
                 <Notification
-                    text={'Password has been reset successfully!'}
+                    text={this.state.resultMessage}
                     iconName={'check-circle'}
                     iconColor={COLORS.green}
                     buttonColor={COLORS.skyBlue}
@@ -156,8 +229,13 @@ render() {
                 </Modal>
             </View>
             }
+            <Spinner
+                visible={this.state.isLoading}
+                textContent={'Loading...'}
+                textStyle={{color: '#FFF'}}
+                />
         </GradienLayout>
     );}
-}
+}   
 
 export default ForgotPassword;

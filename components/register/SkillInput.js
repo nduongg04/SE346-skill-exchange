@@ -43,7 +43,14 @@ class SkillInput extends React.Component {
           >
               
         </TextInput>
-        <CustomButton text='Next' onPress={()=>this.props.navigation.navigate('UploadCertification', params)}></CustomButton>             
+        <CustomButton text='Next' onPress={()=>{
+          if(this.state.skills === ""){
+            alert('Please fill the skills');
+            return;
+          }
+          this.props.navigation.navigate('UploadCertification', params)
+        }
+          }></CustomButton>             
       </GradienLayout>
     );
   }

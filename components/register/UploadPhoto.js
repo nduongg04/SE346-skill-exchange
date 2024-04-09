@@ -82,7 +82,13 @@ class UploadPhoto extends React.Component{
                             style={{backgroundColor: COLORS.lightWhite, borderRadius: 50, padding: 5}}/>
                     </TouchableOpacity>
                 </View>
-                <CustomButton style={{marginTop: 30 }} text={'Next'} onPress={()=>this.props.navigation.navigate('About', params)}/>
+                <CustomButton style={{marginTop: 30 }} text={'Next'} onPress={()=>{
+                    if(this.state.image==''){
+                        alert('Please upload your photo')
+                        return
+                    }
+                    this.props.navigation.navigate('About', params)
+                }}/>
            </GradienLayout>
         )
     }

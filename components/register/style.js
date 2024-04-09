@@ -48,7 +48,6 @@ const styles = StyleSheet.create({
         width: scale(120),
         borderRadius: 100,
         alignSelf: 'center',
-        backgroundColor: COLORS.orange,
         borderWidth: 0.3, 
         borderColor: COLORS.lightGray
     },
@@ -64,38 +63,40 @@ const styles = StyleSheet.create({
         height: scale(140),
     },
     topicButton: {
-        width: '47%', 
+        width: '44%', 
+        height: scale(50),
         padding: 5, 
         borderWidth: 0.5, 
         borderColor: COLORS.orange,
         backgroundColor: COLORS.lightWhite,
-        borderRadius: 5,
-        marginTop: 0,
-        marginRight: 5,
-        marginBottom: 10,
-        marginLeft: 5
+        borderRadius: 15,
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 10
     },
     topicButtonSelected: {
-        width: '47%', 
+        width: '44%', 
         padding: 5, 
+        height: scale(50),
         borderWidth: 0.5, 
         borderColor: COLORS.orange,
         backgroundColor: COLORS.orange,
-        borderRadius: 5,
-        marginTop: 0,
-        marginRight: 5,
-        marginBottom: 10,
-        marginLeft: 5
+        borderRadius: 15,
+        margin: 10,
+        justifyContent: 'center',
+        alignItems: 'center'
     },
     topicText: {
-        fontSize: scale(14),
+        fontSize: scale(10),
         textAlign: 'center',
+        textAlignVertical: 'center',
         fontFamily: 'Coda-Regular',
-        color: COLORS.orange
+        color: COLORS.orange,
         
     },
     topicTextSelected: {
-        fontSize: scale(14),
+        fontSize: scale(10),
+        
         textAlign: 'center',
         fontFamily: 'Coda-Regular',
         color: COLORS.lightWhite

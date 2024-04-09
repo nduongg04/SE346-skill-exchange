@@ -89,7 +89,14 @@ class UploadCertification extends React.Component {
                 fontFamily: 'Coda-Regular', 
                 color: COLORS.orange}}>Upload</Text>
           </TouchableOpacity>       
-          <CustomButton text='Next' onPress={()=>this.props.navigation.navigate('ChooseTopic', params)}></CustomButton>             
+          <CustomButton text='Next' onPress={()=>{
+            if(this.state.certification.length === 0){
+              alert('Please upload your certification');
+              return;
+            }
+            this.props.navigation.navigate('ChooseTopic', params)
+          }
+            }></CustomButton>             
         </View>
       </GradienLayout>
     );
