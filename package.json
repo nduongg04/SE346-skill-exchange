@@ -1,6 +1,6 @@
 {
   "name": "skill-exchange",
-  "main": "app/(tabs)/Search_tab.jsx",
+  "main": "app/(tabs)/index.jsx",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
@@ -17,7 +17,7 @@
     "@ant-design/icons-react-native": "^2.3.2",
     "@ant-design/react-native": "^5.1.1",
     "@expo/vector-icons": "^14.0.0",
-    "@react-native-async-storage/async-storage": "^1.23.1",
+    "@react-native-async-storage/async-storage": "^1.21.0",
     "@react-native-community/datetimepicker": "7.6.1",
     "@react-navigation/bottom-tabs": "^6.5.20",
     "@react-navigation/elements": "^1.3.30",

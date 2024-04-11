@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { registerRootComponent } from 'expo';
+//import { registerRootComponent } from 'expo';
 import EnterName from './EnterName';
 import UploadPhoto from './UploadPhoto';
 import About from './About';

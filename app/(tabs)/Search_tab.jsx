@@ -13,11 +13,7 @@ import { COLORS, icons } from "../../constants";
 import { Stack } from "expo-router";
 import Topic_List from '../../components/Search_Tutorials_Tab/Topic_List';
 import Topic_Remarkable_List from '../../components/Search_Tutorials_Tab/Topic_Remarkable_List';
-import { Tag } from '@ant-design/react-native';
-import TagsButton from '../../components/Search_Tutorials_Tab/Topic_Tags/Tags';
-import InputText from '../../components/register/Button/InputText';
 import InputTextBox from '../../components/Search_Tutorials_Tab/Search_Input/InputTextBox';
-import { registerRootComponent } from 'expo';
 const Search_Tab = () => {
   
   const screenWidth = Dimensions.get("window").width;
@@ -88,8 +84,6 @@ const Search_Tab = () => {
     </SafeAreaView>
     
   )
-
 };
 
-registerRootComponent(Search_Tab)
 export default Search_Tab;
