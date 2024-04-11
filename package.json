@@ -1,6 +1,6 @@
 {
   "name": "skill-exchange",
-  "main": "components/register/ExApp.js",
+  "main": "app/(tabs)/Search_tab.jsx",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
@@ -24,6 +24,7 @@
     "@react-navigation/native": "^6.1.17",
     "@react-navigation/stack": "^6.3.29",
     "@shopify/react-native-skia": "^0.1.221",
+    "axios": "^1.6.8",
     "expo": "^50.0.13",
     "expo-app-loading": "^2.1.1",
     "expo-font": "~11.10.3",

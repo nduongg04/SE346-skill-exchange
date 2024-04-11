@@ -11,7 +11,7 @@ import UploadInfo from './UploadInfo';
 import Login from '../login/login';
 import ForgotPassword from '../login/ForgotPassword';
 import ChooseKnowTopic from './ChooseKnowTopic';
-import { GestureHandlerRootView} from 'react-native-gesture-handler'
+//import { GestureHandlerRootView} from 'react-native-gesture-handler'
 const Stack = createStackNavigator();
 
 function ExApp() {
@@ -63,4 +63,4 @@ function ExApp() {
     </NavigationContainer>
   );
 }
-registerRootComponent(ExApp);
+//registerRootComponent(ExApp);

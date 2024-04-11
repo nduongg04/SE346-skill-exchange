@@ -38,10 +38,10 @@ class Category extends Component{
             <TouchableOpacity  onPress= {this.handleOnPress}
             activeOpacity={0.8}  // Đặt độ trong suốt khi nhấn
             style={{ height: 230, width: 230, marginLeft: 20, borderWidth: 0.5, borderColor: '#dddddd' }}>
-            <View style = {{height:230, width: 230, marginLeft: 20, 
+            <View id={this.props._id} style = {{height:230, width: 230, marginLeft: 20, 
             borderWidth: 0.5, borderColor: '#dddddd'}}>
                 <View style ={{flex: 2, }}>
-                    <ImageBackground style = { styles.backgroundImage} source={this.props.imageUri}>
+                    <ImageBackground style = { styles.backgroundImage} source={this.props.imageUrl}>
                         <Text style ={styles.fixToImage} numberOfLines={1} ellipsizeMode='tail'>{this.props.name}</Text>
                     </ImageBackground>
                 </View>
