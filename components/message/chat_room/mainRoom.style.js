@@ -16,35 +16,43 @@ export const styles = StyleSheet.create(
     Container:
     {
         justifyContent: 'center',
-        alignItems:'center',
-        height:'100%'
+        // alignItems:'center',
+        height:'100%',
+        flex:1,
+        width:'100%'
     },
     Header:
     {
         height:54,
-        width:'90%',
+        width:'100%',
         justifyContent: 'center',
         alignItems:'center',
         flexDirection:'row',
-        marginTop:'9%'
+        marginTop:'9%',
+        paddingHorizontal:'5%',
+        borderBottomWidth:1.2,
+        borderBottomColor:'#F4F2F2'
     },
     Name:
     {
         fontFamily:'Inter-SemiBold',
         fontSize:23.5,
         flex:1,
-        textAlign:'center',
-        marginLeft:29
+        textAlign:'center',   
     },
     Scrool:
     {
         flex:1,
+        width:'100%',
     },
-    
+    scrollViewContainer:{
+        alignItems: 'flex-end'
+    },
     Bottom:
     {
         height:60,
         width:'90%',
+        marginLeft:'5%',
         justifyContent: 'center',
         alignItems:'center',
         flexDirection:'row',
@@ -76,11 +84,13 @@ export const styles = StyleSheet.create(
 
     //Message
     Layout:{    
-        marginLeft: '32%',
+        marginRight:'2%'
+       
     },
     MessContainer:{
         flexDirection:'row',
-        marginTop:0,             
+        marginTop:0,
+        width:'70%'             
     },
     Message:{
         backgroundColor:"#FFBE98",
@@ -99,12 +109,10 @@ export const styles = StyleSheet.create(
     AvatarContainer:
     {
         borderRadius: 30,
-        borderWidth:1.5,
         marginLeft:0,
-        width:36,
-        height:36,
+        width:30,
+        height:30,
         overflow: 'hidden',
-        borderColor:"black",
         marginTop:'auto'
         
 
@@ -115,7 +123,7 @@ export const styles = StyleSheet.create(
         resizeMode:'cover'
     },
     Time:{
-        marginLeft:5,
+        marginLeft:0,
         marginTop:1,
         fontSize:12
     },
@@ -126,7 +134,7 @@ export const styles = StyleSheet.create(
         borderBottomLeftRadius:2,
         borderBottomRightRadius:15,
         padding:12,
-       maxWidth:200,
+       maxWidth:'70%',
        fontFamily:'Inter-Regular',
        fontSize:14,
        marginTop:10,
@@ -134,12 +142,14 @@ export const styles = StyleSheet.create(
         
     },
     Time2:{
-        marginLeft:212,
+        marginLeft:'auto',
         marginTop:1,
         fontSize:12
     },
     Layout2:{    
-        marginLeft: '2%',
+        marginRight:'auto',
+        marginLeft:'2%'
+       
     },
     
     
