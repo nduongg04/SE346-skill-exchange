@@ -1,6 +1,6 @@
 {
   "name": "skill-exchange",
-  "main": "components/message/chat_room/MainRoom.js",
+  "main": "components/register/ExApp.js",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
