@@ -9,8 +9,9 @@ import System from "./System";
 const ScreenNotification = () => {
   const [isLoading, setLoading] = useState(true);
   const [isFontLoaded, setFontLoaded] = useState(false);
-  const [isPress, setPress] = useState(false);
+  const [isRequestTab, setIsRequestTab] = useState(true);
   const[requests, setRequest]= useState([]);
+  const[systems, setSystem]=useState([])
   const myId='123';
   const token='1234';
   const listUser=[];
@@ -24,8 +25,15 @@ const getRequest = async () => {
           'Authorization': `Bearer ${token}`,
         }
       });
-      const json = await response.json();
-      setRequest(json);
+      if(response.status==400)
+      {
+        alert('Something went wrong');
+      }
+      else
+      {
+        const json = await response.json();
+        setRequest(json);
+      }
     } catch (error) {
       console.error(error);
     } finally {
@@ -33,51 +41,10 @@ const getRequest = async () => {
     }
   };
 
-  const getUser= async () =>{
-    for (const user of requests) 
-      {
-        try {
-          const response = await fetch('http://localhost:3000/api/v1/request/find/reciever/${user.senderID}',
-          {
-            method: 'GET',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            }
-          });
-          const json = await response.json();
-          listUser.push(json);
-        } catch (error) {
-          console.error(error);
-        } 
-      }
-  }
+ 
   useEffect(() => {
     getRequest();
-    getUser();
   }, []);
-
-  // const postData = async () => {
-  //   try {
-  //     const response = await fetch('http://localhost:3000/api/v1/request/create', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Authorization': `Bearer 123`,
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify({
-  //         "senderID": "1234",
-  //         "receiverID": "123456"
-  //       }),
-  //     });
-  //     const json = await response.json();
-  //     console.log(json);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // };
-
-  
-
   
   useEffect(() => {
     const loadFont = async () => {
@@ -90,13 +57,11 @@ const getRequest = async () => {
     return null; // Return null or a loading indicator while the font is loading
   }
   const handelPress = () => {
-    if(isPress==true)
-    setPress(!isPress);
+    setIsRequestTab(true);
     // postData();
   }
   const handelPress2 = () => {
-    if(isPress==false)
-    setPress(!isPress);
+    setIsRequestTab(false);
   }
 
 
@@ -112,31 +77,38 @@ const getRequest = async () => {
         <Text style={styles.Header}>Notification</Text>
         <View style={styles.Search}>
           <TouchableOpacity onPress={handelPress}>
-            <Text style={[styles.Option, !isPress && styles.Choose]}>Requests</Text>
+            <Text style={[styles.Option, isRequestTab && styles.Choose]}>Requests</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={handelPress2}>
-            <Text style={[styles.Option, isPress && styles.Choose]}>System</Text>
+            <Text style={[styles.Option, !isRequestTab && styles.Choose]}>System</Text>
           </TouchableOpacity>
         </View>
       </View>
 
-      {/* <View style={styles.Scroll}>
+      <View style={styles.Scroll}>
       {isLoading ? (
         <ActivityIndicator />
-      ) : (
-        <FlatList
-          data={listUser}
-          keyExtractor={({id}) => ID}
-          renderItem={({item}) => (
-            <Text>
-              {item.title}, {item.releaseYear}
-            </Text>
-          )}
-        />
-      )}
-    </View> */}
-      <View style={styles.Scroll} >
+      ) :(isRequestTab)?
+        (
+          <FlatList
+            data={requests}
+            keyExtractor={({id}) => ID}
+            renderItem={({item}) => (
+              <Request Type="Request" Name={item.senderID.username} Avartar={item.senderID.avartar} Time={item.dateTime} ></Request>
+            )}
+          />
+        ):
+        (<FlatList
+        data={requests}
+        keyExtractor={({id}) => ID}
+        renderItem={({item}) => (
+          <System></System>
+        )}
+        />)
+      }
+    </View>
+      {/* <View style={styles.Scroll} >
         <ScrollView showsVerticalScrollIndicator={false}>
           <Request Type={'Request'}></Request>
           <Request Type={'Accept'}></Request>
@@ -147,9 +119,8 @@ const getRequest = async () => {
           <Request></Request>
           <Request></Request>
           <Request></Request>
-
         </ScrollView>
-      </View>
+      </View> */}
       <View style={styles.navbar}>
 
       </View>

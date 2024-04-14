@@ -1,6 +1,6 @@
 {
   "name": "skill-exchange",
-  "main": "components/login/login.js",
+  "main": "components/message/chat_room/MainRoom.js",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
@@ -26,7 +26,6 @@
     "expo": "^50.0.13",
     "expo-app-loading": "^2.1.1",
     "axios": "^1.6.8",
-    "expo": "~50.0.11",
     "expo-av": "~13.10.5",
     "expo-font": "~11.10.3",
     "expo-image": "~1.10.6",

@@ -34,6 +34,8 @@ import camera from "../assets/icons/Camera_icon.png"
 import clock from "../assets/icons/Clock_icon.png"
 import delete_icon from "../assets/icons/Delete_icon.png"
 import white_icon from "../assets/icons/WhiteBackground.png"
+import play from "../assets/icons/Play_icon.png"
+import pause from "../assets/icons/Pause_icon.png"
 
 export default {
     backLoading,
@@ -69,5 +71,7 @@ export default {
     camera,
     clock,
     delete_icon,
-    white_icon
+    white_icon,
+    play,
+    pause
 };

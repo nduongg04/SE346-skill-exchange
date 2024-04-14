@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, TouchableHighligh, TextInput,Modal } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Image, KeyboardAvoidingView, TextInput,Modal } from 'react-native';
 import { registerRootComponent } from 'expo';
 import { icons } from "@constants";
 import { loadFonts, styles } from "./mainRoom.style";
@@ -8,12 +8,13 @@ import { Message } from './message';
 import * as ImagePicker from 'expo-image-picker';
 import { Audio } from 'expo-av';
 import axios from 'axios';
-const ScreenChatRoom = (props) => {
+import mime from 'react-native-mime-types';
+const ScreenChatRoom = ({router}) => {
   const [isFontLoaded, setFontLoaded] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const [message, setMessage] = useState('');
   const [image, setImage] = useState([]);
-  const [record, setRecord] = useState(null);
+  const [record, setRecord] = useState();
   const [isRecord, setIsRecord] = useState(false)
   const [seconds, setSeconds] = useState(0);
   const [idCount,setIdCount]=useState(null);
@@ -22,7 +23,8 @@ const ScreenChatRoom = (props) => {
   const [messageList, setMessageList]=useState([]);
   const[myName,setMyName]=useState('');
   const[isUploadImage,setIsUpLoadImage]=useState('false')
-  const[chatId,setChatId]=useState(props.chatID)
+  const[chatId,setChatId]=useState()//router.param.chatID
+  const [test, setTest]= useState('');
   const loadMessage = async ()=>{
     const response = await axios.get('https://se346-skillexchangebe.onrender.com/api/v1/message/find/'+'6606f3bb5089c2a459ab593e', {
       method: 'GET',
@@ -31,8 +33,7 @@ const ScreenChatRoom = (props) => {
          Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjA2ZjNiYjUwODljMmE0NTlhYjU5M2UiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMjIzODI2NCwiZXhwIjoxNzE0ODMwMjY0fQ._iefzCcQ0g4GXat9l-2quzeyf4ZWd9wQ1iN1JSaSG2Y',
       },});
       if(response.ok){
-       const json=response.json();
-        setMessageList(json.data);
+        setMessageList(response.data);
       }
       else
       {
@@ -117,12 +118,12 @@ const ScreenChatRoom = (props) => {
       }
       else{
         console.log(JSON.stringify(response));
-        alert('Upload image failed: ' + response.status);
+        alert('Upload record failed: ' + response.status);
         return false;
       }
     }
     catch(error){
-      alert('Upload image failed: ' + error.message);
+      alert('Upload record failed: ' + error.message);
       return false;
     }
   }
@@ -164,7 +165,9 @@ const ScreenChatRoom = (props) => {
     try {
       await record.stopAndUnloadAsync();
       console.log('Recording stopped');
-      // const uri = record.getURI();
+      const uri = record.getURI();
+      setTest(''+uri);
+      console.log(test);
       console.log('Recording URI:', record);
       setIsRecord(false);
       clearInterval(idCount);
@@ -219,20 +222,22 @@ const ScreenChatRoom = (props) => {
     if(isRecord)
     {
       stopRecording();
-      if(uploadRecord(record,myId))
-      {
-        setMessage('');
-        message=uploadRecord(record,myId);
-        sendMessage('record');
-      }
+      // const response=uploadRecord(record.getURI(),myId);
+      // if(response)
+      // {
+      //   setMessage('');
+      //   setMessage(''+ response);
+      //   sendMessage('record');
+      // }
       
     }
-    //message text
-    if(message.trim().length>0)
+    else
     {
-        sendMessage('text');
-        setMessage('');
+      sendMessage('text');
+      setMessage('');
     }
+    
+    
 
 
     
@@ -277,9 +282,9 @@ const ScreenChatRoom = (props) => {
   }
 
   return (
-    <View style={styles.Container}>
+    <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+        <View style={styles.Container}>
       
-
       <View style={styles.Header}>
         <TouchableOpacity >
           <Image source={icons.back} style={[{ height: 25.5, width: 25.5,marginRight:32}]}  ></Image>
@@ -292,13 +297,13 @@ const ScreenChatRoom = (props) => {
           <Image source={icons.video} style={{ height: 20, width: 23.5,marginLeft:10 }} />
         </TouchableOpacity>
       </View>
-
-      <ScrollView style={styles.Scroll} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollViewContainer} >
+    
+      <ScrollView style={styles.Scroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollViewContainer} >
         <Message User={"Người gửi"} Content={"https://s1.zerochan.net/Rem.%28Re%3AZero%29.600.3918671.jpg"} Time={"5:20"} Type={'image'}></Message>
         <Message User={"Người nhận"}></Message>
         
         <Message User={"Người nhận"}></Message>
-        <Message User={"Người gửi"}></Message>
+        <Message User={"Người gửi"} Content={test} Time={"5:20"} Type={'record'}></Message>
         <Message User={"Người nhận"}></Message>
         <Message User={"Người gửi"}></Message>
         <Message User={"Người nhận"}></Message>
@@ -367,8 +372,9 @@ const ScreenChatRoom = (props) => {
 
       </View>
     </View>
+    </KeyboardAvoidingView>
+    
   )
-
-
 }
+export default (ScreenChatRoom);
 registerRootComponent(ScreenChatRoom);

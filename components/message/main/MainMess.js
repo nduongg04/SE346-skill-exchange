@@ -12,10 +12,7 @@ import { render } from "react-dom";
 import { useFonts } from 'expo-font';
 import { Message } from "../chat_room/message";
 import axios from 'axios';
-
-
-
-
+import { createStackNavigator } from '@react-navigation/native-stack';
 
 
 const ScreenMess = () => {
@@ -23,20 +20,21 @@ const ScreenMess = () => {
 	const [chatRooms,setChatRooms]=useState([]);
 	const [myid,setMyid]=useState('');
 	const [accessToken,setAccessToken]=useState('');
+	
 	const loadChat=  async ()=>{
 		const response = await axios.get('https://se346-skillexchangebe.onrender.com/api/v1/chat/find/'+myid, {
 		  method: 'GET',
 		  headers: {
 			'Content-Type': 'application/json',
-			// Authorization: `Bearer ${accessToken}`,
+			'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzAzMzU4OCwiZXhwIjoxNzE1NjI1NTg4fQ.QMwYDQmD7bb7gIspkiK7HfBWZX5tie5SFInVftpGatM`,
 		  },});
 		  if(response.status == 400){
 			alert('Something went wrong');
 		  }
 		  else
 		  {
-			const json=response.json();
-			setChatRooms(json.data);
+			console.log(response.data);
+			setChatRooms(response.data);
 		  }
 	}
   useEffect(() => {
@@ -45,6 +43,8 @@ const ScreenMess = () => {
       setFontLoaded(true);
     };
     loadFont();
+	setMyid('6661aceb50b954258a9b6dc70');
+	setAccessToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzAzMzU4OCwiZXhwIjoxNzE1NjI1NTg4fQ.QMwYDQmD7bb7gIspkiK7HfBWZX5tie5SFInVftpGatM');
 	loadChat();
 
   }, []);
@@ -54,13 +54,9 @@ const ScreenMess = () => {
   }
  
 
-  const handleChat=(idChat)=>{
-	
-  }
-
   const renderItem = ({ item }) => (
-	<TouchableOpacity onPress={handleChat( item.chatInfo._id)}>
-		<Message    Name={item.chatInfo.member[1].username} 
+	<TouchableOpacity onPress={() => navigation.navigate('ScreenChatRoom', { chatId: item.chatInfo._id })}>
+		<CardMessage    Name={item.chatInfo.member[1].username} 
 				Recent={item.latestMessage.text} 
 				Avartar={item.chatInfo.member[1].Avartar}
 				Status="online"
