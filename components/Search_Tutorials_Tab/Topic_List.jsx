@@ -6,7 +6,7 @@ import Category from './Category/Category';
 
 
 const renderItem = ({ item }) => (
-    <Category imageUri = {item.imageUri} name = {item.name} />
+    <Category id= {item._id} imageUri = {item.imageUrl} name = {item.name} />
 );
 
 const Topic_List = () => {

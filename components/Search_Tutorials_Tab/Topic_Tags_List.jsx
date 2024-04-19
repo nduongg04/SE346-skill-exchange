@@ -6,7 +6,7 @@ import { render } from 'react-dom';
 
 
 const renderItem = ({ item }) => (
-    < TagsButton title = {item.title} />
+    < TagsButton name = {item.name} />
 );
 
 const numColumns = 3;
@@ -16,7 +16,6 @@ export default Topic_Tags_List = ()=> {
         <FlatList
             data={Tag_Data}
             renderItem={renderItem}
-            keyExtractor={item => item.id}
             horizontal={false}
             numColumns = {numColumns}
             columnWrapperStyle={styles.columnWrapper}

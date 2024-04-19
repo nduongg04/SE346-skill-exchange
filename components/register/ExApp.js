@@ -10,7 +10,6 @@ import ChooseTopic from './ChooseTopic';
 import UploadInfo from './UploadInfo';
 import Login from '../login/login';
 import ForgotPassword from '../login/ForgotPassword';
-import ChooseKnowTopic from './ChooseKnowTopic';
 import { GestureHandlerRootView} from 'react-native-gesture-handler'
 const Stack = createStackNavigator();
 
@@ -50,10 +49,6 @@ function ExApp() {
         <Stack.Screen
           name="ChooseTopic"
           component={ChooseTopic}
-          options={{headerShown: false}}/>
-        <Stack.Screen
-          name="ChooseKnowTopic"
-          component={ChooseKnowTopic}
           options={{headerShown: false}}/>
         <Stack.Screen
           name="UploadInfo"

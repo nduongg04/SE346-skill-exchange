@@ -1,15 +1,21 @@
 import { StyleSheet } from "react-native-web";
 const styles = StyleSheet.create({
     button: {
-        backgroundColor: 'blue',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
+        width: '30%', 
+        padding: 5, 
+        borderWidth: 0.5, 
+        borderColor: COLORS.orange,
+        backgroundColor: COLORS.lightWhite,
         borderRadius: 5,
-        alignItems: 'center',
+        marginTop: 0,
+        marginRight: 5,
+        marginBottom: 10,
+        marginLeft: 5
     },
     buttonText: {
-        color: 'white',
-        fontSize: 16,
-        fontWeight: 'bold',
+        fontSize: scale(14),
+        textAlign: 'center',
+        fontFamily: 'Coda-Regular',
+        color: COLORS.orange
     },
 });

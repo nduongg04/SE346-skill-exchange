@@ -7,7 +7,7 @@ import Category from './Category/Category';
 
 
 const renderItem = ({ item }) => (
-    <Category imageUri = {item.imageUri} name = {item.name} />
+    <Category id={item._id} imageUrl = {item.imageUrl} name = {item.name} />
 );
 
 const numColumns = 2;
