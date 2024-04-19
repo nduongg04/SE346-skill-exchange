@@ -4,6 +4,7 @@ import {styles} from '../Topic_Tags/Tag_styles';
 import { render } from 'react-dom';
 import axios from 'axios';
 import { Result } from '@ant-design/react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class TagsButton extends Component {
     
@@ -14,10 +15,13 @@ class TagsButton extends Component {
         </TouchableOpacity>
         )
     };
+
+
     handleOnPress = async()=>{
-        const getUser = axios.get('https://se346-skillexchangebe.onrender.com'+'/api/v1/user/find/topic?topics'+$this.props.name,
+       const accessToken = await AsyncStorage.getItem('accessToken');
+        const getUser = axios.get('https://se346-skillexchangebe.onrender.com'+'/api/v1/user/find/topic?topics'+this.props.name,
         {headers: {
-            Authorization: 'Bearer'+ $accessToken
+            Authorization: 'Bearer'+ accessToken
           }})
         .then(response =>{
             if(response.status == 401) alert('Invalid Request')

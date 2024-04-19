@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-//import { registerRootComponent } from 'expo';
+import { registerRootComponent } from 'expo';
 import EnterName from './EnterName';
 import UploadPhoto from './UploadPhoto';
 import About from './About';
@@ -11,13 +11,19 @@ import UploadInfo from './UploadInfo';
 import Login from '../login/login';
 import ForgotPassword from '../login/ForgotPassword';
 import ChooseKnowTopic from './ChooseKnowTopic';
-//import { GestureHandlerRootView} from 'react-native-gesture-handler'
+import { GestureHandlerRootView} from 'react-native-gesture-handler';
+import Search_tab from '../Search_Tutorials_Tab/Search_tab';
 const Stack = createStackNavigator();
 
 function ExApp() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen
+          name="SearchTab"
+          component={Search_tab}
+          options={{headerShown: false}}
+        />
         <Stack.Screen 
           name="EnterName" 
           component={EnterName}
@@ -63,4 +69,4 @@ function ExApp() {
     </NavigationContainer>
   );
 }
-//registerRootComponent(ExApp);
+registerRootComponent(ExApp);
