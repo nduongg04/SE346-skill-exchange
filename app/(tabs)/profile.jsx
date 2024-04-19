@@ -15,7 +15,7 @@ import BaeSuzy from '@assets/icons/Suzy.png';
 
 const Profile = () => {
 	return (
-		<SafeAreaView style={{ flex: 1, backgroundColor: COLORS.darkGray }}>
+		<SafeAreaView style={{ flex: 1, backgroundColor: COLORS.darkGrayProfile }}>
 			<ImageBackground source={Background} style={styles.backgroundImage} resizeMode="cover">
 				<ScrollView showsVerticalScrollIndicator={false}>
 					<View style={styles.profileContainer}>

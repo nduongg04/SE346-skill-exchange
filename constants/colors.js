@@ -10,10 +10,10 @@ const COLORS = {
 	lightPeach: "#FFBE98",
 	darkerGray: "#333333",
 	darkPurple: "#C0C4EA",
-    orange: "#FF995E",
-    lightGray: "#E5E5E5",
-    lightBlue: "#00d9ff",
-	darkGray: "#F2F2F2",
+    orangeProfile: "#FF995E",
+    lightGrayProfile: "#E5E5E5",
+    lightBlueProfile: "#00d9ff",
+	darkGrayProfile: "#F2F2F2",
 };
 
 export default COLORS;
