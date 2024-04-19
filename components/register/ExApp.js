@@ -10,20 +10,13 @@ import ChooseTopic from './ChooseTopic';
 import UploadInfo from './UploadInfo';
 import Login from '../login/login';
 import ForgotPassword from '../login/ForgotPassword';
-import ChooseKnowTopic from './ChooseKnowTopic';
-import { GestureHandlerRootView} from 'react-native-gesture-handler';
-import Search_tab from '../Search_Tutorials_Tab/Search_tab';
+import { GestureHandlerRootView} from 'react-native-gesture-handler'
 const Stack = createStackNavigator();
 
 function ExApp() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen
-          name="SearchTab"
-          component={Search_tab}
-          options={{headerShown: false}}
-        />
         <Stack.Screen 
           name="EnterName" 
           component={EnterName}
@@ -56,10 +49,6 @@ function ExApp() {
         <Stack.Screen
           name="ChooseTopic"
           component={ChooseTopic}
-          options={{headerShown: false}}/>
-        <Stack.Screen
-          name="ChooseKnowTopic"
-          component={ChooseKnowTopic}
           options={{headerShown: false}}/>
         <Stack.Screen
           name="UploadInfo"
