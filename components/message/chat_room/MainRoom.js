@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useRef } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Image, KeyboardAvoidingView, TextInput,Modal } from 'react-native';
 import { registerRootComponent } from 'expo';
 import { icons } from "@constants";
@@ -9,58 +9,68 @@ import * as ImagePicker from 'expo-image-picker';
 import { Audio } from 'expo-av';
 import axios from 'axios';
 import mime from 'react-native-mime-types';
+import { useRoute } from '@react-navigation/native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+
 const ScreenChatRoom = ({router}) => {
+  const route = useRoute();
+  const scrollViewRef = useRef(null);
   const [isFontLoaded, setFontLoaded] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const [message, setMessage] = useState('');
-  const [image, setImage] = useState([]);
+  // const [image, setImage] = useState([]);
   const [record, setRecord] = useState();
   const [isRecord, setIsRecord] = useState(false)
   const [seconds, setSeconds] = useState(0);
   const [idCount,setIdCount]=useState(null);
-  const [myId,setMyid]=useState(null);
-  const [accessToken,setAccessToken]=useState('');
+  const [myId,setMyid]=useState("661aceb50b954258a9b6dc70");
+  const [accessToken,setAccessToken]=useState('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODI5NSwiZXhwIjoxNzE1NzkwMjk1fQ.4EHaQTxyYqJrQARjGcPXBYG6BYUOTRzZ51tYBju6JRQ');
   const [messageList, setMessageList]=useState([]);
-  const[myName,setMyName]=useState('');
+  const[myName,setMyName]=useState('Duc');
   const[isUploadImage,setIsUpLoadImage]=useState('false')
-  const[chatId,setChatId]=useState()//router.param.chatID
+  const[chatId,setChatId]=useState(route.params.chatId)//router.param.chatID
   const [test, setTest]= useState('');
   const loadMessage = async ()=>{
-    const response = await axios.get('https://se346-skillexchangebe.onrender.com/api/v1/message/find/'+'6606f3bb5089c2a459ab593e', {
+    const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/message/find/${chatId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-         Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjA2ZjNiYjUwODljMmE0NTlhYjU5M2UiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMjIzODI2NCwiZXhwIjoxNzE0ODMwMjY0fQ._iefzCcQ0g4GXat9l-2quzeyf4ZWd9wQ1iN1JSaSG2Y',
-      },});
-      if(response.ok){
-        setMessageList(response.data);
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODI5NSwiZXhwIjoxNzE1NzkwMjk1fQ.4EHaQTxyYqJrQARjGcPXBYG6BYUOTRzZ51tYBju6JRQ',
+      },}); 
+      if(response.status==200){
+        setMessageList(response.data.data);
       }
       else
       {
        alert("Something went wrong")
       }
   }
-  const sendMessage= async(Type)=>{
-    const response= await axios.post('https://se346-skillexchangebe.onrender.com/api/v1/message/send',{
+  const sendMessage= async(Type,Content)=>{
+    if(!Content)
+    Content=message
+    const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/message/send',{
       method:'POST',
       headers:{
-        Authorization:`${accessToken}`
+        'Content-Type': 'application/json',
+        Authorization:`Bearer ${accessToken}`
       },
       body: JSON.stringify({
        chatID:`${chatId}`,
        senderID:`${myId}`,
-       content:message,
+       content:Content,
        type:Type,
       })
-    })
-    const json = await response.json();
-    if(json.message=="Send message successfully")
+    });
+    if(response.status==200)
     {
-        //xử lí tin nhắn đã gửi
+      const json = await response.json();
+      console.log(json);
     }
     else{
       alert("Something went wrong");
     }
+    
+    
   }
   const uploadImage = async (imageUri, name) => {
     const formData = new FormData();
@@ -81,6 +91,7 @@ const ScreenChatRoom = ({router}) => {
       });
       if(response.ok){
         const json = await response.json();
+        console.log("Up: "+json.image);
         return json.image;
       }
       else{
@@ -167,7 +178,7 @@ const ScreenChatRoom = ({router}) => {
       console.log('Recording stopped');
       const uri = record.getURI();
       setTest(''+uri);
-      console.log(test);
+
       console.log('Recording URI:', record);
       setIsRecord(false);
       clearInterval(idCount);
@@ -181,6 +192,7 @@ const ScreenChatRoom = ({router}) => {
     setMessage(text);
   };
   const handleChooseImage = async () => {
+    let image=[];
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsMultipleSelection: true,
@@ -191,13 +203,16 @@ const ScreenChatRoom = ({router}) => {
       const listImage = Array.from(result.assets);
       for(let i=0;i<listImage.length;i++)
       {
-          if(uploadImage(listImage[i].uri,myId))
+        let imageUri=await uploadImage(listImage[i].uri,myId);
+        console.log(imageUri)
+          if(imageUri)
           {
-            image.push(uploadImage(listImage[i].uri,myId));
+            image.push(imageUri);
           }
       }
-      message=image.join(" ");
-      sendMessage('image');
+      const Image=image.join(" ");
+      setMessage(Image);
+      await sendMessage('image',Image);
       setMessage('');
 
     }
@@ -242,13 +257,25 @@ const ScreenChatRoom = ({router}) => {
 
     
   };
-  const formatTime = (time) => {
+  const formatTimeRecord = (time) => {
     const minutes = Math.floor((time % 3600) / 60);
     const seconds = Math.floor(time % 60); 
     const formattedMinutes = String(minutes).padStart(2, '0');
     const formattedSeconds = String(seconds).padStart(2, '0');
     return `${formattedMinutes}:${formattedSeconds}`;
   };
+  const formatTimeMessage=(time)=>{
+    const hours = Math.floor(time.getHours());
+    const minutes = Math.floor(time.getMinutes()); 
+    const formattedMinutes = String(minutes).padStart(2, '0');
+   let formattedHours=hours
+    if(hours>=10)
+    {
+      formattedHours = String(hours).padStart(2, '0');
+    }
+   
+    return `${formattedHours}:${formattedMinutes}`;
+  }
 
   const renderMessage= ()=>
   {
@@ -257,21 +284,33 @@ const ScreenChatRoom = ({router}) => {
     {
       for(let i=0;i<messageList.length;i++)
       {
-        const sender=''
+        let sender=''
+        // console.log((messageList));
         if(messageList[i].senderID.username==myName)
         {
           sender="My message"
         }
-        if((i+1)<=messageList.length && messageList[i].senderID.username==messageList[i+1].senderID.username)
+        if((i+1)<messageList.length )
         {
-          list.push(<Message User={sender} Text={messageList[i].content} Time='' Avartar='' Type={messageList[i].type}  />);
+          if(messageList[i].senderID.username==messageList[i+1].senderID.username)
+          {
+          list.push(<Message User={sender} Content={messageList[i].content} Time='' Avartar='' Type={messageList[i].type}  />);
+          }
+          else
+          {
+            let time= new Date(messageList[i].dateTime);  
+            list.push(<Message User={sender} Content={messageList[i].content} Time={formatTimeMessage(time)} Avatar={messageList[i].senderID.avatar} Type={messageList[i].type} />);
+          }    
         }
         else
-        {
-          const time=messageList[i].dateTime; 
-          list.push(<Message User={sender} Text={messageList[i].content} Time={`${time.getHours()}:${time.getMinutes()}`} Avartar={messageList[i].senderID.avartar} Type={messageList[i].type} />);
-        }       
+          {
+            let time= new Date(messageList[i].dateTime);
+          
+            list.push(<Message User={sender} Content={messageList[i].content} Time={formatTimeMessage(time)} Avatar={messageList[i].senderID.avatar} Type={messageList[i].type} />);
+          }    
+          
       }
+      return list;
     }
       
   }
@@ -280,11 +319,14 @@ const ScreenChatRoom = ({router}) => {
     setIsUpLoadImage(!isUploadImage);
    
   }
+  const handleKeyboardDidShow = () => {
+    scrollViewRef.current.scrollToEnd({ animated: true }); // Cuộn xuống cuối của ScrollView
+  };
+
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
         <View style={styles.Container}>
-      
       <View style={styles.Header}>
         <TouchableOpacity >
           <Image source={icons.back} style={[{ height: 25.5, width: 25.5,marginRight:32}]}  ></Image>
@@ -298,27 +340,18 @@ const ScreenChatRoom = ({router}) => {
         </TouchableOpacity>
       </View>
     
-      <ScrollView style={styles.Scroll} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollViewContainer} >
-        <Message User={"Người gửi"} Content={"https://s1.zerochan.net/Rem.%28Re%3AZero%29.600.3918671.jpg"} Time={"5:20"} Type={'image'}></Message>
-        <Message User={"Người nhận"}></Message>
-        
-        <Message User={"Người nhận"}></Message>
-        <Message User={"Người gửi"} Content={test} Time={"5:20"} Type={'record'}></Message>
-        <Message User={"Người nhận"}></Message>
-        <Message User={"Người gửi"}></Message>
-        <Message User={"Người nhận"}></Message>
-        <Message User={"Người gửi"}></Message>
-        <Message User={"Người gửi"}></Message>
-        <Message User={"Người nhận"}></Message>
-        <Message User={"Người gửi"}></Message>
-        <Message User={"Người gửi"}></Message>
-        <Message User={"Người nhận"}></Message>
-        <Message User={"Người gửi"}></Message>
-        <Message User={"Người nhận"}></Message>
-        
-        {/* {renderMessage()} */}
-       
-      </ScrollView>
+      <ScrollView style={styles.Scroll} 
+      keyboardShouldPersistTaps="handled" 
+      showsVerticalScrollIndicator={false} 
+      onKeyboardDidShow={handleKeyboardDidShow}
+      contentContainerStyle={styles.scrollViewContainer}
+      onContentSizeChange={(contentWidth, contentHeight) => {
+        scrollViewRef.current.scrollToEnd({ animated: true });
+      }}
+      ref={scrollViewRef} >
+              
+        {renderMessage()}        
+       </ScrollView>
 
       <View style={styles.Bottom}>
 
@@ -338,17 +371,13 @@ const ScreenChatRoom = ({router}) => {
               </TouchableOpacity>
               <View style={styles.RecordContainer} >
                 <Image source={icons.clock} style={{ height: 15.4, width: 13.2, marginRight: 0, marginTop:2.3 }} />
-                <Text style={styles.TimeRecord}>{formatTime(seconds)}</Text>
+                <Text style={styles.TimeRecord}>{formatTimeRecord(seconds)}</Text>
               </View>
               </>
               
 
             )
         }
-
-
-
-
 
         {(message.trim().length > 0) || (isRecord) ? (
           <TouchableOpacity onPress={handleSendMessage} >
@@ -362,7 +391,7 @@ const ScreenChatRoom = ({router}) => {
               <Image source={icons.camera} style={{ height: 28, width: 28, marginLeft: 10 }} />
             </TouchableOpacity>
             <TouchableOpacity onPress={handleChooseImage} >
-              <Image source={icons.image} style={{ height: 22, width: 22, marginLeft: 10 }} />
+              <Image source={icons.image} style={{ height: 22, width: 22.1, marginLeft: 10 }} />
             </TouchableOpacity>
             <TouchableOpacity >
               <Image source={icons.menu} style={{ height: 20, width: 23.5, marginLeft: 10 }} />
@@ -371,6 +400,7 @@ const ScreenChatRoom = ({router}) => {
         )}
 
       </View>
+     
     </View>
     </KeyboardAvoidingView>
     

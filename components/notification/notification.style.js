@@ -50,14 +50,14 @@ export const styles= StyleSheet.create({
     {
 
         paddingHorizontal:'5%',
-        paddingTop:'3%',
+        paddingTop:'2.5%',
         height:100,
         flexDirection:'row',
-        width:'96%',
+        width:'94%',
         backgroundColor:'rgba(255, 190, 152, 0.11)',
         marginTop:3,
-        borderRadius:12,
-        marginLeft:'2%'
+        borderRadius:14,
+        marginLeft:'2.5%'
     
         
         
@@ -68,7 +68,7 @@ export const styles= StyleSheet.create({
         width:27,
         height:27,
         overflow: 'hidden',
-        marginTop:5
+        marginTop:7
 
     },
     Avatar:{
@@ -112,17 +112,17 @@ export const styles= StyleSheet.create({
     },
     Time:{
         fontFamily:'Inter-Regular',
-        fontSize:13.65,
+        fontSize:12,
         color:'#999999',
     },
     Name:
     {
         fontFamily:'Inter-SemiBold',
-        fontSize:13.65
+        fontSize:15
     },
     Content:{
         fontFamily:'Inter-Regular',
-        fontSize:13.65,
+        fontSize:14.5,
         color:'#666666',
     },
     Scroll:{

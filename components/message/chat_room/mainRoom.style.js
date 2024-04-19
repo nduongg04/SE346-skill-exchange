@@ -30,8 +30,9 @@ export const styles = StyleSheet.create(
         flexDirection:'row',
         marginTop:'9%',
         paddingHorizontal:'5%',
+        
         borderBottomWidth:1.2,
-        borderBottomColor:'#F4F2F2'
+        borderBottomColor:'#939393'
     },
     Name:
     {
@@ -40,13 +41,15 @@ export const styles = StyleSheet.create(
         flex:1,
         textAlign:'center',   
     },
-    Scrool:
+    Scroll:
     {
         flex:1,
         width:'100%',
     },
     scrollViewContainer:{
-        alignItems: 'flex-end'
+        alignItems: 'flex-end',
+        paddingVertical: 0,
+        paddingHorizontal:'0.5%'
     },
     Bottom:
     {
@@ -102,7 +105,7 @@ export const styles = StyleSheet.create(
        maxWidth:200,
        fontFamily:'Inter-Regular',
        fontSize:14,
-       marginTop:10,
+       marginTop:5,
        marginRight:10
         
     },
@@ -128,7 +131,7 @@ export const styles = StyleSheet.create(
         fontSize:12
     },
     Message2:{
-        backgroundColor:"#F2F2F2",
+        backgroundColor:"#D9D4D4",
         borderTopLeftRadius:15,
         borderTopRightRadius:15,
         borderBottomLeftRadius:2,
@@ -137,7 +140,7 @@ export const styles = StyleSheet.create(
        maxWidth:'70%',
        fontFamily:'Inter-Regular',
        fontSize:14,
-       marginTop:10,
+       marginTop:5,
        marginLeft:10
         
     },

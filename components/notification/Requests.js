@@ -3,6 +3,49 @@ import { View,Text,Image,TouchableOpacity,Button } from 'react-native'
 import {loadFonts,styles} from "./notification.style";
 const Request=(props)=>
 {
+    const deleteRequest=async ()=>{
+        try {
+            const response = await fetch(`https://se346-skillexchangebe.onrender.com/api/v1/request/delete/${props.Id}`,
+            {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFjMWM5OTkyOGZhZDhhMGU4ZDAxZTYiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODM4MiwiZXhwIjoxNzE1NzkwMzgyfQ.hVOeanp--ZtEqEMoPwvaHqnhQ0-7cah41w0DykAVl5Q" ,
+              }
+            });
+            console.log(response.status)
+      
+            if(response.status==200)
+            {
+                const json = await response.json();
+                if(json.message=="Deleted request successfully")
+                {
+                  console.log("delete success");
+                  props.Delete(props.Id);
+                }
+             
+            }
+            else
+            {
+                console.log("error"+response.statusText);
+              
+            }
+          } catch (error) {
+            console.error(error);
+          } finally {
+            
+          }
+    }
+    const handlePressDecline= async ()=>{
+        deleteRequest();
+       
+    }
+    const handlePressAccept= async ()=>{
+        deleteRequest();
+    }
+    const moment = require('moment');
+    const dateTime = moment(props.Time).format('DD/MM/YYYY HH:mm');
+
     if(props.Type !='Request')
     return(
         <View style={styles.RequestContainer} >
@@ -37,7 +80,7 @@ const Request=(props)=>
             </View>
             <View style={styles.ContentContainer}>
                 {/* thời gian */}
-                <Text style={styles.Time}>{props.Time}</Text>
+                <Text style={styles.Time}>{dateTime}</Text>
                 {/* Tên+ thông báo */}
                 <Text> 
                     <Text style={styles.Name}>{props.Name}</Text>
@@ -46,9 +89,9 @@ const Request=(props)=>
                 {/* xem profile */}
                 <View style={styles.Response}>
                     <TouchableOpacity style={styles.ButtonContainer2}>
-                        <Text style={[styles.Button,{color:'#27D785'}]}>Accept</Text>                   
+                        <Text onPress={handlePressAccept} style={[styles.Button,{color:'#27D785'}]}>Accept</Text>                   
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.ButtonContainer2,{marginLeft:10}]}>
+                    <TouchableOpacity onPress={handlePressDecline} style={[styles.ButtonContainer2,{marginLeft:10}]}>
                         <Text style={[styles.Button,{color:'#F55247'}]}>Decline</Text>                   
                     </TouchableOpacity>
                 </View>

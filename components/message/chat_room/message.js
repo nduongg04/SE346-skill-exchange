@@ -30,7 +30,10 @@ export const Message= (props) =>{
         }
         
     }
-    switch(props.Type)
+    
+    if(props.User=="My message")
+    {
+        switch(props.Type)
     {
 
         case 'text':
@@ -47,8 +50,6 @@ export const Message= (props) =>{
                
             </View>;
     }
-    if(props.User=="Người gửi")
-    {
     return (
         <View style={styles.Layout} >
             <View style={styles.MessContainer}>
@@ -58,29 +59,51 @@ export const Message= (props) =>{
                             style={styles.Avatar}/>
                 </View>
             </View>
-            <Text style={styles.Time}>
-                6:20
-            </Text>
-            
-            
-            
+            {
+                (props.Time!='')?
+               (<Text style={styles.Time}>
+                {props.Time}
+                </Text>):(<View/>)
+            }           
         </View>
     )
     }
     else
     {
+        switch(props.Type)
+    {
+
+        case 'text':
+            contentType=<Text  style={styles.Message2}> {props.Content}</Text>;
+            break;
+        case 'image':
+            contentType=<View style={{width:150,height:200,borderRadius:20,overflow: 'hidden',}}><Image  style={{width:'100%',height:'100%',resizeMode:"cover"}} source={{uri: props.Content}}/></View>;
+            break;e
+        case 'record':
+            contentType=<View style={{ justifyContent: 'center',alignItems:'center',width:70, height:45,borderRadius:20, backgroundColor:"#F2F2F2" }}>
+                <TouchableOpacity onPress={handlePressPlay}>
+                    <Image source={isPlay?icons.pause:icons.play} style={isPlay?{width:23, height:23, resizeMode:"cover"}:{width:30, height:30, resizeMode:"cover"}}/>
+                </TouchableOpacity>
+               
+            </View>;
+    }
     return (
         <View style={styles.Layout2} >
             <View style={styles.MessContainer}>
+           
                 <View style={styles.AvatarContainer}>
-                    <Image source={require('../test/rem2.png')}
+                <Image source={(props.Avatar=='')?(icons.while_icon):({uri: props.Avatar})}
                             style={styles.Avatar}/>
                 </View>
-                <Text  style={styles.Message2}> helllo helllo v vvhelllo hel</Text>
+                {contentType}
+              
             </View>
-            <Text style={styles.Time2}>
-                6:20
-            </Text>
+            {
+                (props.Time!='')?
+               (<Text style={styles.Time2}>
+                {props.Time}
+                </Text>):(<View/>)
+            }  
         </View>
     )
     }

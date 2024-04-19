@@ -24,7 +24,7 @@ export const styles= StyleSheet.create({
        
     },
     Search:{
-        backgroundColor:'#F0F0F0',
+        backgroundColor:'#E7E7E7',
         height:30,
         aspectRatio:11.5/1,
         borderRadius:36,

@@ -4,10 +4,15 @@ import {loadFonts,styles} from "./mainMess.style";
 
 const CardMessage=(props)=>{
     const OnOff = props.Status=="online"?styles.Online:styles.Offline;
+    console.log(props.Recent[0])
+    if(props.Recent[0])
+    {
+
+    }
 return(
     <View style={styles.CardContainer}>
         <View style={styles.AvatarContainer}>
-            <Image source={{uri: props.Avatar}}
+            <Image source={{uri: ''+props.Avatar}}
             style={styles.Avatar}/>
         </View>
         <View style={styles.MessageContainer}>
