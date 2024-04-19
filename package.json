@@ -1,6 +1,6 @@
 {
   "name": "skill-exchange",
-  "main": "app/(tabs)/index.jsx",
+  "main": "components/register/ExApp.js",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",
