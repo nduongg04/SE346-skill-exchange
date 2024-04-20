@@ -18,6 +18,7 @@ import { useNavigation } from '@react-navigation/native';
 
 
 
+
 const ScreenMess = () => {
 	const [isFontLoaded, setFontLoaded] = useState(false);
 	const [chatRooms,setChatRooms]=useState([]);
@@ -107,9 +108,6 @@ const ScreenMess = () => {
 				// console.log(typeof(list))
 				setChatRooms(list);
 				setChatAppear(list);
-				// chatRooms.forEach(test=>{console.log(test.chatInfo.members);})
-			
-				// console.log(list);
 			  } else {
 				console.error("Invalid data format in response:", response.data);
 			  }
@@ -187,7 +185,7 @@ const ScreenMess = () => {
 		}
 		else
 		{
-			latest=format+ "Đã gửi một" + item.latestMessage[0].type;
+			latest=format+ "Đã gửi một " + item.latestMessage[0].type;
 		}
 		
 	}

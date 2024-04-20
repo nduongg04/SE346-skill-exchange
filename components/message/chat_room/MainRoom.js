@@ -11,6 +11,9 @@ import axios from 'axios';
 import mime from 'react-native-mime-types';
 import { useRoute } from '@react-navigation/native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import * as FileSystem from 'expo-file-system';
+import * as DocumentPicker from 'expo-document-picker';
+
 
 const ScreenChatRoom = ({router}) => {
   const route = useRoute();
@@ -30,6 +33,7 @@ const ScreenChatRoom = ({router}) => {
   const[isUploadImage,setIsUpLoadImage]=useState('false')
   const[chatId,setChatId]=useState(route.params.chatId)//router.param.chatID
   const [test, setTest]= useState('');
+  
   const loadMessage = async ()=>{
     const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/message/find/${chatId}`, {
       method: 'GET',
@@ -106,11 +110,12 @@ const ScreenChatRoom = ({router}) => {
     }
   }
   const uploadRecord = async (recordUri, name) => {
+    console.log(recordUri);
     const formData = new FormData();
     const extension = recordUri.split('.').pop();
-    const type = mime.lookup(extension) || 'audio/mpeg';
-    formData.append('audio', {
-        name: `${name}.mp3`,
+    const type = mime.lookup(extension) ;
+    formData.append('file', {
+        name: `${name}`,
         type: type,
         uri: recordUri,
     });
@@ -124,8 +129,10 @@ const ScreenChatRoom = ({router}) => {
           },
       });
       if(response.ok){
+        console.log(response);
         const json = await response.json();
-        return json.record;
+        console.log(json)
+        return json;
       }
       else{
         console.log(JSON.stringify(response));
@@ -177,8 +184,7 @@ const ScreenChatRoom = ({router}) => {
       await record.stopAndUnloadAsync();
       console.log('Recording stopped');
       const uri = record.getURI();
-      setTest(''+uri);
-
+      setTest(''+ uri);
       console.log('Recording URI:', record);
       setIsRecord(false);
       clearInterval(idCount);
@@ -219,31 +225,66 @@ const ScreenChatRoom = ({router}) => {
   };
 
   const handleCamera = async () => {
+    let image;
     let result = await ImagePicker.launchCameraAsync({
       cameraType: ImagePicker.CameraType.front,
       allowsEditing: true,
       quality: 1,
     });
     if (!result.canceled) {
-      setImage(result.assets);
-      message=uploadImage(image.uri);
-      sendMessage('image');
+      image=result.assets;
+      sendMessage('image',image.uri);
       setMessage('');
     }
   };
+  const handleChooseFile= async ()=>
+  {
+    try {
+      const result = await DocumentPicker.getDocumentAsync({
+        type: 'application/*',
+      });
+      const name=result.assets[0].name
+      const uri=result.assets[0].uri
+      const response = await uploadRecord(uri, name);
+      if(response)
+      {
+        console.log(response);
+        sendMessage('file',response.image)
+      }
+      else{
+        alert("Xảy ra lỗi");
+      }
 
-  const handleSendMessage =()=>{
+    }
+    catch (error) {
+      console.error('Error picking document:', error);
+  }
+    
+  
+  }
+  const handleSendMessage =async ()=>{
     //Record
     if(isRecord)
     {
-      stopRecording();
-      // const response=uploadRecord(record.getURI(),myId);
-      // if(response)
-      // {
-      //   setMessage('');
-      //   setMessage(''+ response);
-      //   sendMessage('record');
-      // }
+      await stopRecording();
+      const response= await uploadRecord(record.getURI(),myId);
+      console.log(response)
+      if(response)
+      {
+        // const test = await fetch(response);
+        // const blob= await test.blob();
+        // const fileUri = `${FileSystem.cacheDirectory}audio.mp3`;
+        // await FileSystem.writeAsStringAsync(fileUri, blob, {
+        //     encoding: FileSystem.EncodingType.Base64,
+        // });
+
+        // // Tạo đối tượng Sound từ đường dẫn file
+        // const soundObject = new Audio.Sound();
+        // await soundObject.loadAsync({ uri: fileUri });
+
+        // // Phát âm thanh
+        // await soundObject.playAsync();
+      }
       
     }
     else
@@ -350,7 +391,8 @@ const ScreenChatRoom = ({router}) => {
       }}
       ref={scrollViewRef} >
               
-        {renderMessage()}        
+        {renderMessage()}   
+        {/* <Message User="My message" Content={test} Time={""} Avatar={""} Type="record" />      */}
        </ScrollView>
 
       <View style={styles.Bottom}>
@@ -393,7 +435,7 @@ const ScreenChatRoom = ({router}) => {
             <TouchableOpacity onPress={handleChooseImage} >
               <Image source={icons.image} style={{ height: 22, width: 22.1, marginLeft: 10 }} />
             </TouchableOpacity>
-            <TouchableOpacity >
+            <TouchableOpacity onPress={handleChooseFile} >
               <Image source={icons.menu} style={{ height: 20, width: 23.5, marginLeft: 10 }} />
             </TouchableOpacity>
           </>

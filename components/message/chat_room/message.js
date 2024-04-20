@@ -40,7 +40,7 @@ export const Message= (props) =>{
             contentType=<Text  style={styles.Message}> {props.Content}</Text>;
             break;
         case 'image':
-            contentType=<View style={{width:150,height:200,borderRadius:20,overflow: 'hidden',}}><Image  style={{width:'100%',height:'100%',resizeMode:"cover"}} source={{uri: props.Content}}/></View>;
+            contentType=<View style={{width:150,height:200,borderRadius:20,overflow: 'hidden',marginTop:3, marginRight:5}}><Image  style={{width:'100%',height:'100%',resizeMode:"cover"}} source={{uri: props.Content}}/></View>;
             break;e
         case 'record':
             contentType=<View style={{ justifyContent: 'center',alignItems:'center',width:70, height:45,borderRadius:20, backgroundColor:"#F2F2F2" }}>
@@ -54,10 +54,7 @@ export const Message= (props) =>{
         <View style={styles.Layout} >
             <View style={styles.MessContainer}>
                 {contentType}
-                <View style={styles.AvatarContainer}>
-                    <Image source={(props.Avatar=='')?(icons.while_icon):({uri: props.Avatar})}
-                            style={styles.Avatar}/>
-                </View>
+                
             </View>
             {
                 (props.Time!='')?
@@ -77,7 +74,7 @@ export const Message= (props) =>{
             contentType=<Text  style={styles.Message2}> {props.Content}</Text>;
             break;
         case 'image':
-            contentType=<View style={{width:150,height:200,borderRadius:20,overflow: 'hidden',}}><Image  style={{width:'100%',height:'100%',resizeMode:"cover"}} source={{uri: props.Content}}/></View>;
+            contentType=<View style={{width:150,height:200,borderRadius:20,overflow: 'hidden',marginTop:3, marginLeft:5}}><Image  style={{width:'100%',height:'100%',resizeMode:"cover"}} source={{uri: props.Content}}/></View>;
             break;e
         case 'record':
             contentType=<View style={{ justifyContent: 'center',alignItems:'center',width:70, height:45,borderRadius:20, backgroundColor:"#F2F2F2" }}>

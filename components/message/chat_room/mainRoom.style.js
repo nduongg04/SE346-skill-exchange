@@ -106,15 +106,15 @@ export const styles = StyleSheet.create(
        fontFamily:'Inter-Regular',
        fontSize:14,
        marginTop:5,
-       marginRight:10
+       marginRight:5
         
     },
     AvatarContainer:
     {
         borderRadius: 30,
         marginLeft:0,
-        width:30,
-        height:30,
+        width:25,
+        height:25,
         overflow: 'hidden',
         marginTop:'auto'
         
@@ -141,7 +141,7 @@ export const styles = StyleSheet.create(
        fontFamily:'Inter-Regular',
        fontSize:14,
        marginTop:5,
-       marginLeft:10
+       marginLeft:5
         
     },
     Time2:{
