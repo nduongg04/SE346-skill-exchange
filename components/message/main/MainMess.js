@@ -29,7 +29,7 @@ const ScreenMess = () => {
 	const [searchText,setSearchText]=useState('');
 	const prevSearchText = useRef('');
 	const navigation = useNavigation();
-
+//test
 	const createChat= async ()=>
 	{
 		const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/chat/create',{
@@ -54,8 +54,6 @@ const ScreenMess = () => {
 			console.log(response.statusText)
 		  }
 	}
-
-	
 	const deleteChat=async ()=>{
 		try {
             const response = await fetch("https://se346-skillexchangebe.onrender.com/api/v1/chat/delete/661d725075b060d39134b9d9",
@@ -103,9 +101,6 @@ const ScreenMess = () => {
 			if (response.data && Array.isArray(response.data.data)) {
 				let list= [];
 				list =response.data.data;
-				console.log(list);
-				
-				// console.log(typeof(list))
 				setChatRooms(list);
 				setChatAppear(list);
 			  } else {
@@ -119,7 +114,6 @@ const ScreenMess = () => {
 		if(searchText.trim().length > 0)
 		{
 		prevSearchText.current = searchText;
-		// console.log(chatRooms);	
 		setChatAppear(chatRooms.filter(function(chat){
 			let num=0;
 			if(chat.chatInfo.members[0].username==myName)
@@ -152,19 +146,13 @@ const ScreenMess = () => {
 	}
   }, [searchText]);
 	if (!isFontLoaded) {
-    return null; // Return null or a loading indicator while the font is loading
+    return null; 
   }
  
   const handleSearch=(text)=>{
-	console.log(text)
 	setSearchText(''+text);
   }
   const renderItem = ({ item }) => {
-	
-	// if(item.chatInfo.members[0])
-	// {
-	// 	console.log(item.chatInfo.members[0]);
-	// }
 	let num=0;
 	let latest='';
 	let format='';
@@ -172,7 +160,6 @@ const ScreenMess = () => {
 	{
 		num=1;
 	}
-	console.log(typeof(item.latestMessage))
 	if(item.latestMessage[0])
 	{
 		if(item.latestMessage[0].senderID.id==myId)
@@ -215,23 +202,9 @@ const ScreenMess = () => {
 			 value={searchText}
              onChangeText={handleSearch}></TextInput>
 			</View>
-		</View>
-		
+		</View>		
 			
 		<View style={styles.Scroll} >
-			{/* <ScrollView >
-			        <CardMessage Name="Rem" Recent="I love you" Status="online" Time="15m"></CardMessage>
-					<CardMessage Name="Rem" Recent="I love you too" Status="offline" Time="30m"></CardMessage>
-					<CardMessage Name="Rem" Recent="I love you too" Status="offline" Time="30m"></CardMessage>
-					<CardMessage Name="Rem" Recent="I love you too" Status="offline" Time="30m"></CardMessage>
-					<CardMessage Name="Rem" Recent="I love you too" Status="offline" Time="30m"></CardMessage>
-					<CardMessage Name="Rem" Recent="I love you too" Status="offline" Time="30m"></CardMessage>
-					<CardMessage></CardMessage>
-					<CardMessage></CardMessage>
-					<CardMessage></CardMessage>
-					<CardMessage></CardMessage>
-					<CardMessage></CardMessage>
-			</ScrollView>					 */}
 			<FlatList
 				data={chatAppear}
 				renderItem={renderItem}

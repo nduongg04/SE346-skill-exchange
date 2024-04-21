@@ -30,10 +30,89 @@ const ScreenChatRoom = ({router}) => {
   const [accessToken,setAccessToken]=useState('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODI5NSwiZXhwIjoxNzE1NzkwMjk1fQ.4EHaQTxyYqJrQARjGcPXBYG6BYUOTRzZ51tYBju6JRQ');
   const [messageList, setMessageList]=useState([]);
   const[myName,setMyName]=useState('Duc');
-  const[isUploadImage,setIsUpLoadImage]=useState('false')
   const[chatId,setChatId]=useState(route.params.chatId)//router.param.chatID
   const [test, setTest]= useState('');
-  
+  //set up
+  const formatTimeRecord = (time) => {
+    const minutes = Math.floor((time % 3600) / 60);
+    const seconds = Math.floor(time % 60); 
+    const formattedMinutes = String(minutes).padStart(2, '0');
+    const formattedSeconds = String(seconds).padStart(2, '0');
+    return `${formattedMinutes}:${formattedSeconds}`;
+  };
+  const formatTimeMessage=(time)=>{
+    const hours = Math.floor(time.getHours());
+    const minutes = Math.floor(time.getMinutes()); 
+    const formattedMinutes = String(minutes).padStart(2, '0');
+   let formattedHours=hours
+    if(hours>=10)
+    {
+      formattedHours = String(hours).padStart(2, '0');
+    }
+   
+    return `${formattedHours}:${formattedMinutes}`;
+  }
+  let getFile= async (url)=>{
+      const parsedUrl = new URL(url);
+        const queryParams = parsedUrl.searchParams;
+        const altParam = queryParams.get('alt');
+        if (altParam === 'media') {
+            const filePath = parsedUrl.pathname;       
+            const fileNameEncoded = filePath.split('/').pop();
+            const fileName=fileNameEncoded.replace('files%2F', '');
+            const fileUri = `file:///storage/emulated/0/Download/${fileName}`;
+            try {
+              await Linking.openURL(fileUri);
+            } catch (error)  {
+              Linking.openURL(url)
+              .catch((err) => console.error('Không thể mở URL:', err));
+            }
+          } else {
+            console.log('Đường dẫn không trỏ đến nội dung truyền thông.');
+        }
+    
+  };
+  const renderMessage= ()=>
+  {
+    const list=[];
+    if(messageList.length!=0)
+    {
+      for(let i=0;i<messageList.length;i++)
+      {
+        let sender=''
+        // console.log((messageList));
+        if(messageList[i].senderID.username==myName)
+        {
+          sender="My message"
+        }
+        if((i+1)<messageList.length )
+        {
+          if(messageList[i].senderID.username==messageList[i+1].senderID.username)
+          {
+          list.push(<Message key={i} User={sender} Content={messageList[i].content} Time='' Avartar='' Type={messageList[i].type} Function={getFile}  />);
+          }
+          else
+          {
+            let time= new Date(messageList[i].dateTime);  
+            list.push(<Message key={i} User={sender} Content={messageList[i].content} Time={formatTimeMessage(time)} Avatar={messageList[i].senderID.avatar} Type={messageList[i].type} Function={getFile} />);
+          }    
+        }
+        else
+          {
+            let time= new Date(messageList[i].dateTime);
+          
+            list.push(<Message key={i} User={sender} Content={messageList[i].content} Time={formatTimeMessage(time)} Avatar={messageList[i].senderID.avatar} Type={messageList[i].type} Function={getFile} />);
+          }    
+          
+      }
+      return list;
+    }
+      
+  }
+  const handleKeyboardDidShow = () => {
+    scrollViewRef.current.scrollToEnd({ animated: true }); // Cuộn xuống cuối của ScrollView
+  };
+  //Load
   const loadMessage = async ()=>{
     const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/message/find/${chatId}`, {
       method: 'GET',
@@ -68,7 +147,6 @@ const ScreenChatRoom = ({router}) => {
     if(response.status==200)
     {
       const json = await response.json();
-      console.log(json);
     }
     else{
       alert("Something went wrong");
@@ -109,7 +187,7 @@ const ScreenChatRoom = ({router}) => {
       return false;
     }
   }
-  const uploadRecord = async (recordUri, name) => {
+  const uploadFile = async (recordUri, name) => {
     console.log(recordUri);
     const formData = new FormData();
     const extension = recordUri.split('.').pop();
@@ -156,6 +234,7 @@ const ScreenChatRoom = ({router}) => {
   if (!isFontLoaded) {
     return null; // Return null or a loading indicator while the font is loading
   };
+  //Record
   const startRecording = async () => {
     setRecord(null);
     try {
@@ -178,7 +257,6 @@ const ScreenChatRoom = ({router}) => {
       console.error('Failed to start recording', error);
     }
   };
-
   const stopRecording = async () => {
     try {
       await record.stopAndUnloadAsync();
@@ -193,7 +271,7 @@ const ScreenChatRoom = ({router}) => {
       console.error('Failed to stop recording', error);
     }
   };
-
+//handle
   const handleMessageChange = (text) => {
     setMessage(text);
   };
@@ -223,7 +301,6 @@ const ScreenChatRoom = ({router}) => {
 
     }
   };
-
   const handleCamera = async () => {
     let image;
     let result = await ImagePicker.launchCameraAsync({
@@ -253,7 +330,7 @@ const ScreenChatRoom = ({router}) => {
       });
       const name=result.assets[0].name
       const uri=result.assets[0].uri
-      const response = await uploadRecord(uri, name);
+      const response = await uploadFile(uri, name);
       if(response)
       {
         console.log(response);
@@ -265,17 +342,16 @@ const ScreenChatRoom = ({router}) => {
 
     }
     catch (error) {
-      console.error('Error picking document:', error);
+      console.log(`Error picking document`);
   }
-    
-  
   }
+  //send
   const handleSendMessage =async ()=>{
     //Record
     if(isRecord)
     {
       await stopRecording();
-      const response= await uploadRecord(record.getURI(),myId);
+      const response= await uploadFile(record.getURI(),myId);
       console.log(response)
       if(response)
       {
@@ -306,96 +382,11 @@ const ScreenChatRoom = ({router}) => {
 
     
   };
-  const formatTimeRecord = (time) => {
-    const minutes = Math.floor((time % 3600) / 60);
-    const seconds = Math.floor(time % 60); 
-    const formattedMinutes = String(minutes).padStart(2, '0');
-    const formattedSeconds = String(seconds).padStart(2, '0');
-    return `${formattedMinutes}:${formattedSeconds}`;
-  };
-  const formatTimeMessage=(time)=>{
-    const hours = Math.floor(time.getHours());
-    const minutes = Math.floor(time.getMinutes()); 
-    const formattedMinutes = String(minutes).padStart(2, '0');
-   let formattedHours=hours
-    if(hours>=10)
-    {
-      formattedHours = String(hours).padStart(2, '0');
-    }
-   
-    return `${formattedHours}:${formattedMinutes}`;
-  }
-  let getFile= async (url)=>{
-      const parsedUrl = new URL(url);
-        const queryParams = parsedUrl.searchParams;
-        const altParam = queryParams.get('alt');
-        if (altParam === 'media') {
-            const filePath = parsedUrl.pathname;       
-            const fileNameEncoded = filePath.split('/').pop();
-            const fileName=fileNameEncoded.replace('files%2F', '');
-            const fileUri = `file:///storage/emulated/0/Download/${fileName}`;
-            try {
-              await Linking.openURL(fileUri);
-            } catch (error)  {
-              Linking.openURL(url)
-              .catch((err) => console.error('Không thể mở URL:', err));
-            }
-          } else {
-            console.log('Đường dẫn không trỏ đến nội dung truyền thông.');
-        }
-    
-  };
-
-  const renderMessage= ()=>
-  {
-    const list=[];
-    if(messageList.length!=0)
-    {
-      for(let i=0;i<messageList.length;i++)
-      {
-        let sender=''
-        // console.log((messageList));
-        if(messageList[i].senderID.username==myName)
-        {
-          sender="My message"
-        }
-        if((i+1)<messageList.length )
-        {
-          if(messageList[i].senderID.username==messageList[i+1].senderID.username)
-          {
-          list.push(<Message User={sender} Content={messageList[i].content} Time='' Avartar='' Type={messageList[i].type}  />);
-          }
-          else
-          {
-            let time= new Date(messageList[i].dateTime);  
-            list.push(<Message User={sender} Content={messageList[i].content} Time={formatTimeMessage(time)} Avatar={messageList[i].senderID.avatar} Type={messageList[i].type} />);
-          }    
-        }
-        else
-          {
-            let time= new Date(messageList[i].dateTime);
-          
-            list.push(<Message User={sender} Content={messageList[i].content} Time={formatTimeMessage(time)} Avatar={messageList[i].senderID.avatar} Type={messageList[i].type} Function={getFile} />);
-          }    
-          
-      }
-      return list;
-    }
-      
-  }
-  const toogleUploadModal=()=>
-  {
-    setIsUpLoadImage(!isUploadImage);
-   
-  }
-  const handleKeyboardDidShow = () => {
-    scrollViewRef.current.scrollToEnd({ animated: true }); // Cuộn xuống cuối của ScrollView
-  };
-
+ 
 
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-        <View style={styles.Container}>
+      <View style={styles.Container}>
       <View style={styles.Header}>
         <TouchableOpacity >
           <Image source={icons.back} style={[{ height: 25.5, width: 25.5,marginRight:32}]}  ></Image>
@@ -415,14 +406,13 @@ const ScreenChatRoom = ({router}) => {
       onKeyboardDidShow={handleKeyboardDidShow}
       contentContainerStyle={styles.scrollViewContainer}
       onContentSizeChange={(contentWidth, contentHeight) => {
-        scrollViewRef.current.scrollToEnd({ animated: true });
-      }}
+      scrollViewRef.current.scrollToEnd({ animated: true });}}
       ref={scrollViewRef} >
               
         {renderMessage()}   
         {/* <Message User="My message" Content={test} Time={""} Avatar={""} Type="record" />      */}
        </ScrollView>
-
+      {/* bottom */}
       <View style={styles.Bottom}>
 
         {

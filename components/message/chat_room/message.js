@@ -9,8 +9,8 @@ export const  Message=  (props) =>{
     const [isPlay,setIsPlay]=useState(false);
     const [sound,setSound]= useState();
     let contentType;
+    //Record
     const handlePressPlay= async ()=>{
-        
         if(!isPlay)
         {
             // console.log(props.Content);
@@ -50,11 +50,11 @@ export const  Message=  (props) =>{
     const getFile=()=>{
         props.Function(props.Content);
     }
+    //Self-messages
     if(props.User=="My message")
     {
         switch(props.Type)
     {
-
         case 'text':
             contentType=<Text  style={styles.Message}> {props.Content}</Text>;
             break;
@@ -95,6 +95,7 @@ export const  Message=  (props) =>{
         </View>
     )
     }
+    //not Self-messages
     else
     {
         switch(props.Type)
@@ -111,8 +112,18 @@ export const  Message=  (props) =>{
                 <TouchableOpacity onPress={handlePressPlay}>
                     <Image source={isPlay?icons.pause:icons.play} style={isPlay?{width:23, height:23, resizeMode:"cover"}:{width:30, height:30, resizeMode:"cover"}}/>
                 </TouchableOpacity>
-               
             </View>;
+            break;
+         case 'file':
+            const fileName= getFileName(props.Content);           
+            contentType=
+            <TouchableOpacity onPress={getFile} >
+                <View style={{flexDirection:'row',justifyContent: 'center',alignItems:'center',borderRadius:10, backgroundColor:"#FF823A", paddingVertical:7, marginTop:5,marginLeft:5,paddingHorizontal:10}}>             
+                    <Image source={icons.file} style={{width:35, height:35, resizeMode:"cover"}}/>
+                    <Text style={styles.TextFile}>{fileName}</Text>
+                </View>
+            </TouchableOpacity>;
+        break;
     }
     return (
         <View style={styles.Layout2} >
@@ -134,5 +145,4 @@ export const  Message=  (props) =>{
         </View>
     )
     }
-   
 }
