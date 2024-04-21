@@ -1,5 +1,6 @@
 import GradienLayout from "../register/TemplateLayout/GradientLayout";
-import { Text, View, Image, TouchableOpacity, Modal } from "react-native";
+import { Text, View, Image, TouchableOpacity, Modal   } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import styles from "../register/style";
 import { COLORS } from "../../constants";
 import { scale } from "react-native-size-matters";
@@ -22,8 +23,6 @@ class Login extends React.Component {
     showMessage: false,
     user: null,
     username: null,
-    accessToken: null,
-    refeshToken: null,
     isLoading: false
   }
   handleLogIn = async () => {
@@ -38,35 +37,47 @@ class Login extends React.Component {
       {
         this.setState({isLoading: true});
         try{
-            const response = await
-              fetch('https://se346-skillexchangebe.onrender.com/api/v1/user/login', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({
-                      email: this.state.email,
-                      password: this.state.password
-                  })
-              });
-            if(response.status == 401){
-              alert('Wrong email or password');
+          const response = await Promise.race([
+            fetch('https://se346-skillexchangebe.onrender.com/api/v1/user/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    email: this.state.email,
+                    password: this.state.password
+                })
+            }),
+            new Promise((_, reject) =>
+                setTimeout(() => reject(new Error('Request timeout')), 30000)
+            )
+          ]);
+          if(response.status == 401){
+            alert('Wrong email or password');
+          }
+          else
+          if(response.status == 404){
+            alert('User not found');
+          }
+          else{
+            const json = await response.json();
+            this.setState({user: json.data}); 
+            console.log(JSON.stringify(json));
+            try{
+              await AsyncStorage.setItem('user', JSON.stringify(json.data));
+              await AsyncStorage.setItem('accessToken', json.access_token);
+              await AsyncStorage.setItem('refreshToken', json.refresh_token);
+            } catch(error){
+              alert('Store token failed!');
             }
-            else
-            if(response.status == 404){
-              alert('User not found');
-            }
-            else{
-              const json = await response.json();
-              this.setState({user: json.data}); 
-              this.setState({username: json.data.username});
-              this.setState({accessToken: json.access_token});
-              this.setState({refreshToken: json.refresh_token});
-              this.setState({showMessage: true});
-            }         
+
+            this.setState({username: json.data.username});
+            this.setState({showMessage: true});
+          }         
         }
         catch(error){
-          alert('Something went wrong! Please try again!');
+          console.log(error);
+          alert('Something went wrong! Please try again!: ' + error);
         }
         finally{
           this.setState({isLoading: false});

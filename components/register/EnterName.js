@@ -9,11 +9,14 @@ import styles from './style';
 import InputText from './Button/InputText';
 import CustomButton from './Button/CustomButton';
 import GradienLayout from './TemplateLayout/GradientLayout';
+import Spinner from 'react-native-loading-spinner-overlay';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export default class EnterName extends React.Component {
     state = {
         fontsLoaded: false,
         name: '',
-        nameError: null
+        nameError: null, 
+        isLoading: false
     }   
     async _loadFontsAsync() {
         await Font.loadAsync(customFonts);
@@ -44,8 +47,35 @@ export default class EnterName extends React.Component {
             }
         }
     }
-    componentDidMount() {
+    componentDidMount = async () => {
         this._loadFontsAsync();
+        try {
+            const refreshToken = await AsyncStorage.getItem('refreshToken');
+            console.log('refreshToken: ' + refreshToken);
+            this.setState({isLoading: true});
+            if(refreshToken !== null){
+                const response = await fetch('https://se346-skillexchangebe.onrender.com/api/v1/token/checktoken', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        token: refreshToken
+                    })
+                });
+                const user = await AsyncStorage.getItem('user');
+                if(response.ok){
+                    alert('You are already logged in, user: ' + user );
+                    //Di chuyển đến trang home
+                    //this.props.navigation.navigate('Home');
+                 }
+            }  
+        } catch (e) {
+            console.log('Failed to fetch the refresh token');
+        }
+        finally {
+            this.setState({isLoading: false});
+        }
       }
     render(){
         if (!this.state.fontsLoaded) {
@@ -56,6 +86,10 @@ export default class EnterName extends React.Component {
         }
         return (
             <GradienLayout innerStyle={{height: scale(500)}}>
+                <Spinner
+                    visible={this.state.isLoading}
+                    textContent={'Connecting to server...'}
+                    textStyle={{color: COLORS.lightWhite}}/>
                 <Image
                         source={require('../../assets/images/teamwork.png')}
                         style={styles.image}

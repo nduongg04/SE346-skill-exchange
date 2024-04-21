@@ -9,18 +9,18 @@ import React from "react";
 import BackButton from "./Button/BackButton";
 import CustomButton from "./Button/CustomButton";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-class ChooseTopic extends React.Component {
+class ChooseKnowTopic extends React.Component {
   state = {
     uploadVisible: false,
-    learnTopic: [],
+    topic: [],
     isLoading: false,
     loadingMore: false,
     page: 1,
   }
   selectTopic = (item) => {
     this.setState(prevState => ({
-      learnTopic: prevState.learnTopic.map(learnTopic =>
-        learnTopic._id === item._id ? { ...learnTopic, chosen: !learnTopic.chosen } : learnTopic
+      topic: prevState.topic.map(topic =>
+          topic._id === item._id ? { ...topic, chosen: !topic.chosen } : topic
       )
   }));
   };
@@ -32,9 +32,9 @@ class ChooseTopic extends React.Component {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const json = await response.json();
-        const topicsWithChosen = json.data.map(learnTopic => ({ ...learnTopic, chosen: false }));
+        const topicsWithChosen = json.data.map(topic => ({ ...topic, chosen: false }));
         this.setState(prevState => ({
-            learnTopic: [...prevState.learnTopic, ...topicsWithChosen],
+            topic: [...prevState.topic, ...topicsWithChosen],
             page: prevState.page + 1
         }));
     } catch (error) {
@@ -45,26 +45,24 @@ class ChooseTopic extends React.Component {
     }
 }
   componentDidMount = async () =>{
+    const page = await AsyncStorage.getItem('topicPage');
+    this.setState({page: parseInt(page)});
+    const topic = await AsyncStorage.getItem('topic');
+    this.setState({topic: JSON.parse(topic)});
     this.fetchTopic();
-    try{
-      const value = await AsyncStorage.getItem('refreshToken');
-      console.log('refresh token: ' +value);
-    }
-    catch(e){
-      console.log(e);
-    }
-    console.log()
+    
   }
   render() {
     const passing = this.props.route.params;
-    const topicID = this.state.learnTopic.filter(learnTopic => learnTopic.chosen).map(learnTopic => learnTopic._id);
+    const topicID = this.state.topic.filter(topic => topic.chosen).map(topic => topic._id);
     params ={
       name: passing.name,
       image:  passing.image,
       description: passing.description,
       skills: passing.skills,
       certification: passing.certification,
-      topic: topicID
+      topic: passing.topic,
+      userTopic: topicID
     }
     return (
       <GradienLayout>
@@ -75,7 +73,7 @@ class ChooseTopic extends React.Component {
         />
         <BackButton onPress={() => this.props.navigation.goBack()}></BackButton>
         <Text style={[styles.text_center, {marginTop: 10}]}>CHOOSE TOPIC</Text>
-        <Text style={styles.text_center}>you want to learn</Text>
+        <Text style={styles.text_center}>you know</Text>
         <View 
             style={{
                 height: 4, 
@@ -88,7 +86,7 @@ class ChooseTopic extends React.Component {
         <FlatList
             onEndReached={() => this.fetchTopic()}
             onEndReachedThreshold={0.5}
-            data={this.state.learnTopic}
+            data={this.state.topic}
             keyExtractor={item => item._id}
             renderItem={({ item }) => (
                 <TouchableOpacity 
@@ -104,22 +102,16 @@ class ChooseTopic extends React.Component {
         </View>         
         <CustomButton 
           text='Next' 
-          onPress={async () => {
+          onPress={()=>{
             if(topicID.length === 0){
-              alert('Please choose at least 1 topic');
+              alert('Please choose at least one topic');
               return;
             }
-            const learnTopicReset = this.state.learnTopic.map(topic => ({ ...topic, chosen: false }));
-
-            const learnTopicJson = JSON.stringify(learnTopicReset);
-            const pageJson = JSON.stringify(this.state.page);
-            await AsyncStorage.setItem('topic', learnTopicJson);
-            await AsyncStorage.setItem('topicPage', pageJson);
-            this.props.navigation.navigate('ChooseKnowTopic', params)
+            this.props.navigation.navigate('UploadInfo', params)
           }
           }></CustomButton>             
       </GradienLayout>
     );
   }
 }
-export default ChooseTopic;
+export default ChooseKnowTopic;
