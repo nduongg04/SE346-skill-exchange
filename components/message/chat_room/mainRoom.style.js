@@ -154,6 +154,11 @@ export const styles = StyleSheet.create(
         marginLeft:'2%'
        
     },
+    TextFile:{
+        fontSize:15, 
+        marginLeft:10,
+        fontFamily:'Inter-SemiBold'
+    }
     
     
 })

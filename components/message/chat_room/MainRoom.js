@@ -1,5 +1,5 @@
 import React, { useState, useEffect,useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, KeyboardAvoidingView, TextInput,Modal } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Image, KeyboardAvoidingView, TextInput,Modal,Linking } from 'react-native';
 import { registerRootComponent } from 'expo';
 import { icons } from "@constants";
 import { loadFonts, styles } from "./mainRoom.style";
@@ -233,8 +233,16 @@ const ScreenChatRoom = ({router}) => {
     });
     if (!result.canceled) {
       image=result.assets;
-      sendMessage('image',image.uri);
-      setMessage('');
+      const imageUrl= await uploadImage(image.uri,myId)
+      if(imageUrl)
+      {
+        sendMessage('image',imageUrl);
+        setMessage('');
+      }
+      else{
+        
+      }
+     
     }
   };
   const handleChooseFile= async ()=>
@@ -252,7 +260,7 @@ const ScreenChatRoom = ({router}) => {
         sendMessage('file',response.image)
       }
       else{
-        alert("Xảy ra lỗi");
+        alert("Gửi file không thành công");
       }
 
     }
@@ -317,6 +325,26 @@ const ScreenChatRoom = ({router}) => {
    
     return `${formattedHours}:${formattedMinutes}`;
   }
+  let getFile= async (url)=>{
+      const parsedUrl = new URL(url);
+        const queryParams = parsedUrl.searchParams;
+        const altParam = queryParams.get('alt');
+        if (altParam === 'media') {
+            const filePath = parsedUrl.pathname;       
+            const fileNameEncoded = filePath.split('/').pop();
+            const fileName=fileNameEncoded.replace('files%2F', '');
+            const fileUri = `file:///storage/emulated/0/Download/${fileName}`;
+            try {
+              await Linking.openURL(fileUri);
+            } catch (error)  {
+              Linking.openURL(url)
+              .catch((err) => console.error('Không thể mở URL:', err));
+            }
+          } else {
+            console.log('Đường dẫn không trỏ đến nội dung truyền thông.');
+        }
+    
+  };
 
   const renderMessage= ()=>
   {
@@ -347,7 +375,7 @@ const ScreenChatRoom = ({router}) => {
           {
             let time= new Date(messageList[i].dateTime);
           
-            list.push(<Message User={sender} Content={messageList[i].content} Time={formatTimeMessage(time)} Avatar={messageList[i].senderID.avatar} Type={messageList[i].type} />);
+            list.push(<Message User={sender} Content={messageList[i].content} Time={formatTimeMessage(time)} Avatar={messageList[i].senderID.avatar} Type={messageList[i].type} Function={getFile} />);
           }    
           
       }

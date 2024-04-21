@@ -36,7 +36,7 @@ import delete_icon from "../assets/icons/Delete_icon.png"
 import white_icon from "../assets/icons/WhiteBackground.png"
 import play from "../assets/icons/Play_icon.png"
 import pause from "../assets/icons/Pause_icon.png"
-
+import file from "../assets/icons/File_icon.png"
 export default {
     backLoading,
     cancel,
@@ -73,5 +73,6 @@ export default {
     delete_icon,
     white_icon,
     play,
-    pause
+    pause,
+    file
 };

@@ -1,4 +1,4 @@
-import { View,Text,Image,ImageBackground,TextInput,ScrollView,TouchableOpacity,FlatList } from "react-native";
+import { View,Text,Image,ImageBackground,TextInput,ScrollView,TouchableOpacity,FlatList,Linking } from "react-native";
 import React, { useState, useEffect,useRef } from 'react';
 import {loadFonts,styles} from "./mainMess.style";
 import Expo from 'expo'

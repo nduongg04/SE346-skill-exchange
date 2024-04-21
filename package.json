@@ -1,6 +1,6 @@
 {
   "name": "skill-exchange",
-  "main": "components/message/mainScreen.js",
+  "main": "components/notification/MainNotification.js",
   "version": "1.0.0",
   "scripts": {
     "start": "expo start",

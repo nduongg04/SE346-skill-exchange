@@ -55,7 +55,6 @@ const getRequest = async () => {
           Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFjMWM5OTkyOGZhZDhhMGU4ZDAxZTYiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODM4MiwiZXhwIjoxNzE1NzkwMzgyfQ.hVOeanp--ZtEqEMoPwvaHqnhQ0-7cah41w0DykAVl5Q" ,
         }
       });
-      console.log(response.status)
 
       if(response.status==400)
       {
@@ -64,7 +63,6 @@ const getRequest = async () => {
       else
       {
         const json = await response.json();
-        console.log(json);
         setRequest(json.data);
       }
     } catch (error) {
@@ -97,16 +95,8 @@ const getRequest = async () => {
   }
   const handelPress2 = () => {
     setIsRequestTab(false);
-    createRequest();
-    // createChat();
+    // createRequest();
   }
-
-
-
-
-
-
-
 
   return (
     <View style={styles.Horizon} >
@@ -145,19 +135,6 @@ const getRequest = async () => {
         />)
       }
     </View>
-      {/* <View style={styles.Scroll} >
-        <ScrollView showsVerticalScrollIndicator={false}>
-          <Request Type={'Request'}></Request>
-          <Request Type={'Accept'}></Request>
-          <System Type={'Request'}></System>
-          <Request></Request>
-          <Request></Request>
-          <Request></Request>
-          <Request></Request>
-          <Request></Request>
-          <Request></Request>
-        </ScrollView>
-      </View> */}
       <View style={styles.navbar}>
 
       </View>
