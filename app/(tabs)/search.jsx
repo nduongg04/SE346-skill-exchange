@@ -12,7 +12,7 @@ const Search = () => {
 					headerTitle: "",
 				}}
 			/>
-            <Text>Search</Text>
+			<Text>Search</Text>
 		</SafeAreaView>
 	);
 };

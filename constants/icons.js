@@ -15,6 +15,7 @@ import transparent_background from "../assets/icons/transparent_background.png";
 
 import location from "../assets/icons/location.svg";
 
+import back from "../assets/icons/back.svg";
 export default {
     backLoading,
     cancel,
@@ -30,4 +31,5 @@ export default {
     tickCircle,
     transparent_background,
     location,
+    back,
 };

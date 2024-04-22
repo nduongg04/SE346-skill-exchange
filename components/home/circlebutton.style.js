@@ -3,11 +3,11 @@ import { StyleSheet } from "react-native";
 import { COLORS } from "@constants";
 
 const styles = StyleSheet.create({
-	button: (width, height, borderRadius = 1000) => ({
+	button: (width, height) => ({
 		width: width,
 		height: height,
 		backgroundColor: COLORS.lightWhite,
-		borderRadius: borderRadius,
+		borderRadius: 999,
 		justifyContent: "center",
 		alignItems: "center",
 
