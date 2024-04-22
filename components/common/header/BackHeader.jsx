@@ -15,7 +15,7 @@ const BackHeader = ({ headerText, handleBackButton }) => {
 			}}
 		>
 			<TouchableOpacity onPress={handleBackButton && handleBackButton}>
-				<Image source={icons.back} style={{ width: 30, height: 30 }} />
+				<Image source={icons.backIcon} style={{ width: 30, height: 30 }} />
 			</TouchableOpacity>
 			<View>
 				<Text style={{ fontSize: 22, color: COLORS.darkOrange, fontFamily: "SegoeUISemiBold", paddingBottom: 4 }}>{headerText}</Text>

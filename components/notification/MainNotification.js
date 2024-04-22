@@ -1,0 +1,147 @@
+import { View, Text, Image, ImageBackground, TextInput, ScrollView, TouchableOpacity,FlatList,ActivityIndicator } from "react-native";
+import React, { useState, useEffect } from 'react';
+import { registerRootComponent } from 'expo';
+import { icons } from "@constants";
+// import NavBar from "./NavBar";
+import { loadFonts, styles } from "./notification.style";
+import Request from "./Requests";
+import System from "./System";
+import axios from 'axios';
+const ScreenNotification = () => {
+  const [isLoading, setLoading] = useState(true);
+  const [isFontLoaded, setFontLoaded] = useState(false);
+  const [isRequestTab, setIsRequestTab] = useState(true);
+  const[requests, setRequest]= useState([]);
+  const[systems, setSystem]=useState([])
+  const myId='661c1c99928fad8a0e8d01e6';
+  const token='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFjMWM5OTkyOGZhZDhhMGU4ZDAxZTYiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODM4MiwiZXhwIjoxNzE1NzkwMzgyfQ.hVOeanp--ZtEqEMoPwvaHqnhQ0-7cah41w0DykAVl5Q';
+  const listUser=[];
+
+  
+const createRequest= async()=>
+{
+  const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/request/create',{
+      method:'POST',
+      headers:{
+        'Content-Type': 'application/json',
+        Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODI5NSwiZXhwIjoxNzE1NzkwMjk1fQ.4EHaQTxyYqJrQARjGcPXBYG6BYUOTRzZ51tYBju6JRQ"
+      },
+      body: JSON.stringify({
+        senderID: "661aceb50b954258a9b6dc70",
+        receiverID: "661c1c99928fad8a0e8d01e6"
+      })
+    })
+   data = await response.json();
+    console.log(data);
+    if(response.status==200)
+    {
+        console.log('create success')
+    }
+    else{
+      console.log(response.statusText)
+    }
+}
+const refeshReques= (idRemove)=>{
+  const newRes= requests.filter((res)=>res._id!==idRemove)
+  setRequest(newRes);
+}
+const getRequest = async () => {
+    try {
+      const response = await fetch("https://se346-skillexchangebe.onrender.com/api/v1/request/find/receiver/661c1c99928fad8a0e8d01e6",
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFjMWM5OTkyOGZhZDhhMGU4ZDAxZTYiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODM4MiwiZXhwIjoxNzE1NzkwMzgyfQ.hVOeanp--ZtEqEMoPwvaHqnhQ0-7cah41w0DykAVl5Q" ,
+        }
+      });
+
+      if(response.status==400)
+      {
+        console.log(response.statusText);
+      }
+      else
+      {
+        const json = await response.json();
+        setRequest(json.data);
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+ 
+  useEffect(() => {
+    getRequest();
+  }, []);
+  
+  useEffect(() => {
+    const loadFont = async () => {
+      await loadFonts();
+      setFontLoaded(true);
+    };
+    loadFont();
+  }, []);
+  if (!isFontLoaded) {
+    return null; // Return null or a loading indicator while the font is loading
+  }
+  const handelPress = () => {
+   
+    setIsRequestTab(true);
+    getRequest();
+    // postData();
+  }
+  const handelPress2 = () => {
+    setIsRequestTab(false);
+    // createRequest();
+  }
+
+  return (
+    <View style={styles.Horizon} >
+      <View style={styles.Container}>
+        <Text style={styles.Header}>Notification</Text>
+        <View style={styles.Search}>
+          <TouchableOpacity onPress={handelPress}>
+            <Text style={[styles.Option, isRequestTab && styles.Choose]}>Requests</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity onPress={handelPress2}>
+            <Text style={[styles.Option, !isRequestTab && styles.Choose]}>System</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.Scroll}>
+      {isLoading ? (
+        <ActivityIndicator />
+      ) :(isRequestTab)?
+        (
+          <FlatList
+            data={requests}
+            keyExtractor={(item) => item._id}
+            renderItem={({item}) => (
+              <Request Type="Request" Name={item.senderID.username} Avatar={item.senderID.avatar} Time={item.dateTime} Id={item._id} Delete={refeshReques} ></Request>
+            )}
+          />
+        ):
+        (<FlatList
+        data={requests}
+        keyExtractor={(item) => item._id}
+        renderItem={({item}) => (
+          <System></System>
+        )}
+        />)
+      }
+    </View>
+      <View style={styles.navbar}>
+
+      </View>
+
+    </View>
+  );
+
+}
+export default ScreenNotification;
+registerRootComponent(ScreenNotification);
