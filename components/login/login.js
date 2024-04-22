@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import styles from "../register/style";
 import { COLORS } from "../../constants";
 import { scale } from "react-native-size-matters";
-import React from "react";
+import React, { useEffect } from "react";
 import InputText from "../register/Button/InputText";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import CustomButton from "../register/Button/CustomButton";
@@ -88,7 +88,10 @@ class Login extends React.Component {
   tooglePolicy = () => {
     this.setState({showPolicy: !this.state.showPolicy});
   }
+  
   render() {
+    useEffect(()=>{
+    }, [this.state.user])
     return (
       <GradienLayout innerStyle={{height: scale(600)}}>
         <Spinner
