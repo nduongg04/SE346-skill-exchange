@@ -1,8 +1,8 @@
 import { useContext, useState } from "react"
-
+import React from "react"
 const SocketContext = React.createContext()
 
-export const useScocketContext = ()=>{
+export const useSocketContext = ()=>{
     return useContext(SocketContext)
 }
 

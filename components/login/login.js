@@ -13,10 +13,10 @@ import Notification from "../common/Notification";
 import { ScrollView } from "react-native-gesture-handler";
 import Spinner from "react-native-loading-spinner-overlay";
 import { isLoading } from "expo-font";
-import { useScocketContext } from "../../context/SocketContext";
+import {useSocketContext } from "../../context/SocketContext";
 import { io } from "socket.io-client";
 
-const {socket,setSocket,onlineUsers, setOnlineUsers} = useScocketContext()
+const {socket,setSocket,onlineUsers, setOnlineUsers} = useSocketContext()
 const baseURL = "https://se346-skillexchangebe.onrender.com"
 class Login extends React.Component {
   state = {

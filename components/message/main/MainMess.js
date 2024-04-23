@@ -14,7 +14,7 @@ import { Message } from "../chat_room/message";
 import axios from 'axios';
 import { createStackNavigator } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
-import { useScocketContext } from "../../../context/SocketContext";
+import { useSocketContext } from "../../../context/SocketContext";
 
 
 
@@ -30,14 +30,20 @@ const ScreenMess = ({router}) => {
 	const [searchText,setSearchText]=useState('');
 	const prevSearchText = useRef('');
 	const navigation = useNavigation();
-	const {socket,setSocket,onlineUsers,setOnlineUsers} = useScocketContext()
+	const {socket,setSocket,onlineUsers,setOnlineUsers} = useSocketContext()
 	
 //Socket
 useEffect(()=>{
 	socket.on("getOnlineUsers", (users)=>{
 		setOnlineUsers(users)
 	})
+
+	return ()=>{
+		socket.off("getOnlineUsers")
+	}
 },[])
+
+
 
 	const createChat= async ()=>
 	{

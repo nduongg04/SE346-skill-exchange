@@ -13,7 +13,7 @@ import { useRoute } from '@react-navigation/native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as FileSystem from 'expo-file-system';
 import * as DocumentPicker from 'expo-document-picker';
-import { useScocketContext } from '../../../context/SocketContext';
+import { useSocketContext } from '../../../context/SocketContext';
 
 
 const ScreenChatRoom = ({router}) => {
@@ -35,7 +35,7 @@ const ScreenChatRoom = ({router}) => {
   const {chat} = route.params
   const [newMessageData, setNewMessage] = useState(null)
   const [test, setTest]= useState('');
-  const {socket,setSocket,onlineUsers,setOnlineUsers}= useScocketContext()
+  const {socket,setSocket,onlineUsers,setOnlineUsers}= useSocketContext()
   const recipientID = chat?.members?.find((member)=> member.id !== myId)
 //socket send message
   useEffect(()=>{

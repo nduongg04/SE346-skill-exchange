@@ -1,14 +1,8 @@
 import { useState } from "react";
-import {
-	View,
-	Text,
-	StyleSheet,
-	ImageBackground,
-	TouchableOpacity,
-} from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
-import { COLORS, icons } from "@constants";
-import { useRouter } from "expo-router";
+import { icons } from "@constants";
+import styles from "./navbar.style";
 
 const NavBar = ({ state, descriptors, navigation }) => {
 	const buttons = [
@@ -41,7 +35,11 @@ const NavBar = ({ state, descriptors, navigation }) => {
 
 	const [focusedButton, setFocusedButton] = useState(null);
 	const order = ["home", "chat", "search", "notification", "profile"];
-	const routes = state.routes.sort(
+	const routesFiltered = state.routes.filter((route) =>
+		order.includes(route.name)
+	);
+    
+	const routes = routesFiltered.sort(
 		(a, b) => order.indexOf(a.name) - order.indexOf(b.name)
 	);
 	return (
@@ -50,7 +48,8 @@ const NavBar = ({ state, descriptors, navigation }) => {
 				if (route.name === "index") return null;
 
 				const button = buttons.find((button) => button.name === route.name);
-				const isPressed = state.index === index;
+
+				const isPressed = route.name === state.routes[state.index].name;
 
 				const onPressOut = () => {
 					const event = navigation.emit({
@@ -69,9 +68,9 @@ const NavBar = ({ state, descriptors, navigation }) => {
 						<View
 							style={{
 								flex: 1,
-                                height: "100%",
+								height: "100%",
 								alignItems: "center",
-                                justifyContent: "flex-start",
+								justifyContent: "flex-start",
 							}}
 							key={index}
 						>
@@ -120,63 +119,3 @@ const NavBar = ({ state, descriptors, navigation }) => {
 	);
 };
 export default NavBar;
-
-const styles = StyleSheet.create({
-	container: {
-		borderRadius: 20,
-		height: "8%",
-		backgroundColor: COLORS.lightWhite,
-		flexDirection: "row",
-		justifyContent: "space-around",
-		alignItems: "center",
-	},
-	focusedButton: {
-		flex: 1,
-		height: "100%",
-		width: "100%",
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: COLORS.lightGray,
-	},
-	button: {
-		flex: 1,
-		height: "100%",
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: COLORS.lightWhite,
-	},
-	searchButtonContainer: {
-		borderRadius: 9999,
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: COLORS.lightWhite,
-		height: 50,
-		width: 50,
-	},
-	searchButton: {
-		borderRadius: 99,
-		height: "90%",
-		width: "90%",
-		justifyContent: "center",
-		alignItems: "center",
-		backgroundColor: COLORS.lightPeach,
-	},
-	whiteCircle: {
-		borderRadius: 99,
-		justifyContent: "center",
-		alignItems: "center",
-        height: "100%",
-        width: "100%",
-		backgroundColor: COLORS.lightWhite,
-
-		shadowColor: COLORS.shadowBlue,
-		shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        
-        elevation: 3,
-	},
-});
