@@ -3,7 +3,7 @@ import { SafeAreaView } from "react-native";
 import { Stack } from "expo-router";
 ("../../components");
 import { COLORS, icons } from "@constants";
-
+import ScreenNotification from "../../components/notification/MainNotification";
 const Notification = () => {
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
@@ -11,10 +11,11 @@ const Notification = () => {
 				options={{
 					headerStyle: { backgroundColor: COLORS.lightWhite },
 					headerShadowVisible: false,
-					headerTitle: "",
+					headerShown:false
+					
 				}}
 			/>
-			<Text>Notification</Text>
+			<ScreenNotification/>
 		</SafeAreaView>
 	);
 };

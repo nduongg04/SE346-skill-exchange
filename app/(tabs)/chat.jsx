@@ -2,7 +2,7 @@ import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native";
 import { Stack } from "expo-router";
 import { COLORS, icons } from "@constants";
-
+import ScreenMessage from "../../components/message/mainScreen";
 const Chat = () => {
     
 	return (
@@ -11,10 +11,11 @@ const Chat = () => {
 				options={{
 					headerStyle: { backgroundColor: COLORS.lightWhite },
 					headerShadowVisible: false,
-					headerTitle: "",
+					headerShown:false
 				}}
 			/>
-            <Text>Chat</Text>
+			<ScreenMessage/>
+           
 		</SafeAreaView>
 	);
 };

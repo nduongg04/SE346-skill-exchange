@@ -34,6 +34,8 @@ const ScreenMess = ({router}) => {
 	
 //Socket
 useEffect(()=>{
+	if(socket==null)
+	return
 	socket.on("getOnlineUsers", (users)=>{
 		setOnlineUsers(users)
 	})
@@ -232,11 +234,6 @@ useEffect(()=>{
 				// style={styles.flatList}
 			/>
 		</View>
-		<View style={styles.navbar}>
-			<Text>Hello</Text>
-
-		</View>
-				
 	  </View>
 	);
   };

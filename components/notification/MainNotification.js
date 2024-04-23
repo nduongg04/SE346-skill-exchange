@@ -167,4 +167,4 @@ const getRequest = async () => {
 
 }
 export default ScreenNotification;
-registerRootComponent(ScreenNotification);
+// registerRootComponent(ScreenNotification);
