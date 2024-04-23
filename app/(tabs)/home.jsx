@@ -7,9 +7,11 @@ import { COLORS, icons } from "@constants";
 import { CircleButton } from "@components";
 import { Dimensions } from "react-native";
 import Swiper from "react-native-deck-swiper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import Suzy from "@assets/icons/Suzy.png";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const Home = () => {
 	const screenWidth = Dimensions.get("window").width;
 	const screenHeight = Dimensions.get("window").height;
@@ -20,6 +22,25 @@ const Home = () => {
 	const handleSwipeRight = () => {
 		console.log("swiped right");
 	};
+
+	useEffect(() => {
+		const baseUrl = "https://se346-skillexchangebe.onrender.com";
+
+		const getNewAccessToken = async () => {
+			const refreshToken = await AsyncStorage.getItem("refreshToken");
+			try {
+				const response = await axios.get(baseUrl + "/api/v1/auth/refresh", {
+					headers: {
+						Authorization: `Bearer ${refreshToken}`,
+					},
+				});
+				const newAccessToken = response.data.access_oken;
+				returm(newAccessToken);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+	}, []);
 
 	const cards = [];
 
@@ -52,85 +73,84 @@ const Home = () => {
 
 			<View style={{ height: "95%", width: "100%" }}>
 				<View style={{ marginTop: 10, height: "80%" }}>
-
 					<Swiper
-                        cardStyle={{ height: "100%", width: "100%" }}
-                        cardHorizontalMargin={0}
-                        backgroundColor="white"
-                        renderCard={(card) => {
-                            return (
-                                <ProfileCard
-                                    username={"Bae Suzy"}
-                                    userTopicSkill={[
-                                        "Coding",
-                                        "English",
-                                        "React Native",
-                                        "Hello",
-                                        "Hello",
-                                        "Hello",
-                                    ]}
-                                    imageDisplay={Suzy}
-                                    description={`I’m an actress. I have participated in several K-dramas: "Dream High," Suzy starred in several popular K-dramas, including "Gu Family Book" (2013), "Uncontrollably Fond" (2016), and "Vagabond" (2019).`}
-                                />
-                            );
-                        }}
-                        // onSwiped={() => this.onSwiped("general")}
-                        // onSwipedLeft={() => this.onSwiped("left")}
-                        // onSwipedRight={() => this.onSwiped("right")}
-                        // onSwipedTop={() => this.onSwiped("top")}
-                        // onSwipedBottom={() => this.onSwiped("bottom")}
-                        // onTapCard={this.swipeLeft}
-                        cards={cards}
-                        // cardIndex={this.state.cardIndex}
-                        cardVerticalMargin={0}
-                        onSwipedAll={this.onSwipedAllCards}
-                        showSecondCard={true}
-                        stackSize={2}
-                        disableTopSwipe={true}
-                        disableBottomSwipe={true}
-                        stackSeparation={5}
-                        overlayLabels={{
-                            left: {
-                                title: "NOPE",
-                                style: {
-                                    label: {
-                                        backgroundColor: "#FF6767",
-                                        borderColor: "#FF6767",
-                                        color: "white",
-                                        borderWidth: 1,
-                                    },
-                                    wrapper: {
-                                        flexDirection: "column",
-                                        alignItems: "flex-end",
-                                        justifyContent: "flex-start",
-                                        marginTop: 30,
-                                        marginLeft: -30,
-                                    },
-                                },
-                            },
-                            right: {
-                                title: "MATCH",
-                                style: {
-                                    label: {
-                                        backgroundColor: "#4ECB71",
-                                        borderColor: "#4ECB71",
-                                        color: "white",
-                                        borderWidth: 1,
-                                    },
-                                    wrapper: {
-                                        flexDirection: "column",
-                                        alignItems: "flex-start",
-                                        justifyContent: "flex-start",
-                                        marginTop: 30,
-                                        marginLeft: 30,
-                                    },
-                                },
-                            },
-                        }}
-                        animateOverlayLabelsOpacity
-                        animateCardOpacity
-                        swipeBackCard
-                    />
+						cardStyle={{ height: "100%", width: "100%" }}
+						cardHorizontalMargin={0}
+						backgroundColor="white"
+						renderCard={(card) => {
+							return (
+								<ProfileCard
+									username={"Bae Suzy"}
+									userTopicSkill={[
+										"Coding",
+										"English",
+										"React Native",
+										"Hello",
+										"Hello",
+										"Hello",
+									]}
+									imageDisplay={Suzy}
+									description={`I’m an actress. I have participated in several K-dramas: "Dream High," Suzy starred in several popular K-dramas, including "Gu Family Book" (2013), "Uncontrollably Fond" (2016), and "Vagabond" (2019).`}
+								/>
+							);
+						}}
+						// onSwiped={() => this.onSwiped("general")}
+						// onSwipedLeft={() => this.onSwiped("left")}
+						// onSwipedRight={() => this.onSwiped("right")}
+						// onSwipedTop={() => this.onSwiped("top")}
+						// onSwipedBottom={() => this.onSwiped("bottom")}
+						// onTapCard={this.swipeLeft}
+						cards={cards}
+						// cardIndex={this.state.cardIndex}
+						cardVerticalMargin={0}
+						onSwipedAll={this.onSwipedAllCards}
+						showSecondCard={true}
+						stackSize={2}
+						disableTopSwipe={true}
+						disableBottomSwipe={true}
+						stackSeparation={5}
+						overlayLabels={{
+							left: {
+								title: "NOPE",
+								style: {
+									label: {
+										backgroundColor: "#FF6767",
+										borderColor: "#FF6767",
+										color: "white",
+										borderWidth: 1,
+									},
+									wrapper: {
+										flexDirection: "column",
+										alignItems: "flex-end",
+										justifyContent: "flex-start",
+										marginTop: 30,
+										marginLeft: -30,
+									},
+								},
+							},
+							right: {
+								title: "MATCH",
+								style: {
+									label: {
+										backgroundColor: "#4ECB71",
+										borderColor: "#4ECB71",
+										color: "white",
+										borderWidth: 1,
+									},
+									wrapper: {
+										flexDirection: "column",
+										alignItems: "flex-start",
+										justifyContent: "flex-start",
+										marginTop: 30,
+										marginLeft: 30,
+									},
+								},
+							},
+						}}
+						animateOverlayLabelsOpacity
+						animateCardOpacity
+						swipeBackCard
+					/>
 				</View>
 
 				<View
