@@ -1,6 +1,7 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { registerRootComponent } from 'expo';
+import React from 'react';
 import ScreenMess from './main/MainMess';
 import ScreenChatRoom from './chat_room/MainRoom';
 const Stack = createStackNavigator();
