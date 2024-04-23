@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import styles from "../register/style";
 import { COLORS } from "../../constants";
 import { scale } from "react-native-size-matters";
-import React from "react";
+import React, { useEffect } from "react";
 import InputText from "../register/Button/InputText";
 import { AntDesign, MaterialCommunityIcons } from "@expo/vector-icons";
 import CustomButton from "../register/Button/CustomButton";
@@ -13,6 +13,11 @@ import Notification from "../common/Notification";
 import { ScrollView } from "react-native-gesture-handler";
 import Spinner from "react-native-loading-spinner-overlay";
 import { isLoading } from "expo-font";
+import {useSocketContext } from "../../context/SocketContext";
+import { io } from "socket.io-client";
+
+const {socket,setSocket,onlineUsers, setOnlineUsers} = useSocketContext()
+const baseURL = "https://se346-skillexchangebe.onrender.com"
 class Login extends React.Component {
   state = {
     email: null,
@@ -88,7 +93,28 @@ class Login extends React.Component {
   tooglePolicy = () => {
     this.setState({showPolicy: !this.state.showPolicy});
   }
+  
   render() {
+    useEffect(()=>{
+      const newSocket = io(`${baseURL}`)
+      setSocket(newSocket)
+
+      return ()=>{
+        newSocket.disconnect()
+      }
+    }, [this.state.user])
+
+  useEffect (()=>{
+    socket.emit("addOnlineUser", this.state.user?._id)
+    socket.on("getOnlineUsers",(users)=>{
+      setOnlineUsers(users)
+    })
+
+    return()=>{
+      socket.off("getOnlineUsers")
+    }
+  }, [socket])
+
     return (
       <GradienLayout innerStyle={{height: scale(600)}}>
         <Spinner
