@@ -3,6 +3,29 @@ import { View,Text,Image,TouchableOpacity,Button } from 'react-native'
 import {loadFonts,styles} from "./notification.style";
 const Request=(props)=>
 {
+    const createChat= async (id1,id2)=>{
+		const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/chat/create',{
+			method:'POST',
+			headers:{
+			  'Content-Type': 'application/json',
+			  Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODI5NSwiZXhwIjoxNzE1NzkwMjk1fQ.4EHaQTxyYqJrQARjGcPXBYG6BYUOTRzZ51tYBju6JRQ"
+			},
+			body: JSON.stringify({
+				"firstID": id1,
+				"secondID": id2
+			})
+		  })
+		  const data = await response.json();
+		  console.log(response.status)
+		  console.log(data);
+		  if(response.status==400)
+		  {
+			console.log(response.statusText)
+		  }
+		  else{
+			console.log(response.statusText)
+		  }
+}
     const deleteRequest=async ()=>{
         try {
             const response = await fetch(`https://se346-skillexchangebe.onrender.com/api/v1/request/delete/${props.Id}`,
@@ -41,7 +64,8 @@ const Request=(props)=>
        
     }
     const handlePressAccept= async ()=>{
-        deleteRequest();
+        await createChat(props.SenderId,props.MyId);
+        await deleteRequest();
     }
     const moment = require('moment');
     const dateTime = moment(props.Time).format('DD/MM/YYYY HH:mm');
