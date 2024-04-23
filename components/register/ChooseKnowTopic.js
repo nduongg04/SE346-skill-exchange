@@ -43,7 +43,7 @@ class ChooseKnowTopic extends React.Component {
     } finally {
         this.setState({isLoading: false, loadingMore: false});
     }
-}
+} 
   componentDidMount = async () =>{
     const page = await AsyncStorage.getItem('topicPage');
     this.setState({page: parseInt(page)});
@@ -107,6 +107,7 @@ class ChooseKnowTopic extends React.Component {
               alert('Please choose at least one topic');
               return;
             }
+            console.log(params);
             this.props.navigation.navigate('UploadInfo', params)
           }
           }></CustomButton>             

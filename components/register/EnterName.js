@@ -50,26 +50,26 @@ export default class EnterName extends React.Component {
     componentDidMount = async () => {
         this._loadFontsAsync();
         try {
-            const refreshToken = await AsyncStorage.getItem('refreshToken');
-            console.log('refreshToken: ' + refreshToken);
-            this.setState({isLoading: true});
-            if(refreshToken !== null){
-                const response = await fetch('https://se346-skillexchangebe.onrender.com/api/v1/token/checktoken', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        token: refreshToken
-                    })
-                });
-                const user = await AsyncStorage.getItem('user');
-                if(response.ok){
-                    alert('You are already logged in, user: ' + user );
-                    //Di chuyển đến trang home
-                    //this.props.navigation.navigate('Home');
-                 }
-            }  
+            // const refreshToken = await AsyncStorage.getItem('refreshToken');
+            // console.log('refreshToken: ' + refreshToken);
+            // this.setState({isLoading: true});
+            // if(refreshToken !== null){
+            //     const response = await fetch('https://se346-skillexchangebe.onrender.com/api/v1/token/checktoken', {
+            //         method: 'POST',
+            //         headers: {
+            //             'Content-Type': 'application/json',
+            //         },
+            //         body: JSON.stringify({
+            //             token: refreshToken
+            //         })
+            //     });
+            //     const user = await AsyncStorage.getItem('user');
+            //     if(response.ok){
+            //         alert('You are already logged in, user: ' + user );
+            //         //Di chuyển đến trang home
+            //         //this.props.navigation.navigate('Home');
+            //      }
+            // }  
         } catch (e) {
             console.log('Failed to fetch the refresh token');
         }

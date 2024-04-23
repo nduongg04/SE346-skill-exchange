@@ -61,7 +61,7 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         height: scale(45),
-        backgroundColor: COLORS.lightGray,
+        backgroundColor: COLORS.lightGray1,
         flexDirection: 'row',
         paddingHorizontal: 15,
         borderWidth: 0.5,

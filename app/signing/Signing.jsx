@@ -5,12 +5,13 @@ import About from '../../components/register/About';
 import SkillInput from '../../components/register/SkillInput';
 import UploadCertification from '../../components/register/UploadCertification';
 import ChooseTopic from '../../components/register/ChooseTopic';
+import ChooseKnowTopic from '../../components/register/ChooseKnowTopic';
 import UploadInfo from '../../components/register/UploadInfo';
 import Login from '../../components/login/login';
 import ForgotPassword from '../../components/login/ForgotPassword';
 const Stack = createStackNavigator();
 
-export default function Signing() {
+export default function Signing({navigation}) {
   return (
       <Stack.Navigator>
         <Stack.Screen 
@@ -45,6 +46,10 @@ export default function Signing() {
         <Stack.Screen
           name="ChooseTopic"
           component={ChooseTopic}
+          options={{headerShown: false}}/>
+        <Stack.Screen
+          name="ChooseKnowTopic"
+          component={ChooseKnowTopic}
           options={{headerShown: false}}/>
         <Stack.Screen
           name="UploadInfo"
