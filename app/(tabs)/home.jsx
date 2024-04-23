@@ -7,9 +7,11 @@ import { COLORS, icons } from "@constants";
 import { CircleButton } from "@components";
 import { Dimensions } from "react-native";
 import Swiper from "react-native-deck-swiper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import Suzy from "@assets/icons/Suzy.png";
+import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const Home = () => {
 	const screenWidth = Dimensions.get("window").width;
 	const screenHeight = Dimensions.get("window").height;
@@ -20,6 +22,25 @@ const Home = () => {
 	const handleSwipeRight = () => {
 		console.log("swiped right");
 	};
+
+	useEffect(() => {
+		const baseUrl = "https://se346-skillexchangebe.onrender.com";
+
+		const getNewAccessToken = async () => {
+			const refreshToken = await AsyncStorage.getItem("refreshToken");
+			try {
+				const response = await axios.get(baseUrl + "/api/v1/auth/refresh", {
+					headers: {
+						Authorization: `Bearer ${refreshToken}`,
+					},
+				});
+				const newAccessToken = response.data.access_oken;
+				returm(newAccessToken);
+			} catch (error) {
+				console.error(error);
+			}
+		};
+	}, []);
 
 	const cards = [];
 
@@ -85,30 +106,16 @@ const Home = () => {
 						onSwipedAll={this.onSwipedAllCards}
 						showSecondCard={true}
 						stackSize={2}
+						disableTopSwipe={true}
+						disableBottomSwipe={true}
 						stackSeparation={5}
 						overlayLabels={{
-							bottom: {
-								title: "BLEAH",
-								style: {
-									label: {
-										backgroundColor: "black",
-										borderColor: "black",
-										color: "white",
-										borderWidth: 1,
-									},
-									wrapper: {
-										flexDirection: "column",
-										alignItems: "center",
-										justifyContent: "center",
-									},
-								},
-							},
 							left: {
 								title: "NOPE",
 								style: {
 									label: {
-										backgroundColor: "black",
-										borderColor: "black",
+										backgroundColor: "#FF6767",
+										borderColor: "#FF6767",
 										color: "white",
 										borderWidth: 1,
 									},
@@ -122,11 +129,11 @@ const Home = () => {
 								},
 							},
 							right: {
-								title: "LIKE",
+								title: "MATCH",
 								style: {
 									label: {
-										backgroundColor: "black",
-										borderColor: "black",
+										backgroundColor: "#4ECB71",
+										borderColor: "#4ECB71",
 										color: "white",
 										borderWidth: 1,
 									},
@@ -139,27 +146,11 @@ const Home = () => {
 									},
 								},
 							},
-							top: {
-								title: "SUPER LIKE",
-								style: {
-									label: {
-										backgroundColor: "black",
-										borderColor: "black",
-										color: "white",
-										borderWidth: 1,
-									},
-									wrapper: {
-										flexDirection: "column",
-										alignItems: "center",
-										justifyContent: "center",
-									},
-								},
-							},
 						}}
 						animateOverlayLabelsOpacity
 						animateCardOpacity
 						swipeBackCard
-					></Swiper>
+					/>
 				</View>
 
 				<View

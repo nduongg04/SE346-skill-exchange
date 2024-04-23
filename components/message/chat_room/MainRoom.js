@@ -13,6 +13,7 @@ import { useRoute } from '@react-navigation/native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as FileSystem from 'expo-file-system';
 import * as DocumentPicker from 'expo-document-picker';
+import { useSocketContext } from '../../../context/SocketContext';
 
 
 const ScreenChatRoom = ({router}) => {
@@ -31,7 +32,27 @@ const ScreenChatRoom = ({router}) => {
   const [messageList, setMessageList]=useState([]);
   const[myName,setMyName]=useState('Duc');
   const[chatId,setChatId]=useState(route.params.chatId)//router.param.chatID
+  const {chat} = route.params
+  const [newMessageData, setNewMessage] = useState(null)
   const [test, setTest]= useState('');
+  const {socket,setSocket,onlineUsers,setOnlineUsers}= useSocketContext()
+  const recipientID = chat?.members?.find((member)=> member.id !== myId)
+//socket send message
+  useEffect(()=>{
+    if(socket===null) return
+    
+    socket.emit("sendMessage", {...newMessageData,recipientID})
+  },[message])
+
+//reciever Socket
+  useEffect(()=>{
+    if(socket===null) return
+    socket.on("getMessage", (res)=>{
+      if(chatId !== res.chatID) return
+      setMessageList([...messageList, res])
+    })
+  }, [socket, messageList, setMessageList])
+
   //set up
   const formatTimeRecord = (time) => {
     const minutes = Math.floor((time % 3600) / 60);
@@ -81,7 +102,7 @@ const ScreenChatRoom = ({router}) => {
       {
         let sender=''
         // console.log((messageList));
-        if(messageList[i].senderID.username==myName)
+        if(messageList[i].senderID._id === myId)
         {
           sender="My message"
         }
@@ -147,6 +168,8 @@ const ScreenChatRoom = ({router}) => {
     if(response.status==200)
     {
       const json = await response.json();
+      setNewMessage(json.data)
+      setMessageList([...messageList,json.data])
     }
     else{
       alert("Something went wrong");

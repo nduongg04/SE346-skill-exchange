@@ -27,6 +27,10 @@ const COLORS = {
     lightGrayProfile: "#E5E5E5",
     lightBlueProfile: "#00d9ff",
 	darkGrayProfile: "#F2F2F2",
+    orange: "#FF995E",
+    lightGray: "#E5E5E5",
+    lightBlue: "#00d9ff",
+    darkOrange: "#FF5C00",
 };
 
 export default COLORS ;

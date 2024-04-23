@@ -14,12 +14,13 @@ import { Message } from "../chat_room/message";
 import axios from 'axios';
 import { createStackNavigator } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
+import { useSocketContext } from "../../../context/SocketContext";
 
 
 
 
 
-const ScreenMess = () => {
+const ScreenMess = ({router}) => {
 	const [isFontLoaded, setFontLoaded] = useState(false);
 	const [chatRooms,setChatRooms]=useState([]);
 	const[chatAppear,setChatAppear]=useState([]);
@@ -29,7 +30,21 @@ const ScreenMess = () => {
 	const [searchText,setSearchText]=useState('');
 	const prevSearchText = useRef('');
 	const navigation = useNavigation();
-//test
+	const {socket,setSocket,onlineUsers,setOnlineUsers} = useSocketContext()
+	
+//Socket
+useEffect(()=>{
+	socket.on("getOnlineUsers", (users)=>{
+		setOnlineUsers(users)
+	})
+
+	return ()=>{
+		socket.off("getOnlineUsers")
+	}
+},[])
+
+
+
 	const createChat= async ()=>
 	{
 		const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/chat/create',{
@@ -177,10 +192,14 @@ const ScreenMess = () => {
 		
 	}
 	return(
-	<TouchableOpacity onPress={()=> navigation.navigate('ScreenChatRoom', { chatId: item.chatInfo._id })}>
+	<TouchableOpacity onPress={()=> navigation.navigate('ScreenChatRoom', { chatId: item.chatInfo._id , chat: item.chatInfo })}>
 		<CardMessage   Name={item.chatInfo.members[num].username}
 		Avatar={item.chatInfo.members[num].avatar}
-		Status="online"
+		Status={
+			 onlineUsers?.some((user)=>{
+				user.userID === item.chatInfo?.members?.find((member)=> member._id !== myId)
+			 }) ? "online" : "offline"
+		} 
 		Time="30m"
 		Recent={latest}
 
@@ -222,5 +241,5 @@ const ScreenMess = () => {
 	);
   };
   
-  export default ScreenMess;
+export default (ScreenMess);
 registerRootComponent(ScreenMess);
