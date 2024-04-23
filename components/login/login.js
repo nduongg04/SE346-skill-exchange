@@ -13,6 +13,11 @@ import Notification from "../common/Notification";
 import { ScrollView } from "react-native-gesture-handler";
 import Spinner from "react-native-loading-spinner-overlay";
 import { isLoading } from "expo-font";
+import { useScocketContext } from "../../context/SocketContext";
+import { io } from "socket.io-client";
+
+const {socket,setSocket,onlineUsers, setOnlineUsers} = useScocketContext()
+const baseURL = "https://se346-skillexchangebe.onrender.com"
 class Login extends React.Component {
   state = {
     email: null,
@@ -91,7 +96,25 @@ class Login extends React.Component {
   
   render() {
     useEffect(()=>{
+      const newSocket = io(`${baseURL}`)
+      setSocket(newSocket)
+
+      return ()=>{
+        newSocket.disconnect()
+      }
     }, [this.state.user])
+
+  useEffect (()=>{
+    socket.emit("addOnlineUser", this.state.user?._id)
+    socket.on("getOnlineUsers",(users)=>{
+      setOnlineUsers(users)
+    })
+
+    return()=>{
+      socket.off("getOnlineUsers")
+    }
+  }, [socket])
+
     return (
       <GradienLayout innerStyle={{height: scale(600)}}>
         <Spinner

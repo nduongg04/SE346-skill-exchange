@@ -1,5 +1,5 @@
 import { Redirect } from "expo-router";
 
 export default function Index() {
-	return <Redirect href="/components/register/About.js" />;
+	return <Redirect href="../components/message/mainScreen.js" />;
 }
