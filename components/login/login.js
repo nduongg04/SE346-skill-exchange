@@ -16,8 +16,8 @@ import { isLoading } from "expo-font";
 import {useSocketContext } from "../../context/SocketContext";
 import { io } from "socket.io-client";
 
-const {socket,setSocket,onlineUsers, setOnlineUsers} = useSocketContext()
-const baseURL = "https://se346-skillexchangebe.onrender.com"
+
+
 class Login extends React.Component {
   state = {
     email: null,
@@ -95,6 +95,8 @@ class Login extends React.Component {
   }
   
   render() {
+    const baseURL = "https://se346-skillexchangebe.onrender.com"
+    const {socket,setSocket,onlineUsers, setOnlineUsers} = useSocketContext()
     useEffect(()=>{
       const newSocket = io(`${baseURL}`)
       setSocket(newSocket)
@@ -105,6 +107,7 @@ class Login extends React.Component {
     }, [this.state.user])
 
   useEffect (()=>{
+    if(socket=== null) return
     socket.emit("addOnlineUser", this.state.user?._id)
     socket.on("getOnlineUsers",(users)=>{
       setOnlineUsers(users)
