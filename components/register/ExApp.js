@@ -13,7 +13,7 @@ import ForgotPassword from '../login/ForgotPassword';
 import { GestureHandlerRootView} from 'react-native-gesture-handler'
 const Stack = createStackNavigator();
 
-function ExApp() {
+export default function ExApp() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -58,4 +58,5 @@ function ExApp() {
     </NavigationContainer>
   );
 }
+
 registerRootComponent(ExApp);

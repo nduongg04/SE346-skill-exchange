@@ -1,7 +1,7 @@
 import GradienLayout from "./TemplateLayout/GradientLayout";
 import { Text, View, Modal, TouchableOpacity, Platform } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import styles from "./style";
+import style7s from "./style";
 import { COLORS } from "../../constants";
 import { scale } from "react-native-size-matters";
 import DateTimePicker from '@react-native-community/datetimepicker';

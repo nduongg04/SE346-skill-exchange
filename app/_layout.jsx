@@ -10,6 +10,8 @@ const Layout = () => {
 		NotoSemiBold: require("../assets/fonts/NotoSansSymbols-SemiBold.ttf"),
 		PolyItalic: require("../assets/fonts/Poly-Italic.ttf"),
 		PolyRegular: require("../assets/fonts/Poly-Regular.ttf"),
+		SegoeUI: require("../assets/fonts/Segoe-UI.ttf"),
+		SegoeUISemiBold: require("../assets/fonts/Segoe-UI-SemiBold.ttf"),
 	});
 
 	if (!fontsLoaded) {
