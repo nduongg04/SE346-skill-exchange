@@ -26,6 +26,7 @@ const Layout = () => {
 				<SocketProvider>
 					<Stack>
 						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+						<Stack.Screen name="signing/Signing" options={{ headerShown: false }} />
 					</Stack>
 				</SocketProvider>
 			</AuthProvider>
