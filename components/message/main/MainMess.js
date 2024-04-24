@@ -15,6 +15,8 @@ import axios from 'axios';
 import { createStackNavigator } from '@react-navigation/native-stack';
 import { useNavigation } from '@react-navigation/native';
 import { useSocketContext } from "../../../context/SocketContext";
+import { useSession } from "../../../context/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 
@@ -24,13 +26,13 @@ const ScreenMess = () => {
 	const [isFontLoaded, setFontLoaded] = useState(false);
 	const [chatRooms,setChatRooms]=useState([]);
 	const[chatAppear,setChatAppear]=useState([]);
-	const[myName,setMyName]=useState('Duc');
-	const [myId,setMyId]=useState('');
+	// const [user.id,setMyId]=useState('');
 	const [accessToken,setAccessToken]=useState('');
 	const [searchText,setSearchText]=useState('');
 	const prevSearchText = useRef('');
 	const navigation = useNavigation();
 	const {socket,setSocket,onlineUsers,setOnlineUsers} = useSocketContext()
+	const {user}=useSession();
 	
 //Socket
 useEffect(()=>{
@@ -103,6 +105,11 @@ useEffect(()=>{
             
           }
 	}
+	const loadToken= async()=>{
+		const token = await AsyncStorage.getItem('refeshToken');
+		if(token)
+		setAccessToken(token);
+	}
 	const loadChat=  async ()=>{
 		const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/chat/find/661aceb50b954258a9b6dc70`, {
 		  method: 'GET',
@@ -110,11 +117,7 @@ useEffect(()=>{
 			'Content-Type': 'application/json',
 			Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODI5NSwiZXhwIjoxNzE1NzkwMjk1fQ.4EHaQTxyYqJrQARjGcPXBYG6BYUOTRzZ51tYBju6JRQ',
 		  },});
-		  if(response.status == 400){
-			alert('Something went wrong');
-		  }
-		  else
-		  {
+		  if(response.status == 200){
 			if (response.data && Array.isArray(response.data.data)) {
 				let list= [];
 				list =response.data.data;
@@ -123,6 +126,11 @@ useEffect(()=>{
 			  } else {
 				console.error("Invalid data format in response:", response.data);
 			  }
+			;
+		  }
+		  else
+		  {
+			alert('Something went wrong')
 		  }
 	}
   useEffect(() => {
@@ -133,7 +141,7 @@ useEffect(()=>{
 		prevSearchText.current = searchText;
 		setChatAppear(chatRooms.filter(function(chat){
 			let num=0;
-			if(chat.chatInfo.members[0].username==myName)
+			if(chat.chatInfo.members[0].id==user.id)
 			{
 				num=1;
 			}
@@ -149,14 +157,16 @@ useEffect(()=>{
 	else
 	{
 		setSearchText('')
+		console.log(user)
+		console.log(user.id)
 		const loadFont = async () => {
 			await loadFonts();
 			setFontLoaded(true);
 		  };
 		  
 		  loadFont();
-		  setMyId('661aceb50b954258a9b6dc70');
-		  setAccessToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzAzMzU4OCwiZXhwIjoxNzE1NjI1NTg4fQ.QMwYDQmD7bb7gIspkiK7HfBWZX5tie5SFInVftpGatM');
+		  loadToken();
+		  console.log(accessToken) 
 		  // deleteChat();
 		  // createChat();
 		  loadChat();
@@ -173,13 +183,13 @@ useEffect(()=>{
 	let num=0;
 	let latest='';
 	let format='';
-	if(item.chatInfo.members[0].username==myName)
+	if(item.chatInfo.members[0].id==user.id)
 	{
 		num=1;
 	}
 	if(item.latestMessage[0])
 	{
-		if(item.latestMessage[0].senderID.id==myId)
+		if(item.latestMessage[0].senderID.id==user.id)
 		{
 			format='Bạn: '
 		}
@@ -199,7 +209,7 @@ useEffect(()=>{
 		Avatar={item.chatInfo.members[num].avatar}
 		Status={
 			 onlineUsers?.some((user)=>{
-				user.userID === item.chatInfo?.members?.find((member)=> member._id !== myId)
+				user.userID === item.chatInfo?.members?.find((member)=> member._id !== user.id)
 			 }) ? "online" : "offline"
 		} 
 		Time="30m"

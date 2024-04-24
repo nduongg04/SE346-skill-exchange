@@ -4,7 +4,6 @@ import { registerRootComponent } from 'expo';
 import { icons } from "@constants";
 import { loadFonts, styles } from "./mainRoom.style";
 import { Message } from './message';
-// import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as ImagePicker from 'expo-image-picker';
 import { Audio } from 'expo-av';
 import axios from 'axios';
@@ -15,30 +14,31 @@ import * as FileSystem from 'expo-file-system';
 import * as DocumentPicker from 'expo-document-picker';
 import { useSocketContext } from '../../../context/SocketContext';
 import { useNavigation } from '@react-navigation/native';
+import { useSession } from '../../../context/AuthContext';
 
 
 const ScreenChatRoom = ({router}) => {
   const route = useRoute();
+  const {user}= useSession()
   const scrollViewRef = useRef(null);
   const [isFontLoaded, setFontLoaded] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const [message, setMessage] = useState('');
-  // const [image, setImage] = useState([]);
   const [record, setRecord] = useState();
   const [isRecord, setIsRecord] = useState(false)
   const [seconds, setSeconds] = useState(0);
   const [idCount,setIdCount]=useState(null);
-  const [myId,setMyid]=useState("661aceb50b954258a9b6dc70");
-  const [accessToken,setAccessToken]=useState('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODI5NSwiZXhwIjoxNzE1NzkwMjk1fQ.4EHaQTxyYqJrQARjGcPXBYG6BYUOTRzZ51tYBju6JRQ');
+  // const [user.id,setMyid]=useState("661aceb50b954258a9b6dc70");
+  const [accessToken,setAccessToken]=useState('');
   const [messageList, setMessageList]=useState([]);
-  const[myName,setMyName]=useState('Duc');
   const[chatId,setChatId]=useState(route.params.chatId)//router.param.chatID
   const {chat} = route.params
   const [newMessageData, setNewMessage] = useState(null)
   const [test, setTest]= useState('');
   const {socket,setSocket,onlineUsers,setOnlineUsers}= useSocketContext()
-  const recipientID = chat?.members?.find((member)=> member.id !== myId)
-  // const [modalVisible, setModalVisible] = useState(false);
+  const recipientID = chat?.members?.find((member)=> member.id !== user.id)
+  
+// const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
 //socket send message
   useEffect(()=>{
@@ -105,7 +105,7 @@ const ScreenChatRoom = ({router}) => {
       {
         let sender=''
         // console.log((messageList));
-        if(messageList[i].senderID._id === myId)
+        if(messageList[i].senderID._id === user.id)
         {
           sender="My message"
         }
@@ -144,6 +144,11 @@ const ScreenChatRoom = ({router}) => {
   // };
   
   //Load
+  const loadToken =async ()=>{
+    const token = await AsyncStorage.getItem('refeshToken');
+    if(token)
+    setAccessToken(token);
+  }
   const loadMessage = async ()=>{
     const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/message/find/${chatId}`, {
       method: 'GET',
@@ -170,7 +175,7 @@ const ScreenChatRoom = ({router}) => {
       },
       body: JSON.stringify({
        chatID:`${chatId}`,
-       senderID:`${myId}`,
+       senderID:`${user.id}`,
        content:Content,
        type:Type,
       })
@@ -320,7 +325,7 @@ const ScreenChatRoom = ({router}) => {
       const listImage = Array.from(result.assets);
       for(let i=0;i<listImage.length;i++)
       {
-        let imageUri=await uploadImage(listImage[i].uri,myId);
+        let imageUri=await uploadImage(listImage[i].uri,user.id);
         console.log(imageUri)
           if(imageUri)
           {
@@ -343,7 +348,7 @@ const ScreenChatRoom = ({router}) => {
     });
     if (!result.canceled) {
       image=result.assets;
-      const imageUrl= await uploadImage(image.uri,myId)
+      const imageUrl= await uploadImage(image.uri,user.id)
       if(imageUrl)
       {
         sendMessage('image',imageUrl);
@@ -384,7 +389,7 @@ const ScreenChatRoom = ({router}) => {
     if(isRecord)
     {
       await stopRecording();
-      const response= await uploadFile(record.getURI(),myId);
+      const response= await uploadFile(record.getURI(),user.id);
       console.log(response)
       if(response)
       {
