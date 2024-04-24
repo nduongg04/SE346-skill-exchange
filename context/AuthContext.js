@@ -10,17 +10,6 @@ export function useSession() {
 export const AuthProvider = ({children}) => {
     const [user, setUser] = useState(null);
 
-    useEffect(() => {
-        const getUser = async () => {
-            const userData = await AsyncStorage.getItem('user');
-            if (userData !== null) {
-                const data = JSON.parse(userData);
-                setUser(data);
-            }
-        };
-        getUser();
-    }, []); 
-
     const login = async (userData) => {
         await AsyncStorage.setItem('user', JSON.stringify(userData));
         setUser(userData);
