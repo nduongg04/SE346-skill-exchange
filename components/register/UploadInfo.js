@@ -1,7 +1,7 @@
 import GradienLayout from "./TemplateLayout/GradientLayout";
-import { Text, View, Modal, TouchableOpacity, Platform } from "react-native";
+import { Text, Modal, TouchableOpacity } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
-import style7s from "./style";
+import styles from "./style";
 import { COLORS } from "../../constants";
 import { scale } from "react-native-size-matters";
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -9,11 +9,10 @@ import React from "react";
 import BackButton from "./Button/BackButton";
 import CustomButton from "./Button/CustomButton";
 import InputText from "./Button/InputText";
-import { ScrollView, TextInput } from "react-native-gesture-handler";
+import { ScrollView} from "react-native-gesture-handler";
 import Policy from "./Policy";
 import Spinner from "react-native-loading-spinner-overlay";
 import mime from 'react-native-mime-types';
-import a from "@ant-design/react-native/lib/modal/alert";
 class ChooseTopic extends React.Component {
   state = {
       //Input fields
