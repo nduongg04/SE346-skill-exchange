@@ -14,16 +14,16 @@ export const AuthProvider = ({children}) => {
         const getUser = async () => {
             const userData = await AsyncStorage.getItem('user');
             if (userData !== null) {
-                setUser(JSON.parse(userData));
+                const data = JSON.parse(userData);
+                setUser(data);
             }
-        }
+        };
         getUser();
-    }, [user]);
+    }, []); 
 
     const login = async (userData) => {
         await AsyncStorage.setItem('user', JSON.stringify(userData));
         setUser(userData);
-        console.log("After login: " + user);
     };
 
     const logout = async () => {
