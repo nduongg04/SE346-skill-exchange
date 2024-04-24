@@ -12,7 +12,7 @@ export const AuthProvider = ({children}) => {
 
     const login = async (userData) => {
         await AsyncStorage.setItem('user', JSON.stringify(userData));
-        setUser(userData);
+        setUser(JSON.stringify(userData));
     };
 
     const logout = async () => {
