@@ -63,7 +63,7 @@ const EnterName = ({ navigation }) => {
                     });
                     const user = await AsyncStorage.getItem('user');
                     if (response.ok) {
-                        await login(user);
+                        await login(JSON.parse(user));
                         navigation.navigate('(tabs)');
                     } else {
                         await logout();
