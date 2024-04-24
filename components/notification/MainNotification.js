@@ -7,22 +7,28 @@ import { loadFonts, styles } from "./notification.style";
 import Request from "./Requests";
 import System from "./System";
 import axios from 'axios';
+import { useSession } from "../../context/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const ScreenNotification = () => {
   const [isLoading, setLoading] = useState(true);
   const [isFontLoaded, setFontLoaded] = useState(false);
   const [isRequestTab, setIsRequestTab] = useState(true);
   const[requests, setRequest]= useState([]);
   const[systems, setSystem]=useState([])
-  const myId='661c1c99928fad8a0e8d01e6';
-  const token='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFjMWM5OTkyOGZhZDhhMGU4ZDAxZTYiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODM4MiwiZXhwIjoxNzE1NzkwMzgyfQ.hVOeanp--ZtEqEMoPwvaHqnhQ0-7cah41w0DykAVl5Q';
-  const listUser=[];
-
+  const [accessToken,setAccessToken]=useState('');
+  const user=JSON.parse(useSession().user);
+  
+  const loadToken= async()=>{
+		const token = await AsyncStorage.getItem('refreshToken');
+		if(token)
+		setAccessToken(token);
+	}
 const createChat= async (id1,id2)=>{
 		const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/chat/create',{
 			method:'POST',
 			headers:{
 			  'Content-Type': 'application/json',
-			  Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODI5NSwiZXhwIjoxNzE1NzkwMjk1fQ.4EHaQTxyYqJrQARjGcPXBYG6BYUOTRzZ51tYBju6JRQ"
+			  Authorization:`Bearer ${accessToken}`
 			},
 			body: JSON.stringify({
 				"firstID": id1,
@@ -74,31 +80,37 @@ const getRequest = async () => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFjMWM5OTkyOGZhZDhhMGU4ZDAxZTYiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODM4MiwiZXhwIjoxNzE1NzkwMzgyfQ.hVOeanp--ZtEqEMoPwvaHqnhQ0-7cah41w0DykAVl5Q" ,
+          Authorization:`Bearer ${accessToken}`        
         }
       });
 
-      if(response.status==400)
+      if(response.status==200)
       {
-        console.log(response.statusText);
+        const json = await response.json();
+        setRequest(json.data);
       }
       else
       {
-        const json = await response.json();
-        console.log(json.data[0].senderID)
-        setRequest(json.data);
+        Alert.alert(
+          'Thông báo', 
+          'Lỗi kết nối với sever', 
+        )
       }
-    } catch (error) {
-      console.error(error);
+    } catch  {
+      Alert.alert(
+				'Thông báo', 
+				'Ứng dụng đang gặp lỗi', 
+			)
     } finally {
       setLoading(false);
     }
-  };
-
+};
  
   useEffect(() => {
+    loadToken();
+    if(accessToken!='')
     getRequest();
-  }, []);
+  }, [accessToken]);
   
   useEffect(() => {
     const loadFont = async () => {
@@ -145,7 +157,7 @@ const getRequest = async () => {
             data={requests}
             keyExtractor={(item) => item._id}
             renderItem={({item}) => (
-              <Request Type="Request" Name={item.senderID.username} Avatar={item.senderID.avatar} Time={item.dateTime} Id={item._id} Delete={refeshReques} SenderId={item.senderID.id} MyId={myId} Acccept={createChat} ></Request>
+              <Request Type="Request" Name={item.senderID.username} Avatar={item.senderID.avatar} Time={item.dateTime} Id={item._id} Delete={refeshReques} SenderId={item.senderID.id} MyId={user.id} Acccept={createChat} ></Request>
             )}
           />
         ):

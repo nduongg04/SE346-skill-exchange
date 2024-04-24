@@ -1,31 +1,42 @@
 import React from 'react'
-import { View,Text,Image,TouchableOpacity,Button } from 'react-native'
+import { View,Text,Image,TouchableOpacity,Button ,Alert} from 'react-native'
 import {loadFonts,styles} from "./notification.style";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Request=(props)=>
 {
     const createChat= async (id1,id2)=>{
-		const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/chat/create',{
+        const token= await AsyncStorage.getItem('refreshToken');
+        try{
+            const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/chat/create',{
 			method:'POST',
 			headers:{
 			  'Content-Type': 'application/json',
-			  Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODI5NSwiZXhwIjoxNzE1NzkwMjk1fQ.4EHaQTxyYqJrQARjGcPXBYG6BYUOTRzZ51tYBju6JRQ"
+			  Authorization:`Bearer ${token}`
 			},
 			body: JSON.stringify({
 				"firstID": id1,
 				"secondID": id2
 			})
 		  })
-		  const data = await response.json();
-		  console.log(response.status)
-		  console.log(data);
-		  if(response.status==400)
+		  if(response.status==200)
 		  {
-			console.log(response.statusText)
+			return true
 		  }
 		  else{
-			console.log(response.statusText)
+			return false
 		  }
-}
+        }
+        catch{
+            Alert.alert(
+                'Thông báo', 
+                'Ứng dụng đang gặp lỗi', 
+            )
+            return false
+         }
+
+       
+		
+    }
     const deleteRequest=async ()=>{
         try {
             const response = await fetch(`https://se346-skillexchangebe.onrender.com/api/v1/request/delete/${props.Id}`,
@@ -64,7 +75,7 @@ const Request=(props)=>
        
     }
     const handlePressAccept= async ()=>{
-        await createChat(props.SenderId,props.MyId);
+       if( await createChat(props.SenderId,props.MyId));
         await deleteRequest();
     }
     const moment = require('moment');

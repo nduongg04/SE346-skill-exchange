@@ -1,4 +1,4 @@
-import { View,Text,Image,ImageBackground,TextInput,ScrollView,TouchableOpacity,FlatList,Linking } from "react-native";
+import { View,Text,Image,ImageBackground,TextInput,ScrollView,TouchableOpacity,FlatList,Linking,ActivityIndicator,Alert } from "react-native";
 import React, { useState, useEffect,useRef } from 'react';
 import {loadFonts,styles} from "./mainMess.style";
 import Expo from 'expo'
@@ -26,13 +26,13 @@ const ScreenMess = () => {
 	const [isFontLoaded, setFontLoaded] = useState(false);
 	const [chatRooms,setChatRooms]=useState([]);
 	const[chatAppear,setChatAppear]=useState([]);
-	// const [user.id,setMyId]=useState('');
+	const [isLoading, setLoading] = useState(true);
 	const [accessToken,setAccessToken]=useState('');
 	const [searchText,setSearchText]=useState('');
 	const prevSearchText = useRef('');
 	const navigation = useNavigation();
 	const {socket,setSocket,onlineUsers,setOnlineUsers} = useSocketContext()
-	const {user}=useSession();
+	const user=JSON.parse(useSession().user);
 	
 //Socket
 useEffect(()=>{
@@ -106,16 +106,17 @@ useEffect(()=>{
           }
 	}
 	const loadToken= async()=>{
-		const token = await AsyncStorage.getItem('refeshToken');
+		const token = await AsyncStorage.getItem('refreshToken');
 		if(token)
 		setAccessToken(token);
 	}
 	const loadChat=  async ()=>{
-		const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/chat/find/661aceb50b954258a9b6dc70`, {
+		try{
+		const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/chat/find/${user.id}`, {
 		  method: 'GET',
 		  headers: {
 			'Content-Type': 'application/json',
-			Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODI5NSwiZXhwIjoxNzE1NzkwMjk1fQ.4EHaQTxyYqJrQARjGcPXBYG6BYUOTRzZ51tYBju6JRQ',
+			Authorization: `Bearer ${accessToken}`
 		  },});
 		  if(response.status == 200){
 			if (response.data && Array.isArray(response.data.data)) {
@@ -130,8 +131,22 @@ useEffect(()=>{
 		  }
 		  else
 		  {
-			alert('Something went wrong')
+			Alert.alert(
+				'Thông báo', 
+				'Lỗi kết nối với sever', 
+			)
 		  }
+		}
+		catch{
+			Alert.alert(
+				'Thông báo', 
+				'Ứng dụng đang gặp lỗi', 
+			)
+		}
+		finally{
+			setLoading(false)
+		}
+		
 	}
   useEffect(() => {
 	if (searchText !== prevSearchText.current )
@@ -157,8 +172,6 @@ useEffect(()=>{
 	else
 	{
 		setSearchText('')
-		console.log(user)
-		console.log(user.id)
 		const loadFont = async () => {
 			await loadFonts();
 			setFontLoaded(true);
@@ -166,12 +179,10 @@ useEffect(()=>{
 		  
 		  loadFont();
 		  loadToken();
-		  console.log(accessToken) 
-		  // deleteChat();
-		  // createChat();
+		  if(accessToken!='')
 		  loadChat();
 	}
-  }, [searchText]);
+  }, [searchText,accessToken]);
 	if (!isFontLoaded) {
     return null; 
   }
@@ -204,7 +215,7 @@ useEffect(()=>{
 		
 	}
 	return(
-	<TouchableOpacity onPress={()=> navigation.navigate('chatRoom/room', { chatId: item.chatInfo._id , chat: item.chatInfo })}>
+	<TouchableOpacity onPress={()=> navigation.navigate('chatRoom/room', { chatId: item.chatInfo._id , chat: item.chatInfo, name: item.chatInfo.members[num].username })}>
 		<CardMessage   Name={item.chatInfo.members[num].username}
 		Avatar={item.chatInfo.members[num].avatar}
 		Status={
@@ -236,13 +247,18 @@ useEffect(()=>{
 		</View>		
 			
 		<View style={styles.Scroll} >
-			<FlatList
-				data={chatAppear}
-				renderItem={renderItem}
-				keyExtractor={(item) => item.chatInfo._id}
-				// keyExtractor={item => item._id}
-				// style={styles.flatList}
-			/>
+
+		{isLoading ? (
+        <ActivityIndicator />
+       ) :
+        (<FlatList
+			data={chatAppear}
+			renderItem={renderItem}
+			keyExtractor={(item) => item.chatInfo._id}
+		/>)
+      }
+
+			
 		</View>
 	  </View>
 	);

@@ -15,11 +15,13 @@ import * as DocumentPicker from 'expo-document-picker';
 import { useSocketContext } from '../../../context/SocketContext';
 import { useNavigation } from '@react-navigation/native';
 import { useSession } from '../../../context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import a from '@ant-design/react-native/lib/modal/operation';
 
 
 const ScreenChatRoom = ({router}) => {
   const route = useRoute();
-  const {user}= useSession()
+  const user=JSON.parse(useSession().user);
   const scrollViewRef = useRef(null);
   const [isFontLoaded, setFontLoaded] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
@@ -37,7 +39,7 @@ const ScreenChatRoom = ({router}) => {
   const [test, setTest]= useState('');
   const {socket,setSocket,onlineUsers,setOnlineUsers}= useSocketContext()
   const recipientID = chat?.members?.find((member)=> member.id !== user.id)
-  
+  const name=route.params.name
 // const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
 //socket send message
@@ -104,6 +106,7 @@ const ScreenChatRoom = ({router}) => {
       for(let i=0;i<messageList.length;i++)
       {
         let sender=''
+        
         // console.log((messageList));
         if(messageList[i].senderID._id === user.id)
         {
@@ -136,16 +139,10 @@ const ScreenChatRoom = ({router}) => {
   const handleKeyboardDidShow = () => {
     scrollViewRef.current.scrollToEnd({ animated: true }); // Cuộn xuống cuối của ScrollView
   };
-  // const openModal = () => {
-  //   setModalVisible(true);
-  // };
-  // const closeModal = () => {
-  //   setModalVisible(false);
-  // };
-  
+
   //Load
   const loadToken =async ()=>{
-    const token = await AsyncStorage.getItem('refeshToken');
+    const token = await AsyncStorage.getItem('refreshToken');
     if(token)
     setAccessToken(token);
   }
@@ -154,7 +151,7 @@ const ScreenChatRoom = ({router}) => {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODI5NSwiZXhwIjoxNzE1NzkwMjk1fQ.4EHaQTxyYqJrQARjGcPXBYG6BYUOTRzZ51tYBju6JRQ',
+        Authorization: `Bearer ${accessToken}`,
       },}); 
       if(response.status==200){
         setMessageList(response.data.data);
@@ -267,8 +264,10 @@ const ScreenChatRoom = ({router}) => {
       setFontLoaded(true);
     };
     loadFont();
+    loadToken();
+    if(accessToken!='')
     loadMessage();
-  }, []);
+  }, [accessToken]);
   if (!isFontLoaded) {
     return null; // Return null or a loading indicator while the font is loading
   };
@@ -421,10 +420,10 @@ const ScreenChatRoom = ({router}) => {
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
       <View style={styles.Container}>
       <View style={styles.Header}>
-        <TouchableOpacity onPress={()=>{ navigation.popToTop();}} >
+        <TouchableOpacity onPress={()=>{ navigation.navigate('(tabs)');}} >
           <Image source={icons.back} style={[{ height: 25.5, width: 25.5,marginRight:32}]}  ></Image>
         </TouchableOpacity>
-        <Text style={styles.Name}>Đạt FA</Text>
+        <Text style={styles.Name}>{name}</Text>
         <TouchableOpacity >
           <Image source={icons.call} style={{ height: 20.5, width: 20.5 }}></Image>
         </TouchableOpacity>
@@ -433,17 +432,6 @@ const ScreenChatRoom = ({router}) => {
         </TouchableOpacity>
       </View>
 
-    {/* <Modal
-      visible={modalVisible}
-      transparent={true}
-      onRequestClose={closeModal}>
-      <View style={styles.modalContainer}>
-        <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
-          <Image source={require('./path/to/closeButton.png')} style={styles.closeButtonIcon} />
-        </TouchableOpacity>
-        <Image source={require('./path/to/your/image.png')} style={styles.modalImage} />
-      </View>
-    </Modal> */}
       <ScrollView style={styles.Scroll} 
       keyboardShouldPersistTaps="handled" 
       showsVerticalScrollIndicator={false} 
