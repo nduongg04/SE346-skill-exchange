@@ -8,7 +8,7 @@ const Stack = createStackNavigator();
 const ScreenMessage =()=>{
     return(
         <NavigationContainer independent={true}>
-            <Stack.Navigator>
+            {/* <Stack.Navigator>
                 <Stack.Screen
                 name='ScreenMess'
                 component={ScreenMess}
@@ -17,7 +17,7 @@ const ScreenMessage =()=>{
                 name='ScreenChatRoom'
                 component={ScreenChatRoom}
                 options={{headerShown: false}}/>
-            </Stack.Navigator>
+            </Stack.Navigator> */}
         </NavigationContainer>
     )
 }

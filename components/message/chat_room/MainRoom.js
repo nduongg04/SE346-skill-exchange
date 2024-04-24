@@ -14,6 +14,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import * as FileSystem from 'expo-file-system';
 import * as DocumentPicker from 'expo-document-picker';
 import { useSocketContext } from '../../../context/SocketContext';
+import { useNavigation } from '@react-navigation/native';
 
 
 const ScreenChatRoom = ({router}) => {
@@ -37,6 +38,8 @@ const ScreenChatRoom = ({router}) => {
   const [test, setTest]= useState('');
   const {socket,setSocket,onlineUsers,setOnlineUsers}= useSocketContext()
   const recipientID = chat?.members?.find((member)=> member.id !== myId)
+  // const [modalVisible, setModalVisible] = useState(false);
+  const navigation = useNavigation();
 //socket send message
   useEffect(()=>{
     if(socket===null) return
@@ -133,6 +136,13 @@ const ScreenChatRoom = ({router}) => {
   const handleKeyboardDidShow = () => {
     scrollViewRef.current.scrollToEnd({ animated: true }); // Cuộn xuống cuối của ScrollView
   };
+  // const openModal = () => {
+  //   setModalVisible(true);
+  // };
+  // const closeModal = () => {
+  //   setModalVisible(false);
+  // };
+  
   //Load
   const loadMessage = async ()=>{
     const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/message/find/${chatId}`, {
@@ -399,11 +409,6 @@ const ScreenChatRoom = ({router}) => {
       sendMessage('text');
       setMessage('');
     }
-    
-    
-
-
-    
   };
  
 
@@ -411,7 +416,7 @@ const ScreenChatRoom = ({router}) => {
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
       <View style={styles.Container}>
       <View style={styles.Header}>
-        <TouchableOpacity >
+        <TouchableOpacity onPress={()=>{ navigation.popToTop();}} >
           <Image source={icons.back} style={[{ height: 25.5, width: 25.5,marginRight:32}]}  ></Image>
         </TouchableOpacity>
         <Text style={styles.Name}>Đạt FA</Text>
@@ -422,7 +427,18 @@ const ScreenChatRoom = ({router}) => {
           <Image source={icons.video} style={{ height: 20, width: 23.5,marginLeft:10 }} />
         </TouchableOpacity>
       </View>
-    
+
+    {/* <Modal
+      visible={modalVisible}
+      transparent={true}
+      onRequestClose={closeModal}>
+      <View style={styles.modalContainer}>
+        <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+          <Image source={require('./path/to/closeButton.png')} style={styles.closeButtonIcon} />
+        </TouchableOpacity>
+        <Image source={require('./path/to/your/image.png')} style={styles.modalImage} />
+      </View>
+    </Modal> */}
       <ScrollView style={styles.Scroll} 
       keyboardShouldPersistTaps="handled" 
       showsVerticalScrollIndicator={false} 
@@ -490,4 +506,4 @@ const ScreenChatRoom = ({router}) => {
   )
 }
 export default (ScreenChatRoom);
-registerRootComponent(ScreenChatRoom);
+// registerRootComponent(ScreenChatRoom);

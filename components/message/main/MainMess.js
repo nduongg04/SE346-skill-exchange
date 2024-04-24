@@ -20,7 +20,7 @@ import { useSocketContext } from "../../../context/SocketContext";
 
 
 
-const ScreenMess = ({router}) => {
+const ScreenMess = () => {
 	const [isFontLoaded, setFontLoaded] = useState(false);
 	const [chatRooms,setChatRooms]=useState([]);
 	const[chatAppear,setChatAppear]=useState([]);
@@ -194,7 +194,7 @@ useEffect(()=>{
 		
 	}
 	return(
-	<TouchableOpacity onPress={()=> navigation.navigate('ScreenChatRoom', { chatId: item.chatInfo._id , chat: item.chatInfo })}>
+	<TouchableOpacity onPress={()=> navigation.navigate('chatRoom/room', { chatId: item.chatInfo._id , chat: item.chatInfo })}>
 		<CardMessage   Name={item.chatInfo.members[num].username}
 		Avatar={item.chatInfo.members[num].avatar}
 		Status={
@@ -239,4 +239,4 @@ useEffect(()=>{
   };
   
 export default (ScreenMess);
-registerRootComponent(ScreenMess);
+// registerRootComponent(ScreenMess);

@@ -3,6 +3,7 @@ import { Stack } from "expo-router/stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { SocketProvider } from "../context/SocketContext";
 import { AuthProvider, useSession } from "../context/AuthContext";
+import ScreenChatRoom from "../components/message/chat_room/MainRoom";
 
 const Layout = () => {
 	const [fontsLoaded] = useFonts({
@@ -26,6 +27,7 @@ const Layout = () => {
 				<SocketProvider>
 					<Stack>
 						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+						<Stack.Screen name="chatRoom/room" options={{headerShown:false}} />
 					</Stack>
 				</SocketProvider>
 			</AuthProvider>
