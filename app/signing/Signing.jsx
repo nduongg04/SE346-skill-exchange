@@ -9,11 +9,17 @@ import ChooseKnowTopic from '../../components/register/ChooseKnowTopic';
 import UploadInfo from '../../components/register/UploadInfo';
 import Login from '../../components/login/login';
 import ForgotPassword from '../../components/login/ForgotPassword';
+import SplashScreen from '../../components/register/SplashScreen';
 const Stack = createStackNavigator();
 
 export default function Signing({navigation}) {
   return (
       <Stack.Navigator>
+        <Stack.Screen
+          name="SplashScreen"
+          component={SplashScreen}
+          options={{headerShown: false}}
+        />
         <Stack.Screen 
           name="EnterName" 
           component={EnterName}

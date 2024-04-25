@@ -33,20 +33,33 @@ const ScreenMess = () => {
 	const navigation = useNavigation();
 	const {socket,setSocket,onlineUsers,setOnlineUsers} = useSocketContext()
 	const {user} = useSession();
+	const [latestMessage, setLatestMessage] = useState([]);
 	const isFocused = useIsFocused();
 //Socket
-useEffect(()=>{
-	if(socket==null)
-	return
-	socket.on("getOnlineUsers", (users)=>{
-		setOnlineUsers(users)
-	})
+	useEffect(()=>{
+		console.log(onlineUsers)
+		if(socket==null)
+		return
+		socket.on("getOnlineUsers", (users)=>{
+			setOnlineUsers(users)
+		})
 
-	return ()=>{
-		socket.off("getOnlineUsers")
-	}
-},[])
+		socket.on("getLatestMessage", (res)=>{
+			const msg = latestMessage.findIndex((message)=> message.chatID === res.chatID)
+			if(msg){
+				const newLatestMessage = [...latestMessage]
+				newLatestMessage[msg]=res
+				setLatestMessage(newLatestMessage)
+			}else{
+				setLatestMessage((prev)=>[...prev, res])
+			}
+		})
 
+		return ()=>{
+			socket.off("getOnlineUsers");
+    		socket.off("getLatestMessage");
+		}
+	},[isFocused, latestMessage, socket])
 
 
 	const createChat= async ()=>
@@ -202,19 +215,29 @@ useEffect(()=>{
 	{
 		num=1;
 	}
-	if(item.latestMessage[0])
+	let newMessage = item.latestMessage[0]
+	const message = latestMessage.find((msg)=> msg.chatID === item.chatInfo._id)
+	if(message){
+		if(newMessage.dateTime < message.dateTime){
+			if(item.chatInfo._id === message.chatID){
+				newMessage= message
+			}
+		}
+		
+	}
+	if(newMessage)
 	{
-		if(item.latestMessage[0].senderID.id==user.id)
+		if(newMessage.senderID._id==user.id)
 		{
 			format='Bạn: '
 		}
-		if(item.latestMessage[0].type=='text')
+		if(newMessage.type=='text')
 		{
-			latest=format+item.latestMessage[0].content
+			latest=format+newMessage.content
 		}
 		else
 		{
-			latest=format+ "Đã gửi một " + item.latestMessage[0].type;
+			latest=format+ "Đã gửi một " + newMessage.type;
 		}
 		
 	}
@@ -223,9 +246,9 @@ useEffect(()=>{
 		<CardMessage   Name={item.chatInfo.members[num].username}
 		Avatar={item.chatInfo.members[num].avatar}
 		Status={
-			 onlineUsers?.some((user)=>{
-				user.userID === item.chatInfo?.members?.find((member)=> member._id !== user.id)
-			 }) ? "online" : "offline"
+			onlineUsers?.some((onlineUser)=>
+			onlineUser.userID === item.chatInfo.members[num]._id
+			) ? "online" : "offline"
 		} 
 		Time="30m"
 		Recent={latest}
