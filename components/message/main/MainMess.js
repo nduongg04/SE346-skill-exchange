@@ -33,20 +33,28 @@ const ScreenMess = () => {
 	const navigation = useNavigation();
 	const {socket,setSocket,onlineUsers,setOnlineUsers} = useSocketContext()
 	const {user} = useSession();
+	const [latestMessage, setLatestMessage] = useState("");
 	
 //Socket
-useEffect(()=>{
-	if(socket==null)
-	return
-	socket.on("getOnlineUsers", (users)=>{
-		setOnlineUsers(users)
-	})
+	useEffect(()=>{
+		console.log(onlineUsers)
+		if(socket==null)
+		return
+		socket.on("getOnlineUsers", (users)=>{
+			setOnlineUsers(users)
+		})
 
-	return ()=>{
-		socket.off("getOnlineUsers")
-	}
-},[])
+		return ()=>{
+			socket.off("getOnlineUsers")
+		}
+	},[])
 
+	useEffect(()=>{
+		if(socket== null) return
+		socket.on("getMessage", (res)=>{
+			setLatestMessage(res)
+		})
+	}, [])
 
 
 	const createChat= async ()=>
@@ -199,19 +207,20 @@ useEffect(()=>{
 	{
 		num=1;
 	}
-	if(item.latestMessage[0])
+	const newMessage = latestMessage === "" ? item.latestMessage[0] : latestMessage
+	if(newMessage)
 	{
 		if(item.latestMessage[0].senderID.id==user.id)
 		{
 			format='Bạn: '
 		}
-		if(item.latestMessage[0].type=='text')
+		if(newMessage.type=='text')
 		{
-			latest=format+item.latestMessage[0].content
+			latest=format+newMessage.content
 		}
 		else
 		{
-			latest=format+ "Đã gửi một " + item.latestMessage[0].type;
+			latest=format+ "Đã gửi một " + newMessage.type;
 		}
 		
 	}
@@ -220,9 +229,9 @@ useEffect(()=>{
 		<CardMessage   Name={item.chatInfo.members[num].username}
 		Avatar={item.chatInfo.members[num].avatar}
 		Status={
-			 onlineUsers?.some((user)=>{
-				user.userID === item.chatInfo.members[num]._id
-			 }) ? "online" : "offline"
+			onlineUsers?.some((onlineUser)=>
+			onlineUser.userID === item.chatInfo.members[num]._id
+			) ? "online" : "offline"
 		} 
 		Time="30m"
 		Recent={latest}
