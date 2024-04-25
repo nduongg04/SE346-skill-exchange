@@ -221,7 +221,7 @@ useEffect(()=>{
 		Avatar={item.chatInfo.members[num].avatar}
 		Status={
 			 onlineUsers?.some((user)=>{
-				user.userID === item.chatInfo?.members?.find((member)=> member._id !== user.id)
+				user.userID === item.chatInfo.members[num]._id
 			 }) ? "online" : "offline"
 		} 
 		Time="30m"
