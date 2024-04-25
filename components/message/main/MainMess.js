@@ -13,7 +13,7 @@ import { useFonts } from 'expo-font';
 import { Message } from "../chat_room/message";
 import axios from 'axios';
 import { createStackNavigator } from '@react-navigation/native-stack';
-import { useNavigation,useFocusEffect } from '@react-navigation/native';
+import { useNavigation,useIsFocused } from '@react-navigation/native';
 import { useSocketContext } from "../../../context/SocketContext";
 import { useSession } from "../../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -33,7 +33,7 @@ const ScreenMess = () => {
 	const navigation = useNavigation();
 	const {socket,setSocket,onlineUsers,setOnlineUsers} = useSocketContext()
 	const user=JSON.parse(useSession().user);
-	
+	const isFocused = useIsFocused();
 //Socket
 useEffect(()=>{
 	if(socket==null)
@@ -178,17 +178,18 @@ useEffect(()=>{
 		  };
 		  
 		  loadFont();
-		  loadToken();
-		  if(accessToken!='')
-		  loadChat();
+		  if (isFocused) {
+			loadToken();
+			if(accessToken!='')
+			loadChat();
+		  }
+		 
 	}
-  }, [searchText,accessToken]);
+  }, [searchText,accessToken,isFocused]);
 	if (!isFontLoaded) {
     return null; 
   }
-  useFocusEffect(()=>{
-	
-  })
+ 
  
   const handleSearch=(text)=>{
 	setSearchText(''+text);
