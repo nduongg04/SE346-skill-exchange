@@ -108,7 +108,7 @@ const ScreenChatRoom = ({router}) => {
         let sender=''
         
         // console.log((messageList));
-        if(messageList[i].senderID._id === user.id)
+        if(messageList[i].senderID.id === user.id)
         {
           sender="My message"
         }

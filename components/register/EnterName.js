@@ -11,14 +11,16 @@ import GradienLayout from './TemplateLayout/GradientLayout';
 import Spinner from 'react-native-loading-spinner-overlay';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSession } from '../../context/AuthContext';
+import { io } from 'socket.io-client';
+import { useSocketContext } from '../../context/SocketContext';
 
 const EnterName = ({ navigation }) => {
     const [fontsLoaded, setFontsLoaded] = useState(false);
     const [name, setName] = useState('');
     const [nameError, setNameError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
-    const { login, logout } = useSession();
-
+    const { user,login, logout } = useSession();
+    const {socket, setSocket} = useSocketContext();
     useEffect(() => {
         const loadFontsAsync = async () => {
             await Font.loadAsync(customFonts);
@@ -44,6 +46,29 @@ const EnterName = ({ navigation }) => {
             }
         }
     };
+
+//connect socket
+    useEffect(()=>{
+        const newSocket= io("https://se346-skillexchangebe.onrender.com")
+        setSocket(newSocket)
+        return ()=>{
+            newSocket.disconnect()
+        }
+    },[user])
+    useEffect(() => {
+        if (socket === null || user === null) return;
+    
+        socket.emit("addOnlineUser", user?._id);
+    
+        socket.on("getOnlineUsers", (users) => {
+          setOnlineUsers(users);
+        });
+    
+        return () => {
+          socket.off("getOnlineUsers");
+        };
+      }, [socket, user]);
+//------------------------
 
     useEffect(() => {
         const fetchData = async () => {
