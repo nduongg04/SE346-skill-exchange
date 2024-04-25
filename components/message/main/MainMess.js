@@ -54,6 +54,10 @@ const ScreenMess = () => {
 		socket.on("getMessage", (res)=>{
 			setLatestMessage(res)
 		})
+
+		return ()=>{
+			socket.off("getMessage")
+		}
 	}, [])
 
 
