@@ -39,7 +39,8 @@ export const styles = StyleSheet.create(
         fontFamily:'Inter-SemiBold',
         fontSize:23.5,
         flex:1,
-        textAlign:'center',   
+        textAlign:'center', 
+        paddingRight:15
     },
     Scroll:
     {

@@ -4,7 +4,6 @@ import { registerRootComponent } from 'expo';
 import { icons } from "@constants";
 import { loadFonts, styles } from "./mainRoom.style";
 import { Message } from './message';
-// import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import * as ImagePicker from 'expo-image-picker';
 import { Audio } from 'expo-av';
 import axios from 'axios';
@@ -14,44 +13,58 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import * as FileSystem from 'expo-file-system';
 import * as DocumentPicker from 'expo-document-picker';
 import { useSocketContext } from '../../../context/SocketContext';
+import { useNavigation } from '@react-navigation/native';
+import { useSession } from '../../../context/AuthContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import a from '@ant-design/react-native/lib/modal/operation';
 
 
 const ScreenChatRoom = ({router}) => {
   const route = useRoute();
+  const {user} = useSession();
   const scrollViewRef = useRef(null);
   const [isFontLoaded, setFontLoaded] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
   const [message, setMessage] = useState('');
-  // const [image, setImage] = useState([]);
   const [record, setRecord] = useState();
   const [isRecord, setIsRecord] = useState(false)
   const [seconds, setSeconds] = useState(0);
   const [idCount,setIdCount]=useState(null);
-  const [myId,setMyid]=useState("661aceb50b954258a9b6dc70");
-  const [accessToken,setAccessToken]=useState('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODI5NSwiZXhwIjoxNzE1NzkwMjk1fQ.4EHaQTxyYqJrQARjGcPXBYG6BYUOTRzZ51tYBju6JRQ');
+  // const [user.id,setMyid]=useState("661aceb50b954258a9b6dc70");
+  const [accessToken,setAccessToken]=useState('');
   const [messageList, setMessageList]=useState([]);
-  const[myName,setMyName]=useState('Duc');
   const[chatId,setChatId]=useState(route.params.chatId)//router.param.chatID
   const {chat} = route.params
   const [newMessageData, setNewMessage] = useState(null)
   const [test, setTest]= useState('');
   const {socket,setSocket,onlineUsers,setOnlineUsers}= useSocketContext()
-  const recipientID = chat?.members?.find((member)=> member.id !== myId)
+  
+  const name=route.params.name
+// const [modalVisible, setModalVisible] = useState(false);
+  const navigation = useNavigation();
 //socket send message
   useEffect(()=>{
     if(socket===null) return
-    
+    const recipientID = chat?.members?.find((member)=> member.id !== user.id)._id
+    console.log(recipientID)
+    console.log("socket " + socket.id)
     socket.emit("sendMessage", {...newMessageData,recipientID})
-  },[message])
+  },[newMessageData])
 
 //reciever Socket
   useEffect(()=>{
     if(socket===null) return
+    
+    console.log("socket ")
     socket.on("getMessage", (res)=>{
       if(chatId !== res.chatID) return
       setMessageList([...messageList, res])
     })
-  }, [socket, messageList, setMessageList])
+
+    return ()=>{
+      socket.off("getMessage")
+    }
+  }, [socket, messageList])
 
   //set up
   const formatTimeRecord = (time) => {
@@ -101,8 +114,9 @@ const ScreenChatRoom = ({router}) => {
       for(let i=0;i<messageList.length;i++)
       {
         let sender=''
+        
         // console.log((messageList));
-        if(messageList[i].senderID._id === myId)
+        if(messageList[i].senderID.id === user.id)
         {
           sender="My message"
         }
@@ -133,13 +147,19 @@ const ScreenChatRoom = ({router}) => {
   const handleKeyboardDidShow = () => {
     scrollViewRef.current.scrollToEnd({ animated: true }); // Cuộn xuống cuối của ScrollView
   };
+
   //Load
+  const loadToken =async ()=>{
+    const token = await AsyncStorage.getItem('refreshToken');
+    if(token)
+    setAccessToken(token);
+  }
   const loadMessage = async ()=>{
     const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/message/find/${chatId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODI5NSwiZXhwIjoxNzE1NzkwMjk1fQ.4EHaQTxyYqJrQARjGcPXBYG6BYUOTRzZ51tYBju6JRQ',
+        Authorization: `Bearer ${accessToken}`,
       },}); 
       if(response.status==200){
         setMessageList(response.data.data);
@@ -160,7 +180,7 @@ const ScreenChatRoom = ({router}) => {
       },
       body: JSON.stringify({
        chatID:`${chatId}`,
-       senderID:`${myId}`,
+       senderID:`${user.id}`,
        content:Content,
        type:Type,
       })
@@ -252,8 +272,10 @@ const ScreenChatRoom = ({router}) => {
       setFontLoaded(true);
     };
     loadFont();
+    loadToken();
+    if(accessToken!='')
     loadMessage();
-  }, []);
+  }, [accessToken]);
   if (!isFontLoaded) {
     return null; // Return null or a loading indicator while the font is loading
   };
@@ -310,7 +332,7 @@ const ScreenChatRoom = ({router}) => {
       const listImage = Array.from(result.assets);
       for(let i=0;i<listImage.length;i++)
       {
-        let imageUri=await uploadImage(listImage[i].uri,myId);
+        let imageUri=await uploadImage(listImage[i].uri,user.id);
         console.log(imageUri)
           if(imageUri)
           {
@@ -332,8 +354,9 @@ const ScreenChatRoom = ({router}) => {
       quality: 1,
     });
     if (!result.canceled) {
-      image=result.assets;
-      const imageUrl= await uploadImage(image.uri,myId)
+      image= result.assets;
+      console.log(image[0].uri)
+      const imageUrl= await uploadImage(image[0].uri,user.id)
       if(imageUrl)
       {
         sendMessage('image',imageUrl);
@@ -374,7 +397,7 @@ const ScreenChatRoom = ({router}) => {
     if(isRecord)
     {
       await stopRecording();
-      const response= await uploadFile(record.getURI(),myId);
+      const response= await uploadFile(record.getURI(),user.id);
       console.log(response)
       if(response)
       {
@@ -399,11 +422,6 @@ const ScreenChatRoom = ({router}) => {
       sendMessage('text');
       setMessage('');
     }
-    
-    
-
-
-    
   };
  
 
@@ -411,10 +429,10 @@ const ScreenChatRoom = ({router}) => {
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
       <View style={styles.Container}>
       <View style={styles.Header}>
-        <TouchableOpacity >
-          <Image source={icons.back} style={[{ height: 25.5, width: 25.5,marginRight:32}]}  ></Image>
+        <TouchableOpacity onPress={()=>{ navigation.goBack('(tabs)');}} >
+          <Image source={icons.back} style={[{ height: 25.5, width: 25.5,marginRight:40}]}  ></Image>
         </TouchableOpacity>
-        <Text style={styles.Name}>Đạt FA</Text>
+        <Text style={styles.Name} numberOfLines={1} ellipsizeMode="tail">{name}</Text>
         <TouchableOpacity >
           <Image source={icons.call} style={{ height: 20.5, width: 20.5 }}></Image>
         </TouchableOpacity>
@@ -422,7 +440,7 @@ const ScreenChatRoom = ({router}) => {
           <Image source={icons.video} style={{ height: 20, width: 23.5,marginLeft:10 }} />
         </TouchableOpacity>
       </View>
-    
+
       <ScrollView style={styles.Scroll} 
       keyboardShouldPersistTaps="handled" 
       showsVerticalScrollIndicator={false} 
@@ -490,4 +508,4 @@ const ScreenChatRoom = ({router}) => {
   )
 }
 export default (ScreenChatRoom);
-registerRootComponent(ScreenChatRoom);
+// registerRootComponent(ScreenChatRoom);

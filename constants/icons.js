@@ -39,6 +39,7 @@ import play from "../assets/icons/Play_icon.png";
 import pause from "../assets/icons/Pause_icon.png";
 import file from "../assets/icons/File_icon.png";
 import backIcon from "../assets/icons/back.svg";
+import close from "../assets/icons/Close_icon.png"
 export default {
 	backLoading,
 	cancel,
@@ -79,4 +80,5 @@ export default {
 	play,
 	pause,
 	file,
+	close
 };

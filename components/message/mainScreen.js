@@ -7,8 +7,8 @@ import ScreenChatRoom from './chat_room/MainRoom';
 const Stack = createStackNavigator();
 const ScreenMessage =()=>{
     return(
-        <NavigationContainer>
-            <Stack.Navigator>
+        <NavigationContainer independent={true}>
+            {/* <Stack.Navigator>
                 <Stack.Screen
                 name='ScreenMess'
                 component={ScreenMess}
@@ -17,10 +17,10 @@ const ScreenMessage =()=>{
                 name='ScreenChatRoom'
                 component={ScreenChatRoom}
                 options={{headerShown: false}}/>
-            </Stack.Navigator>
+            </Stack.Navigator> */}
         </NavigationContainer>
     )
 }
 export default(ScreenMessage);
-registerRootComponent(ScreenMessage);
+// registerRootComponent(ScreenMessage);
 
