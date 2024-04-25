@@ -428,10 +428,10 @@ const ScreenChatRoom = ({router}) => {
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
       <View style={styles.Container}>
       <View style={styles.Header}>
-        <TouchableOpacity onPress={()=>{ navigation.navigate('(tabs)');}} >
-          <Image source={icons.back} style={[{ height: 25.5, width: 25.5,marginRight:32}]}  ></Image>
+        <TouchableOpacity onPress={()=>{ navigation.goBack('(tabs)');}} >
+          <Image source={icons.back} style={[{ height: 25.5, width: 25.5,marginRight:40}]}  ></Image>
         </TouchableOpacity>
-        <Text style={styles.Name}>{name}</Text>
+        <Text style={styles.Name} numberOfLines={1} ellipsizeMode="tail">{name}</Text>
         <TouchableOpacity >
           <Image source={icons.call} style={{ height: 20.5, width: 20.5 }}></Image>
         </TouchableOpacity>

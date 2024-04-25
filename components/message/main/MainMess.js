@@ -13,7 +13,7 @@ import { useFonts } from 'expo-font';
 import { Message } from "../chat_room/message";
 import axios from 'axios';
 import { createStackNavigator } from '@react-navigation/native-stack';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,useIsFocused } from '@react-navigation/native';
 import { useSocketContext } from "../../../context/SocketContext";
 import { useSession } from "../../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -34,7 +34,7 @@ const ScreenMess = () => {
 	const {socket,setSocket,onlineUsers,setOnlineUsers} = useSocketContext()
 	const {user} = useSession();
 	const [latestMessage, setLatestMessage] = useState(null);
-	
+	const isFocused = useIsFocused();
 //Socket
 	useEffect(()=>{
 		console.log(onlineUsers)
@@ -190,16 +190,19 @@ const ScreenMess = () => {
 		  };
 		  
 		  loadFont();
-		  loadToken();
-		  if(accessToken!='')
-		  loadChat();
+		  if (isFocused) {
+			loadToken();
+			if(accessToken!='')
+			loadChat();
+		  }
+		 
 	}
-  }, [searchText,accessToken]);
+  }, [searchText,accessToken,isFocused]);
 	if (!isFontLoaded) {
     return null; 
   }
  
-  
+ 
   const handleSearch=(text)=>{
 	setSearchText(''+text);
   }
@@ -211,10 +214,15 @@ const ScreenMess = () => {
 	{
 		num=1;
 	}
-	const newMessage = !latestMessage? item.latestMessage[0] : latestMessage
+	let newMessage = item.latestMessage[0]
+	if(latestMessage){
+		if(item.chatInfo._id === latestMessage.chatID){
+			newMessage= latestMessage
+		}
+	}
 	if(newMessage)
 	{
-		if(item.latestMessage[0].senderID.id==user.id)
+		if(newMessage.senderID._id==user.id)
 		{
 			format='Bạn: '
 		}
