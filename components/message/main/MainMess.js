@@ -33,7 +33,7 @@ const ScreenMess = () => {
 	const navigation = useNavigation();
 	const {socket,setSocket,onlineUsers,setOnlineUsers} = useSocketContext()
 	const {user} = useSession();
-	const [latestMessage, setLatestMessage] = useState("");
+	const [latestMessage, setLatestMessage] = useState(null);
 	
 //Socket
 	useEffect(()=>{
@@ -211,7 +211,7 @@ const ScreenMess = () => {
 	{
 		num=1;
 	}
-	const newMessage = latestMessage === "" ? item.latestMessage[0] : latestMessage
+	const newMessage = !latestMessage? item.latestMessage[0] : latestMessage
 	if(newMessage)
 	{
 		if(item.latestMessage[0].senderID.id==user.id)
