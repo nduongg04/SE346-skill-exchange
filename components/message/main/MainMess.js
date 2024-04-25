@@ -33,7 +33,7 @@ const ScreenMess = () => {
 	const navigation = useNavigation();
 	const {socket,setSocket,onlineUsers,setOnlineUsers} = useSocketContext()
 	const {user} = useSession();
-	const [latestMessage, setLatestMessage] = useState(null);
+	const [latestMessage, setLatestMessage] = useState([]);
 	const isFocused = useIsFocused();
 //Socket
 	useEffect(()=>{
@@ -44,16 +44,22 @@ const ScreenMess = () => {
 			setOnlineUsers(users)
 		})
 
-		socket.on("getMessage", (res)=>{
-			console.log(res)
-			setLatestMessage(res)
+		socket.on("getLatestMessage", (res)=>{
+			const msg = latestMessage.findIndex((message)=> message.chatID === res.chatID)
+			if(msg){
+				const newLatestMessage = [...latestMessage]
+				newLatestMessage[msg]=res
+				setLatestMessage(newLatestMessage)
+			}else{
+				setLatestMessage((prev)=>[...prev, res])
+			}
 		})
 
 		return ()=>{
 			socket.off("getOnlineUsers");
-    		socket.off("getMessage");
+    		socket.off("getLatestMessage");
 		}
-	},[isFocused])
+	},[isFocused, latestMessage, socket])
 
 
 	const createChat= async ()=>
@@ -210,10 +216,11 @@ const ScreenMess = () => {
 		num=1;
 	}
 	let newMessage = item.latestMessage[0]
-	if(latestMessage){
-		if(newMessage.dateTime < latestMessage.dateTime){
-			if(item.chatInfo._id === latestMessage.chatID){
-				newMessage= latestMessage
+	const message = latestMessage.find((msg)=> msg.chatID === item.chatInfo._id)
+	if(message){
+		if(newMessage.dateTime < message.dateTime){
+			if(item.chatInfo._id === message.chatID){
+				newMessage= message
 			}
 		}
 		
