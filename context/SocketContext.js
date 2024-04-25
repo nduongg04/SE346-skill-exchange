@@ -10,13 +10,6 @@ export const useSocketContext = () => {
 export const SocketProvider = ({ children }) => {
 	const [socket, setSocket] = useState(null);
 	const [onlineUsers, setOnlineUsers] = useState([]);
-	useEffect(() => {
-		return () => {
-		  if (socket) {
-			socket.disconnect();
-		  }
-		};
-	  }, [socket]);
 	return (
 		<SocketContext.Provider
 			value={{ socket, setSocket, onlineUsers, setOnlineUsers }}

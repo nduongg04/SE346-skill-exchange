@@ -20,7 +20,7 @@ const EnterName = ({ navigation }) => {
     const [nameError, setNameError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const { user,login, logout } = useSession();
-    const {socket, setSocket} = useSocketContext();
+    const {socket, setSocket, onlineUsers, setOnlineUsers} = useSocketContext();
     useEffect(() => {
         const loadFontsAsync = async () => {
             await Font.loadAsync(customFonts);
@@ -51,6 +51,7 @@ const EnterName = ({ navigation }) => {
     useEffect(()=>{
         const newSocket= io("https://se346-skillexchangebe.onrender.com")
         setSocket(newSocket)
+        console.log("id: "+newSocket.id)
         return ()=>{
             newSocket.disconnect()
         }
@@ -59,11 +60,11 @@ const EnterName = ({ navigation }) => {
         if (socket === null || user === null) return;
     
         socket.emit("addOnlineUser", user?._id);
-    
         socket.on("getOnlineUsers", (users) => {
           setOnlineUsers(users);
+          console.log(onlineUsers)
         });
-    
+        
         return () => {
           socket.off("getOnlineUsers");
         };

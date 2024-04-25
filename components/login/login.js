@@ -33,7 +33,7 @@ const Login = ({ navigation }) => {
   useEffect(() => {
     const newSocket = io(`${baseURL}`);
     setSocket(newSocket);
-
+    
     return () => {
       newSocket.disconnect();
     };
