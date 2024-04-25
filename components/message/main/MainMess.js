@@ -44,21 +44,16 @@ const ScreenMess = () => {
 			setOnlineUsers(users)
 		})
 
-		return ()=>{
-			socket.off("getOnlineUsers")
-		}
-	},[])
-
-	useEffect(()=>{
-		if(socket== null) return
 		socket.on("getMessage", (res)=>{
+			console.log(res)
 			setLatestMessage(res)
 		})
 
 		return ()=>{
-			socket.off("getMessage")
+			socket.off("getOnlineUsers");
+    		socket.off("getMessage");
 		}
-	}, [])
+	},[isFocused])
 
 
 	const createChat= async ()=>
@@ -216,9 +211,12 @@ const ScreenMess = () => {
 	}
 	let newMessage = item.latestMessage[0]
 	if(latestMessage){
-		if(item.chatInfo._id === latestMessage.chatID){
-			newMessage= latestMessage
+		if(newMessage.dateTime < latestMessage.dateTime){
+			if(item.chatInfo._id === latestMessage.chatID){
+				newMessage= latestMessage
+			}
 		}
+		
 	}
 	if(newMessage)
 	{
