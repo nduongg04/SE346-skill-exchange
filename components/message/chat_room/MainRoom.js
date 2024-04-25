@@ -354,8 +354,9 @@ const ScreenChatRoom = ({router}) => {
       quality: 1,
     });
     if (!result.canceled) {
-      image=result.assets;
-      const imageUrl= await uploadImage(image.uri,user.id)
+      image= result.assets;
+      console.log(image[0].uri)
+      const imageUrl= await uploadImage(image[0].uri,user.id)
       if(imageUrl)
       {
         sendMessage('image',imageUrl);
