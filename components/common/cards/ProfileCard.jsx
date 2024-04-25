@@ -84,7 +84,7 @@ const ProfileCard = ({
 							{/* <TouchableOpacity
 								style={{ width: 30, height: 30, backgroundColor: "#fff" }}
 							>
-								<Image source={icons.more} style={{ width: 20, height: 20 }} />
+								<Image source={icons.more} style={{ width: 30, height: 30 }} />
 							</TouchableOpacity> */}
 						</View>
 
