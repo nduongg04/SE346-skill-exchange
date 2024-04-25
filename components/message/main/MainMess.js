@@ -32,7 +32,7 @@ const ScreenMess = () => {
 	const prevSearchText = useRef('');
 	const navigation = useNavigation();
 	const {socket,setSocket,onlineUsers,setOnlineUsers} = useSocketContext()
-	const user=JSON.parse(useSession().user);
+	const {user} = useSession();
 	
 //Socket
 useEffect(()=>{
