@@ -13,7 +13,7 @@ import { useFonts } from 'expo-font';
 import { Message } from "../chat_room/message";
 import axios from 'axios';
 import { createStackNavigator } from '@react-navigation/native-stack';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,useFocusEffect } from '@react-navigation/native';
 import { useSocketContext } from "../../../context/SocketContext";
 import { useSession } from "../../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -186,6 +186,9 @@ useEffect(()=>{
 	if (!isFontLoaded) {
     return null; 
   }
+  useFocusEffect(()=>{
+	
+  })
  
   const handleSearch=(text)=>{
 	setSearchText(''+text);
