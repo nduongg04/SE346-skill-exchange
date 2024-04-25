@@ -2,18 +2,7 @@ import CheckRefreshToken from "../checkrefreshtoken";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const handleSessionExpired = () => {
-	Alert.alert("Session Expired", "Please login again", [
-		{
-			text: "OK",
-			onPress: () => {
-				AsyncStorage.removeItem("refreshToken");
-				AsyncStorage.removeItem("accessToken");
-			},
-		},
-	]);
-	router.replace("/login");
-};
+import HandleSessionExpired from "../handlesession";
 
 const GetData = async (url) => {
 	const accessToken = await AsyncStorage.getItem("accessToken");
@@ -42,11 +31,11 @@ const GetData = async (url) => {
 
 	const checkRefreshToken = async () => {
 		if (!refreshToken) {
-			handleSessionExpired();
+			HandleSessionExpired();
 		}
 		const accessToken = CheckRefreshToken(refreshToken);
 		if (accessToken === null) {
-			handleSessionExpired();
+			HandleSessionExpired();
 		}
 		AsyncStorage.setItem("accessToken", accessToken);
 	};
