@@ -64,7 +64,7 @@ const ScreenChatRoom = ({router}) => {
     return ()=>{
       socket.off("getMessage")
     }
-  }, [socket, messageList, setMessageList])
+  }, [socket, messageList])
 
   //set up
   const formatTimeRecord = (time) => {
