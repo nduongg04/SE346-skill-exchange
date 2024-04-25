@@ -185,20 +185,17 @@ const ScreenMess = () => {
 	else
 	{
 		setSearchText('')
-		const loadFont = async () => {
-			await loadFonts();
-			setFontLoaded(true);
-		  };
-		  
-		  loadFont();
-		  if (isFocused) {
-			loadToken();
-			if(accessToken!='')
-			loadChat();
-		  }
-		 
+		loadToken();
+		if(accessToken!='')
+		loadChat();
 	}
   }, [searchText,accessToken,isFocused]);
+	useEffect(()=>{
+	const loadFont = async () => {
+	await loadFonts();
+		setFontLoaded(true);}; 
+		loadFont();
+   })
 	if (!isFontLoaded) {
     return null; 
   }

@@ -28,11 +28,11 @@ export const  Message=  (props) =>{
             onRequestClose={closeModal}
            
         >
-            <View  style={{width:'100%', height:'100%', backgroundColor:'rgba(217, 217, 217, 0.9)'}}>
+            <View  style={{width:'100%', height:'100%', backgroundColor:'rgba(217, 217, 217, 0.95)'}}>
             <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
                 <Image source={icons.close} style={{width:35,height:35,marginLeft:'auto'}} />
             </TouchableOpacity>
-            <View style={{width:'80%',height:'80%', marginLeft:'10%',marginTop:'10%'}}>
+            <View style={{width:'85%',height:'85%', marginLeft:'7.5%',marginTop:'7.5%'}}>
             
             <Image source={{uri: props.Content}} style={{width:'100%', height: '100%', resizeMode:'contain'}} />
             </View>
@@ -93,13 +93,13 @@ export const  Message=  (props) =>{
         case 'image':
             contentType=
                 <View style={{marginTop:3, marginRight:5}}>
-                    <TouchableOpacity  style={{width:150,height:200,overflow: 'hidden'}} onPress={openModal}>
+                    <TouchableOpacity  style={{width:150,height:200,overflow: 'hidden',borderRadius:15, borderColor:'#FFBE98', borderWidth:1}} onPress={openModal}>
                         <Image  style={{width:'100%', height: '100%', resizeMode: "cover"}} source={{uri: props.Content}}/>  
                     </TouchableOpacity>
                 </View>;
             break;
         case 'record':
-            contentType=<View style={{ justifyContent: 'center',alignItems:'center',width:70, height:45,borderRadius:20, backgroundColor:"#F2F2F2" }}>
+            contentType=<View style={{ justifyContent: 'center',alignItems:'center',width:70, height:45,borderRadius:20, backgroundColor:"#D4D1D1", marginTop:5, marginRight:5 }}>
                 <TouchableOpacity onPress={handlePressPlay}>
                     <Image source={isPlay?icons.pause:icons.play} style={isPlay?{width:23, height:23, resizeMode:"cover"}:{width:30, height:30, resizeMode:"cover"}}/>
                 </TouchableOpacity>
@@ -144,13 +144,13 @@ export const  Message=  (props) =>{
         case 'image':
             contentType=
             <View style={{marginTop:3,  marginLeft:5}}>
-                    <TouchableOpacity  style={{width:150,height:200,overflow: 'hidden'}} onPress={openModal}>
+                    <TouchableOpacity  style={{width:150,height:200,overflow: 'hidden',borderRadius:15, borderColor:'#FF823A', borderWidth:1}} onPress={openModal}>
                         <Image  style={{width:'100%', height: '100%', resizeMode: "cover"}} source={{uri: props.Content}}/>  
                     </TouchableOpacity>
             </View>;
             break;
         case 'record':
-            contentType=<View style={{ justifyContent: 'center',alignItems:'center',width:70, height:45,borderRadius:20, backgroundColor:"#F2F2F2" }}>
+            contentType=<View style={{ justifyContent: 'center',alignItems:'center',width:70, height:45,borderRadius:20, backgroundColor:"#D4D1D1",marginTop:5, marginLeft:5  }}>
                 <TouchableOpacity onPress={handlePressPlay}>
                     <Image source={isPlay?icons.pause:icons.play} style={isPlay?{width:23, height:23, resizeMode:"cover"}:{width:30, height:30, resizeMode:"cover"}}/>
                 </TouchableOpacity>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect,useRef } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, KeyboardAvoidingView, TextInput,Modal,Linking } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Image, KeyboardAvoidingView, TextInput,Modal,Linking,ActivityIndicator } from 'react-native';
 import { registerRootComponent } from 'expo';
 import { icons } from "@constants";
 import { loadFonts, styles } from "./mainRoom.style";
@@ -16,7 +16,7 @@ import { useSocketContext } from '../../../context/SocketContext';
 import { useNavigation } from '@react-navigation/native';
 import { useSession } from '../../../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import a from '@ant-design/react-native/lib/modal/operation';
+import LoadingOverlay from '../loadingOverlay';
 
 
 const ScreenChatRoom = ({router}) => {
@@ -30,7 +30,6 @@ const ScreenChatRoom = ({router}) => {
   const [isRecord, setIsRecord] = useState(false)
   const [seconds, setSeconds] = useState(0);
   const [idCount,setIdCount]=useState(null);
-  // const [user.id,setMyid]=useState("661aceb50b954258a9b6dc70");
   const [accessToken,setAccessToken]=useState('');
   const [messageList, setMessageList]=useState([]);
   const[chatId,setChatId]=useState(route.params.chatId)//router.param.chatID
@@ -38,6 +37,8 @@ const ScreenChatRoom = ({router}) => {
   const [newMessageData, setNewMessage] = useState(null)
   const [test, setTest]= useState('');
   const {socket,setSocket,onlineUsers,setOnlineUsers}= useSocketContext()
+  const [isLoading, setLoading] = useState(true);
+  const [isUploading,setUploading]= useState(false);
   
   const name=route.params.name
 // const [modalVisible, setModalVisible] = useState(false);
@@ -155,7 +156,8 @@ const ScreenChatRoom = ({router}) => {
     setAccessToken(token);
   }
   const loadMessage = async ()=>{
-    const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/message/find/${chatId}`, {
+    try{
+      const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/message/find/${chatId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -166,12 +168,27 @@ const ScreenChatRoom = ({router}) => {
       }
       else
       {
-       alert("Something went wrong")
+        Alert.alert(
+          'Thông báo', 
+          'Lỗi kết nối với sever', 
+        )
       }
+    }
+    catch{
+      Alert.alert(
+				'Thông báo', 
+				'Ứng dụng đang gặp lỗi', 
+			)
+		}
+		finally{
+			setLoading(false)
+		}
+		
   }
   const sendMessage= async(Type,Content)=>{
     if(!Content)
     Content=message
+  try{
     const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/message/send',{
       method:'POST',
       headers:{
@@ -185,6 +202,7 @@ const ScreenChatRoom = ({router}) => {
        type:Type,
       })
     });
+    console.log(response)
     if(response.status==200)
     {
       const json = await response.json();
@@ -192,8 +210,19 @@ const ScreenChatRoom = ({router}) => {
       setMessageList([...messageList,json.data])
     }
     else{
-      alert("Something went wrong");
+      Alert.alert(
+				'Thông báo', 
+				'Không gửi được tin nhắn', 
+			)
     }
+  }
+  catch{
+    Alert.alert(
+      'Thông báo', 
+      'Không gửi được tin nhắn', 
+    )
+  }
+    
     
     
   }
@@ -214,9 +243,8 @@ const ScreenChatRoom = ({router}) => {
               'Content-Type': 'multipart/form-data',
           },
       });
-      if(response.ok){
+      if(response.status==200){
         const json = await response.json();
-        console.log("Up: "+json.image);
         return json.image;
       }
       else{
@@ -228,6 +256,9 @@ const ScreenChatRoom = ({router}) => {
     catch(error){
       alert('Upload image failed: ' + error.message);
       return false;
+    }
+    finally{
+      setUploading(false)
     }
   }
   const uploadFile = async (recordUri, name) => {
@@ -250,9 +281,7 @@ const ScreenChatRoom = ({router}) => {
           },
       });
       if(response.ok){
-        console.log(response);
-        const json = await response.json();
-        console.log(json)
+        const json = await response.json();      
         return json;
       }
       else{
@@ -264,6 +293,9 @@ const ScreenChatRoom = ({router}) => {
     catch(error){
       alert('Upload record failed: ' + error.message);
       return false;
+    }
+    finally{
+      setUploading(false)
     }
   }
   useEffect(() => {
@@ -308,7 +340,6 @@ const ScreenChatRoom = ({router}) => {
       console.log('Recording stopped');
       const uri = record.getURI();
       setTest(''+ uri);
-      console.log('Recording URI:', record);
       setIsRecord(false);
       clearInterval(idCount);
       setSeconds(0);        
@@ -329,6 +360,7 @@ const ScreenChatRoom = ({router}) => {
       quality: 1,
     });
     if (!result.canceled) {
+      setUploading(true);
       const listImage = Array.from(result.assets);
       for(let i=0;i<listImage.length;i++)
       {
@@ -343,6 +375,7 @@ const ScreenChatRoom = ({router}) => {
       setMessage(Image);
       await sendMessage('image',Image);
       setMessage('');
+      setUploading(false);
 
     }
   };
@@ -354,6 +387,7 @@ const ScreenChatRoom = ({router}) => {
       quality: 1,
     });
     if (!result.canceled) {
+      setUploading(true);
       image= result.assets;
       console.log(image[0].uri)
       const imageUrl= await uploadImage(image[0].uri,user.id)
@@ -361,11 +395,7 @@ const ScreenChatRoom = ({router}) => {
       {
         sendMessage('image',imageUrl);
         setMessage('');
-      }
-      else{
-        
-      }
-     
+      }     
     }
   };
   const handleChooseFile= async ()=>
@@ -397,23 +427,12 @@ const ScreenChatRoom = ({router}) => {
     if(isRecord)
     {
       await stopRecording();
+      setUploading(true);
       const response= await uploadFile(record.getURI(),user.id);
-      console.log(response)
       if(response)
       {
-        // const test = await fetch(response);
-        // const blob= await test.blob();
-        // const fileUri = `${FileSystem.cacheDirectory}audio.mp3`;
-        // await FileSystem.writeAsStringAsync(fileUri, blob, {
-        //     encoding: FileSystem.EncodingType.Base64,
-        // });
-
-        // // Tạo đối tượng Sound từ đường dẫn file
-        // const soundObject = new Audio.Sound();
-        // await soundObject.loadAsync({ uri: fileUri });
-
-        // // Phát âm thanh
-        // await soundObject.playAsync();
+        await sendMessage('record',response.image);
+        setMessage('')
       }
       
     }
@@ -428,6 +447,7 @@ const ScreenChatRoom = ({router}) => {
   return (
     <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
       <View style={styles.Container}>
+
       <View style={styles.Header}>
         <TouchableOpacity onPress={()=>{ navigation.goBack('(tabs)');}} >
           <Image source={icons.back} style={[{ height: 25.5, width: 25.5,marginRight:40}]}  ></Image>
@@ -440,19 +460,22 @@ const ScreenChatRoom = ({router}) => {
           <Image source={icons.video} style={{ height: 20, width: 23.5,marginLeft:10 }} />
         </TouchableOpacity>
       </View>
-
-      <ScrollView style={styles.Scroll} 
-      keyboardShouldPersistTaps="handled" 
-      showsVerticalScrollIndicator={false} 
-      onKeyboardDidShow={handleKeyboardDidShow}
-      contentContainerStyle={styles.scrollViewContainer}
-      onContentSizeChange={(contentWidth, contentHeight) => {
-      scrollViewRef.current.scrollToEnd({ animated: true });}}
-      ref={scrollViewRef} >
-              
-        {renderMessage()}   
-        {/* <Message User="My message" Content={test} Time={""} Avatar={""} Type="record" />      */}
-       </ScrollView>
+     
+     <ScrollView style={styles.Scroll} 
+          keyboardShouldPersistTaps="handled" 
+          showsVerticalScrollIndicator={false} 
+          onKeyboardDidShow={handleKeyboardDidShow}
+          contentContainerStyle={styles.scrollViewContainer}
+          onContentSizeChange={(contentWidth, contentHeight) => {
+          scrollViewRef.current.scrollToEnd({ animated: true });}}
+          ref={scrollViewRef} >
+            {isLoading ? (
+            <ActivityIndicator />) :
+            (renderMessage())
+          }
+            {/* <Message User="My message" Content={"https://firebasestorage.googleapis.com/v0/b/skillexchange-62da0.appspot.com/o/files%2F661aceb50b954258a9b6dc70?alt=media&token=57eed036-d8da-41e8-b97a-bc752a553243"} Time={""} Avatar={""} Type="record" />      */}
+      </ScrollView>
+    
       {/* bottom */}
       <View style={styles.Bottom}>
 
@@ -501,7 +524,7 @@ const ScreenChatRoom = ({router}) => {
         )}
 
       </View>
-     
+      <LoadingOverlay visible={isUploading} />
     </View>
     </KeyboardAvoidingView>
     

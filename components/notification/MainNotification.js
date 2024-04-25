@@ -9,6 +9,7 @@ import System from "./System";
 import axios from 'axios';
 import { useSession } from "../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation,useIsFocused } from '@react-navigation/native';
 const ScreenNotification = () => {
   const [isLoading, setLoading] = useState(true);
   const [isFontLoaded, setFontLoaded] = useState(false);
@@ -17,6 +18,7 @@ const ScreenNotification = () => {
   const[systems, setSystem]=useState([])
   const [accessToken,setAccessToken]=useState('');
   const {user} = useSession()
+  const isFocused = useIsFocused();
   
   const loadToken= async()=>{
 		const token = await AsyncStorage.getItem('refreshToken');
@@ -109,8 +111,8 @@ const getRequest = async () => {
   useEffect(() => {
     loadToken();
     if(accessToken!='')
-    getRequest();
-  }, [accessToken]);
+     getRequest();
+  }, [accessToken,isFocused]);
   
   useEffect(() => {
     const loadFont = async () => {
