@@ -21,7 +21,7 @@ import a from '@ant-design/react-native/lib/modal/operation';
 
 const ScreenChatRoom = ({router}) => {
   const route = useRoute();
-  const user=JSON.parse(useSession().user);
+  const {user} = useSession();
   const scrollViewRef = useRef(null);
   const [isFontLoaded, setFontLoaded] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
@@ -56,7 +56,7 @@ const ScreenChatRoom = ({router}) => {
       if(chatId !== res.chatID) return
       setMessageList([...messageList, res])
     })
-  }, [socket, messageList, setMessageList])
+  }, [])
 
   //set up
   const formatTimeRecord = (time) => {
@@ -108,7 +108,7 @@ const ScreenChatRoom = ({router}) => {
         let sender=''
         
         // console.log((messageList));
-        if(messageList[i].senderID._id === user.id)
+        if(messageList[i].senderID.id === user.id)
         {
           sender="My message"
         }
