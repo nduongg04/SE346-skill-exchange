@@ -16,7 +16,7 @@ const ScreenNotification = () => {
   const[requests, setRequest]= useState([]);
   const[systems, setSystem]=useState([])
   const [accessToken,setAccessToken]=useState('');
-  const user=JSON.parse(useSession().user);
+  const {user} = useSession()
   
   const loadToken= async()=>{
 		const token = await AsyncStorage.getItem('refreshToken');
