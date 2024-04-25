@@ -5,7 +5,6 @@ import Suzy from "@assets/icons/Suzy.png";
 import { useSession } from "../../context/AuthContext";
 export default function Index() {
     const {user} = useSession();
-    
     if (user) {
         return <Redirect href="/home" />;
     } else {

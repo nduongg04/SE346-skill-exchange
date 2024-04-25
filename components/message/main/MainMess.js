@@ -1,4 +1,4 @@
-import { View,Text,Image,ImageBackground,TextInput,ScrollView,TouchableOpacity,FlatList,Linking } from "react-native";
+import { View,Text,Image,ImageBackground,TextInput,ScrollView,TouchableOpacity,FlatList,Linking,ActivityIndicator,Alert } from "react-native";
 import React, { useState, useEffect,useRef } from 'react';
 import {loadFonts,styles} from "./mainMess.style";
 import Expo from 'expo'
@@ -13,36 +13,53 @@ import { useFonts } from 'expo-font';
 import { Message } from "../chat_room/message";
 import axios from 'axios';
 import { createStackNavigator } from '@react-navigation/native-stack';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,useIsFocused } from '@react-navigation/native';
 import { useSocketContext } from "../../../context/SocketContext";
+import { useSession } from "../../../context/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 
 
 
-const ScreenMess = ({router}) => {
+const ScreenMess = () => {
 	const [isFontLoaded, setFontLoaded] = useState(false);
 	const [chatRooms,setChatRooms]=useState([]);
 	const[chatAppear,setChatAppear]=useState([]);
-	const[myName,setMyName]=useState('Duc');
-	const [myId,setMyId]=useState('');
+	const [isLoading, setLoading] = useState(true);
 	const [accessToken,setAccessToken]=useState('');
 	const [searchText,setSearchText]=useState('');
 	const prevSearchText = useRef('');
 	const navigation = useNavigation();
 	const {socket,setSocket,onlineUsers,setOnlineUsers} = useSocketContext()
-	
+	const {user} = useSession();
+	const [latestMessage, setLatestMessage] = useState([]);
+	const isFocused = useIsFocused();
 //Socket
-useEffect(()=>{
-	socket.on("getOnlineUsers", (users)=>{
-		setOnlineUsers(users)
-	})
+	useEffect(()=>{
+		console.log(onlineUsers)
+		if(socket==null)
+		return
+		socket.on("getOnlineUsers", (users)=>{
+			setOnlineUsers(users)
+		})
 
-	return ()=>{
-		socket.off("getOnlineUsers")
-	}
-},[])
+		socket.on("getLatestMessage", (res)=>{
+			const msg = latestMessage.findIndex((message)=> message.chatID === res.chatID)
+			if(msg){
+				const newLatestMessage = [...latestMessage]
+				newLatestMessage[msg]=res
+				setLatestMessage(newLatestMessage)
+			}else{
+				setLatestMessage((prev)=>[...prev, res])
+			}
+		})
 
+		return ()=>{
+			socket.off("getOnlineUsers");
+    		socket.off("getLatestMessage");
+		}
+	},[isFocused, latestMessage, socket])
 
 
 	const createChat= async ()=>
@@ -101,18 +118,20 @@ useEffect(()=>{
             
           }
 	}
+	const loadToken= async()=>{
+		const token = await AsyncStorage.getItem('refreshToken');
+		if(token)
+		setAccessToken(token);
+	}
 	const loadChat=  async ()=>{
-		const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/chat/find/661aceb50b954258a9b6dc70`, {
+		try{
+		const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/chat/find/${user.id}`, {
 		  method: 'GET',
 		  headers: {
 			'Content-Type': 'application/json',
-			Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODI5NSwiZXhwIjoxNzE1NzkwMjk1fQ.4EHaQTxyYqJrQARjGcPXBYG6BYUOTRzZ51tYBju6JRQ',
+			Authorization: `Bearer ${accessToken}`
 		  },});
-		  if(response.status == 400){
-			alert('Something went wrong');
-		  }
-		  else
-		  {
+		  if(response.status == 200){
 			if (response.data && Array.isArray(response.data.data)) {
 				let list= [];
 				list =response.data.data;
@@ -121,7 +140,26 @@ useEffect(()=>{
 			  } else {
 				console.error("Invalid data format in response:", response.data);
 			  }
+			;
 		  }
+		  else
+		  {
+			Alert.alert(
+				'Thông báo', 
+				'Lỗi kết nối với sever', 
+			)
+		  }
+		}
+		catch{
+			Alert.alert(
+				'Thông báo', 
+				'Ứng dụng đang gặp lỗi', 
+			)
+		}
+		finally{
+			setLoading(false)
+		}
+		
 	}
   useEffect(() => {
 	if (searchText !== prevSearchText.current )
@@ -131,7 +169,7 @@ useEffect(()=>{
 		prevSearchText.current = searchText;
 		setChatAppear(chatRooms.filter(function(chat){
 			let num=0;
-			if(chat.chatInfo.members[0].username==myName)
+			if(chat.chatInfo.members[0].id==user.id)
 			{
 				num=1;
 			}
@@ -153,16 +191,18 @@ useEffect(()=>{
 		  };
 		  
 		  loadFont();
-		  setMyId('661aceb50b954258a9b6dc70');
-		  setAccessToken('eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzAzMzU4OCwiZXhwIjoxNzE1NjI1NTg4fQ.QMwYDQmD7bb7gIspkiK7HfBWZX5tie5SFInVftpGatM');
-		  // deleteChat();
-		  // createChat();
-		  loadChat();
+		  if (isFocused) {
+			loadToken();
+			if(accessToken!='')
+			loadChat();
+		  }
+		 
 	}
-  }, [searchText]);
+  }, [searchText,accessToken,isFocused]);
 	if (!isFontLoaded) {
     return null; 
   }
+ 
  
   const handleSearch=(text)=>{
 	setSearchText(''+text);
@@ -171,34 +211,44 @@ useEffect(()=>{
 	let num=0;
 	let latest='';
 	let format='';
-	if(item.chatInfo.members[0].username==myName)
+	if(item.chatInfo.members[0].id==user.id)
 	{
 		num=1;
 	}
-	if(item.latestMessage[0])
+	let newMessage = item.latestMessage[0]
+	const message = latestMessage.find((msg)=> msg.chatID === item.chatInfo._id)
+	if(message){
+		if(newMessage.dateTime < message.dateTime){
+			if(item.chatInfo._id === message.chatID){
+				newMessage= message
+			}
+		}
+		
+	}
+	if(newMessage)
 	{
-		if(item.latestMessage[0].senderID.id==myId)
+		if(newMessage.senderID._id==user.id)
 		{
 			format='Bạn: '
 		}
-		if(item.latestMessage[0].type=='text')
+		if(newMessage.type=='text')
 		{
-			latest=format+item.latestMessage[0].content
+			latest=format+newMessage.content
 		}
 		else
 		{
-			latest=format+ "Đã gửi một " + item.latestMessage[0].type;
+			latest=format+ "Đã gửi một " + newMessage.type;
 		}
 		
 	}
 	return(
-	<TouchableOpacity onPress={()=> navigation.navigate('ScreenChatRoom', { chatId: item.chatInfo._id , chat: item.chatInfo })}>
+	<TouchableOpacity onPress={()=> navigation.navigate('chatRoom/room', { chatId: item.chatInfo._id , chat: item.chatInfo, name: item.chatInfo.members[num].username })}>
 		<CardMessage   Name={item.chatInfo.members[num].username}
 		Avatar={item.chatInfo.members[num].avatar}
 		Status={
-			 onlineUsers?.some((user)=>{
-				user.userID === item.chatInfo?.members?.find((member)=> member._id !== myId)
-			 }) ? "online" : "offline"
+			onlineUsers?.some((onlineUser)=>
+			onlineUser.userID === item.chatInfo.members[num]._id
+			) ? "online" : "offline"
 		} 
 		Time="30m"
 		Recent={latest}
@@ -224,22 +274,22 @@ useEffect(()=>{
 		</View>		
 			
 		<View style={styles.Scroll} >
-			<FlatList
-				data={chatAppear}
-				renderItem={renderItem}
-				keyExtractor={(item) => item.chatInfo._id}
-				// keyExtractor={item => item._id}
-				// style={styles.flatList}
-			/>
-		</View>
-		<View style={styles.navbar}>
-			<Text>Hello</Text>
 
+		{isLoading ? (
+        <ActivityIndicator />
+       ) :
+        (<FlatList
+			data={chatAppear}
+			renderItem={renderItem}
+			keyExtractor={(item) => item.chatInfo._id}
+		/>)
+      }
+
+			
 		</View>
-				
 	  </View>
 	);
   };
   
 export default (ScreenMess);
-registerRootComponent(ScreenMess);
+// registerRootComponent(ScreenMess);

@@ -1,8 +1,42 @@
 import React from 'react'
-import { View,Text,Image,TouchableOpacity,Button } from 'react-native'
+import { View,Text,Image,TouchableOpacity,Button ,Alert} from 'react-native'
 import {loadFonts,styles} from "./notification.style";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Request=(props)=>
 {
+    const createChat= async (id1,id2)=>{
+        const token= await AsyncStorage.getItem('refreshToken');
+        try{
+            const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/chat/create',{
+			method:'POST',
+			headers:{
+			  'Content-Type': 'application/json',
+			  Authorization:`Bearer ${token}`
+			},
+			body: JSON.stringify({
+				"firstID": id1,
+				"secondID": id2
+			})
+		  })
+		  if(response.status==200)
+		  {
+			return true
+		  }
+		  else{
+			return false
+		  }
+        }
+        catch{
+            Alert.alert(
+                'Thông báo', 
+                'Ứng dụng đang gặp lỗi', 
+            )
+            return false
+         }
+
+       
+		
+    }
     const deleteRequest=async ()=>{
         try {
             const response = await fetch(`https://se346-skillexchangebe.onrender.com/api/v1/request/delete/${props.Id}`,
@@ -41,7 +75,8 @@ const Request=(props)=>
        
     }
     const handlePressAccept= async ()=>{
-        deleteRequest();
+       if( await createChat(props.SenderId,props.MyId));
+        await deleteRequest();
     }
     const moment = require('moment');
     const dateTime = moment(props.Time).format('DD/MM/YYYY HH:mm');
