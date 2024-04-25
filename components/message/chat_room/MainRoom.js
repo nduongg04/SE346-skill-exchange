@@ -47,7 +47,7 @@ const ScreenChatRoom = ({router}) => {
     if(socket===null) return
     
     socket.emit("sendMessage", {...newMessageData,recipientID})
-  },[message])
+  },[newMessageData])
 
 //reciever Socket
   useEffect(()=>{
