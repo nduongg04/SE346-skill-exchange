@@ -38,13 +38,15 @@ const ScreenChatRoom = ({router}) => {
   const [newMessageData, setNewMessage] = useState(null)
   const [test, setTest]= useState('');
   const {socket,setSocket,onlineUsers,setOnlineUsers}= useSocketContext()
-  const recipientID = chat?.members?.find((member)=> member.id !== user.id)
+  
   const name=route.params.name
 // const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
 //socket send message
   useEffect(()=>{
     if(socket===null) return
+    const recipientID = chat?.members?.find((member)=> member.id !== user.id)._id
+    console.log(recipientID)
     console.log("socket " + socket.id)
     socket.emit("sendMessage", {...newMessageData,recipientID})
   },[newMessageData])
@@ -52,6 +54,7 @@ const ScreenChatRoom = ({router}) => {
 //reciever Socket
   useEffect(()=>{
     if(socket===null) return
+    
     console.log("socket ")
     socket.on("getMessage", (res)=>{
       if(chatId !== res.chatID) return
