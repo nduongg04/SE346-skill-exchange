@@ -9,12 +9,14 @@ import {styles} from './Topic_category_style';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useNavigation } from '@react-navigation/native'; 
 import navigateToUserScreen from '../navigateToUserScreen';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class Category extends Component{
     handleOnPress = async ()=>{
+        const accessToken = await AsyncStorage.getItem('accessToken');
         const getUser = axios.get('https://se346-skillexchangebe.onrender.com'+'/api/v1/user/find/topic?topics'+$this.props.name,
         {headers: {
-            Authorization: 'Bearer'+ $accessToken
+            Authorization: 'Bearer'+ accessToken
           }})
         .then(response =>{
             if(response.status == 401) alert('Invalid Request')

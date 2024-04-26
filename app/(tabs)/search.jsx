@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { SafeAreaView, ScrollView, View, Text, Dimensions } from "react-native";
 import { Stack } from "expo-router";
-import { CircleButton } from "../../components";
 import { COLORS, icons } from "../../constants";
 import Topic_List from "../../components/Search_Tutorials_Tab/Topic_List";
 import Topic_Remarkable_List from "../../components/Search_Tutorials_Tab/Topic_Remarkable_List";
@@ -17,7 +16,7 @@ const Search = () => {
 				options={{
 					headerStyle: { backgroundColor: COLORS.lightWhite },
 					headerShadowVisible: false,
-					headerTitle: "",
+					headerTitle: "Search",
 				}}
 			/>
 			<InputTextBox />
@@ -46,37 +45,7 @@ const Search = () => {
 					</View>
 				</View>
 			</ScrollView>
-			<View
-				style={{
-					flex: 1,
-					flexDirection: "row",
-					justifyContent: "center",
-					alignItems: "center",
-					gap: (screenWidth / 100) * 7,
-				}}
-			>
-				<CircleButton
-					iconUrl={icons.cancel}
-					width={backButtonSize}
-					height={backButtonSize}
-					handlePress={() => {}}
-					style={{ flex: 1 }}
-				/>
-
-				<CircleButton
-					iconUrl={icons.backLoading}
-					width={backButtonSize - 13}
-					height={backButtonSize - 13}
-					handlePress={() => {}}
-				/>
-
-				<CircleButton
-					iconUrl={icons.tickCircle}
-					width={backButtonSize}
-					height={backButtonSize}
-					handlePress={() => {}}
-				/>
-			</View>
+			
 		</SafeAreaView>
 	);
 };

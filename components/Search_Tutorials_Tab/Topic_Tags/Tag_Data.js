@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -10,15 +9,16 @@ const TagData = () => {
     const fetchData = () => {
       axios.get('https://se346-skillexchangebe.onrender.com'+'/api/v1/topic/limit/6')
         .then(response => {
-          if(response.status == 404) alert('Not found')
-        })
-        .then(result => {
-          if (Object.keys(result).length === 0 && result.constructor === Object) {
-            throw new Error('Result is empty');
-        }
-        else{
-          setData(result)
-        }
+          if(response.status == 404) {
+            alert('Not found');
+          } else {
+            const result = response.data;
+            if (Object.keys(result).length === 0 && result.constructor === Object) {
+              throw new Error('Result is empty');
+            } else {
+              setData(result);
+            }
+          }
         })
         .catch(error => {
           console.error('Error:', error);
@@ -28,8 +28,8 @@ const TagData = () => {
 
     fetchData();
   }, []); // Empty dependency array ensures useEffect only runs once on component mount
-  return data;
 
+  return data;
 };
 
 export default TagData;

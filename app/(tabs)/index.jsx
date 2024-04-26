@@ -9,6 +9,6 @@ export default function Index() {
     if (user) {
         return <Redirect href="/home" />;
     } else {
-        return <Redirect href="/signing/Signing" />;
+        return <Redirect href="/search" />;
     }
 }
