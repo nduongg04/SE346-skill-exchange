@@ -2,8 +2,9 @@ import { View, Text } from "react-native";
 import { SafeAreaView } from "react-native";
 import { Stack } from "expo-router";
 import { COLORS, icons } from "@constants";
-import ScreenMess from "../../components/message/main/MainMess";
-const Chat = () => {
+import ScreenMessage from "../../components/message/mainScreen";
+import ScreenChatRoom from "../../components/message/chat_room/MainRoom";
+const Room = () => {
     
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
@@ -14,10 +15,10 @@ const Chat = () => {
 					headerShown:false
 				}}
 			/>
-			<ScreenMess/>
+			<ScreenChatRoom/>
            
 		</SafeAreaView>
 	);
 };
 
-export default Chat;
+export default Room;

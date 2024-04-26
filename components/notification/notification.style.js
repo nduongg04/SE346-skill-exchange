@@ -17,7 +17,7 @@ export const styles= StyleSheet.create({
 
     },
     Header:{
-        marginTop:"11%",
+        marginTop:"10%",
         textAlign:'center',
         fontFamily:'Inter-SemiBold',
         fontSize: 22,

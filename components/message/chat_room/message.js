@@ -1,14 +1,46 @@
 import React, { useState, useEffect } from 'react';
-import { View,Text,ScrollView,TouchableOpacity,Image,TouchableHighligh,TextInput } from 'react-native';
+import { View,Text,ScrollView,TouchableOpacity,Image,TouchableHighligh,TextInput,Modal } from 'react-native';
 import { registerRootComponent } from 'expo';
 import { icons } from "@constants";
 import { Audio } from 'expo-av';
 import {loadFonts,styles} from "./mainRoom.style";
 
+
 export const  Message=  (props) =>{
     const [isPlay,setIsPlay]=useState(false);
     const [sound,setSound]= useState();
+    const [modalVisible, setModalVisible] = useState(false);
+    const [urlModal,setUrlModal]=useState()
+
     let contentType;
+    const openModal = () => {
+        setModalVisible(true);
+      };
+      
+      const closeModal = () => {
+        setModalVisible(false);
+      };
+      const modalImage= ()=>{
+            return(
+                <Modal
+            visible={modalVisible}
+            transparent={true}
+            onRequestClose={closeModal}
+           
+        >
+            <View  style={{width:'100%', height:'100%', backgroundColor:'rgba(217, 217, 217, 0.9)'}}>
+            <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+                <Image source={icons.close} style={{width:35,height:35,marginLeft:'auto'}} />
+            </TouchableOpacity>
+            <View style={{width:'80%',height:'80%', marginLeft:'10%',marginTop:'10%'}}>
+            
+            <Image source={{uri: props.Content}} style={{width:'100%', height: '100%', resizeMode:'contain'}} />
+            </View>
+            </View>
+           
+        </Modal>
+            )
+      }
     //Record
     const handlePressPlay= async ()=>{
         if(!isPlay)
@@ -59,7 +91,12 @@ export const  Message=  (props) =>{
             contentType=<Text  style={styles.Message}> {props.Content}</Text>;
             break;
         case 'image':
-            contentType=<View style={{width:150,height:200,borderRadius:20,overflow: 'hidden',marginTop:3, marginRight:5}}><Image  style={{width:'100%',height:'100%',resizeMode:"cover"}} source={{uri: props.Content}}/></View>;
+            contentType=
+                <View style={{marginTop:3, marginRight:5}}>
+                    <TouchableOpacity  style={{width:150,height:200,overflow: 'hidden'}} onPress={openModal}>
+                        <Image  style={{width:'100%', height: '100%', resizeMode: "cover"}} source={{uri: props.Content}}/>  
+                    </TouchableOpacity>
+                </View>;
             break;
         case 'record':
             contentType=<View style={{ justifyContent: 'center',alignItems:'center',width:70, height:45,borderRadius:20, backgroundColor:"#F2F2F2" }}>
@@ -77,11 +114,11 @@ export const  Message=  (props) =>{
                     <Text style={styles.TextFile}>{fileName}</Text>
                 </View>
                 </TouchableOpacity>;
-           
             break;
     }
     return (
         <View style={styles.Layout} >
+           {modalImage()}
             <View style={styles.MessContainer}>
                 {contentType}
                 
@@ -105,8 +142,13 @@ export const  Message=  (props) =>{
             contentType=<Text  style={styles.Message2}> {props.Content}</Text>;
             break;
         case 'image':
-            contentType=<View style={{width:150,height:200,borderRadius:20,overflow: 'hidden',marginTop:3, marginLeft:5}}><Image  style={{width:'100%',height:'100%',resizeMode:"cover"}} source={{uri: props.Content}}/></View>;
-            break;e
+            contentType=
+            <View style={{marginTop:3,  marginLeft:5}}>
+                    <TouchableOpacity  style={{width:150,height:200,overflow: 'hidden'}} onPress={openModal}>
+                        <Image  style={{width:'100%', height: '100%', resizeMode: "cover"}} source={{uri: props.Content}}/>  
+                    </TouchableOpacity>
+            </View>;
+            break;
         case 'record':
             contentType=<View style={{ justifyContent: 'center',alignItems:'center',width:70, height:45,borderRadius:20, backgroundColor:"#F2F2F2" }}>
                 <TouchableOpacity onPress={handlePressPlay}>
@@ -127,8 +169,8 @@ export const  Message=  (props) =>{
     }
     return (
         <View style={styles.Layout2} >
+            {modalImage()}
             <View style={styles.MessContainer}>
-           
                 <View style={styles.AvatarContainer}>
                 <Image source={(props.Avatar=='')?(icons.while_icon):({uri: props.Avatar})}
                             style={styles.Avatar}/>

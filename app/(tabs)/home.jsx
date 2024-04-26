@@ -12,7 +12,12 @@ import { StyleSheet } from "react-native";
 import Suzy from "@assets/icons/Suzy.png";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import GetData from "../../utils/getdata";
+import { useSession } from "../../context/AuthContext";
+
 const Home = () => {
+	const baseUrl = "https://se346-skillexchangebe.onrender.com";
+
 	const screenWidth = Dimensions.get("window").width;
 	const screenHeight = Dimensions.get("window").height;
 	const handleSwipeLeft = () => {
@@ -23,26 +28,27 @@ const Home = () => {
 		console.log("swiped right");
 	};
 
+	const [users, setUsers] = useState([]);
+	const { user } = useSession();
+    console.log(user);
+
 	useEffect(() => {
-		const baseUrl = "https://se346-skillexchangebe.onrender.com";
-
-		const getNewAccessToken = async () => {
-			const refreshToken = await AsyncStorage.getItem("refreshToken");
-			try {
-				const response = await axios.get(baseUrl + "/api/v1/auth/refresh", {
-					headers: {
-						Authorization: `Bearer ${refreshToken}`,
-					},
-				});
-				const newAccessToken = response.data.access_oken;
-				returm(newAccessToken);
-			} catch (error) {
-				console.error(error);
-			}
+		const obj = {
+			access_token:
+				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWY2NzE5MGY5MTA2ZTk0ZDJhN2E5YzAiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzE0MDY3NTU5LCJleHAiOjE3MTQwNzExNTl9.SgAc_CPW0fWm0jEKXlHvK0hI7HlFkMr2UAIK1Df3xNo",
+			refresh_token:
+				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWY2NzE5MGY5MTA2ZTk0ZDJhN2E5YzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxNDA2NzU1OSwiZXhwIjoxNzE2NjU5NTU5fQ.WCgSogFxxaqfpRD99ve_e-N5FbQXMgmUADP3xZef_pE",
 		};
-	}, []);
+		const getUsers = async () => {
+			AsyncStorage.setItem("accessToken", obj.access_token);
+			AsyncStorage.setItem("refreshToken", obj.refresh_token);
+			const url = `${baseUrl}/api/v1/user/find`;
+			const data = await GetData(url);
 
-	const cards = [];
+			setUsers(data);
+		};
+		getUsers();
+	}, []);
 
 	const [backButtonSize, setBackButtonSize] = useState(
 		(screenWidth / 100) * 18
@@ -77,7 +83,9 @@ const Home = () => {
 						cardStyle={{ height: "100%", width: "100%" }}
 						cardHorizontalMargin={0}
 						backgroundColor="white"
-						renderCard={(card) => {
+						goBackToPreviousCardOnSwipeLeft={true}
+						swipeBackCard
+						renderCard={(user) => {
 							return (
 								<ProfileCard
 									username={"Bae Suzy"}
@@ -100,7 +108,7 @@ const Home = () => {
 						// onSwipedTop={() => this.onSwiped("top")}
 						// onSwipedBottom={() => this.onSwiped("bottom")}
 						// onTapCard={this.swipeLeft}
-						cards={cards}
+						cards={users}
 						// cardIndex={this.state.cardIndex}
 						cardVerticalMargin={0}
 						onSwipedAll={this.onSwipedAllCards}
@@ -149,7 +157,6 @@ const Home = () => {
 						}}
 						animateOverlayLabelsOpacity
 						animateCardOpacity
-						swipeBackCard
 					/>
 				</View>
 
