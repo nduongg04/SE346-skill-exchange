@@ -13,7 +13,7 @@ import Suzy from "@assets/icons/Suzy.png";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GetData from "../../utils/getdata";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { useSession } from "../../context/AuthContext";
 
 const Home = () => {
 	const baseUrl = "https://se346-skillexchangebe.onrender.com";
@@ -29,6 +29,8 @@ const Home = () => {
 	};
 
 	const [users, setUsers] = useState([]);
+	const { user } = useSession();
+    console.log(user);
 
 	useEffect(() => {
 		const obj = {
@@ -38,14 +40,14 @@ const Home = () => {
 				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWY2NzE5MGY5MTA2ZTk0ZDJhN2E5YzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxNDA2NzU1OSwiZXhwIjoxNzE2NjU5NTU5fQ.WCgSogFxxaqfpRD99ve_e-N5FbQXMgmUADP3xZef_pE",
 		};
 		const getUsers = async () => {
-            AsyncStorage.setItem("accessToken", obj.access_token);
-            AsyncStorage.setItem("refreshToken", obj.refresh_token);
+			AsyncStorage.setItem("accessToken", obj.access_token);
+			AsyncStorage.setItem("refreshToken", obj.refresh_token);
 			const url = `${baseUrl}/api/v1/user/find`;
 			const data = await GetData(url);
-            
-            setUsers(data);
+
+			setUsers(data);
 		};
-        getUsers();
+		getUsers();
 	}, []);
 
 	const [backButtonSize, setBackButtonSize] = useState(
@@ -86,7 +88,7 @@ const Home = () => {
 						renderCard={(user) => {
 							return (
 								<ProfileCard
-									username={user.username}
+									username={"Bae Suzy"}
 									userTopicSkill={[
 										"Coding",
 										"English",
