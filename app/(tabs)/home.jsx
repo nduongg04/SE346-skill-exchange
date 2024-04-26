@@ -14,6 +14,7 @@ import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GetData from "../../utils/getdata";
 import { useSession } from "../../context/AuthContext";
+import CheckRefreshToken from "../../utils/checkrefreshtoken";
 
 const Home = () => {
 	const baseUrl = "https://se346-skillexchangebe.onrender.com";
@@ -30,7 +31,6 @@ const Home = () => {
 
 	const [users, setUsers] = useState([]);
 	const { user } = useSession();
-    console.log(user);
 
 	useEffect(() => {
 		const obj = {
@@ -44,8 +44,9 @@ const Home = () => {
 			AsyncStorage.setItem("refreshToken", obj.refresh_token);
 			const url = `${baseUrl}/api/v1/user/find`;
 			const data = await GetData(url);
-
-			setUsers(data);
+            console.log(data);
+			// setUsers(data);  
+            
 		};
 		getUsers();
 	}, []);
