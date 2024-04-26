@@ -10,7 +10,7 @@ const HandleSessionExpired = () => {
 			},
 		},
 	]);
-	router.replace("/login");
+	router.replace("/signing/Signing");
 };
 
 export default HandleSessionExpired;
