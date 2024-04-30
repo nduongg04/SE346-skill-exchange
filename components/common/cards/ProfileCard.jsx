@@ -20,7 +20,7 @@ const ProfileCard = ({
 			params: { id: id },
 		});
 	};
-    
+
 	return (
 		<View
 			style={{
@@ -121,7 +121,11 @@ const ProfileCard = ({
 
 						<View>
 							<View>
-								{description && (
+								{!(
+									typeof description === "undefined" ||
+									(description.length === 1 && description[0] === "") ||
+									description.length === 0
+								) && (
 									<>
 										<Text
 											style={{
