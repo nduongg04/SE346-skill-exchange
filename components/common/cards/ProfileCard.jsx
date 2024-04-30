@@ -4,6 +4,7 @@ import { icons } from "@constants";
 import Topic from "@components/common/cards/Topic";
 import { Image } from "expo-image";
 import { TouchableOpacity } from "react-native";
+import { router } from "expo-router";
 
 const ProfileCard = ({
 	id,
@@ -12,6 +13,13 @@ const ProfileCard = ({
 	imageDisplay,
 	description,
 }) => {
+	handleInfoPress = () => {
+		router.replace({
+			pathname: "/user/[id]",
+			params: { id: id },
+		});
+	};
+
 	return (
 		<View
 			style={{
@@ -30,7 +38,10 @@ const ProfileCard = ({
 			}}
 		>
 			<ImageBackground
-				source={imageDisplay}
+				source={{
+					uri: imageDisplay,
+				}}
+
 				contentFit="cover"
 				style={{
 					width: "100%",
@@ -42,11 +53,11 @@ const ProfileCard = ({
 				}}
 				transition={1000}
 			>
-				<View style={{ height: "50%" }} />
+				<View style={{ height: "50%", width: "100%" }} />
 				<ImageBackground
 					source={icons.transparent_background}
 					resizeMode="stretch"
-					style={{ flex: 1 }}
+					style={{ flex: 1, width: "100%" }}
 				>
 					<View
 						style={{
@@ -54,38 +65,54 @@ const ProfileCard = ({
 							display: "flex",
 							flexDirection: "column",
 							justifyContent: "flex-end",
-							padding: 17,
-							flexWrap: "wrap",
+							padding: 15,
+							width: "100%",
 						}}
 					>
-						<View style={{ flexDirection: "row" }}>
-							<View
+						<View
+							style={{
+								flexDirection: "row",
+								gap: 7,
+								justifyContent: "space-between",
+								alignItems: "center",
+								marginVertical: 10,
+							}}
+						>
+							<Text
 								style={{
-									flexDirection: "row",
-									gap: 7,
-									flexWrap: "wrap",
+									color: COLORS.lightWhite,
+									fontFamily: "NotoRegular",
+									fontSize: 20,
+									fontWeight: "bold",
 								}}
 							>
-								<Text
-									style={{
-										color: COLORS.lightWhite,
-										fontFamily: "NotoRegular",
-										fontSize: 20,
-										fontWeight: "bold",
-									}}
-								>
-									{username}
-								</Text>
+								{username}
+							</Text>
 
-								{userTopicSkill.map((topic, index) => (
-									<Topic topicContent={topic} key={index} />
-								))}
-							</View>
-							{/* <TouchableOpacity
-								style={{ width: 30, height: 30, backgroundColor: "#fff" }}
+							<TouchableOpacity
+								style={{
+									width: 35,
+									height: 35,
+									backgroundColor: "#fff",
+									borderRadius: 50,
+									alignItems: "center",
+									justifyContent: "center",
+								}}
+								onPress={handleInfoPress}
 							>
-								<Image source={icons.more} style={{ width: 30, height: 30 }} />
-							</TouchableOpacity> */}
+								<Image
+									source={icons.info}
+									style={{ width: "80%", height: "80%" }}
+									width={50}
+									height={50}
+								/>
+							</TouchableOpacity>
+						</View>
+
+						<View style={{ flexDirection: "row", gap: 5, flexWrap: "wrap" }}>
+							{userTopicSkill?.map((topic, index) => (
+								<Topic topicContent={topic.name} key={index} />
+							))}
 						</View>
 
 						<View>

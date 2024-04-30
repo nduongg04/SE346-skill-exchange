@@ -6,7 +6,6 @@ const BackHeader = ({ headerText, handleBackButton }) => {
 	return (
 		<View
 			style={{
-				marginLeft: 10,
 				flexDirection: "row",
 				gap: 10,
 				width: "100%",
