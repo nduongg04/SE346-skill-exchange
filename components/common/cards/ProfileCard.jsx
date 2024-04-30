@@ -41,7 +41,6 @@ const ProfileCard = ({
 				source={{
 					uri: imageDisplay,
 				}}
-
 				contentFit="cover"
 				style={{
 					width: "100%",
@@ -117,27 +116,31 @@ const ProfileCard = ({
 
 						<View>
 							<View>
-								<Text
-									style={{
-										fontFamily: "NotoExtraBold",
-										fontSize: 13,
-										color: COLORS.lightWhite,
-										marginBottom: 5,
-									}}
-								>
-									Description:
-								</Text>
+								{description && (
+									<>
+										<Text
+											style={{
+												fontFamily: "NotoExtraBold",
+												fontSize: 13,
+												color: COLORS.lightWhite,
+												marginBottom: 5,
+											}}
+										>
+											Description:
+										</Text>
 
-								<Text
-									style={{
-										fontFamily: "NotoRegular",
-										fontSize: 14,
-										lineHeight: 21,
-										color: COLORS.lightWhite,
-									}}
-								>
-									{description}
-								</Text>
+										<Text
+											style={{
+												fontFamily: "NotoRegular",
+												fontSize: 14,
+												lineHeight: 21,
+												color: COLORS.lightWhite,
+											}}
+										>
+											{description}
+										</Text>
+									</>
+								)}
 							</View>
 						</View>
 					</View>
