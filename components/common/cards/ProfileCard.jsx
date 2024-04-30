@@ -5,6 +5,7 @@ import Topic from "@components/common/cards/Topic";
 import { Image } from "expo-image";
 import { TouchableOpacity } from "react-native";
 import { router } from "expo-router";
+import avatarDefault from "@assets/images/avatarDefault.jpg";
 
 const ProfileCard = ({
 	id,
@@ -19,7 +20,7 @@ const ProfileCard = ({
 			params: { id: id },
 		});
 	};
-
+    
 	return (
 		<View
 			style={{
@@ -38,9 +39,13 @@ const ProfileCard = ({
 			}}
 		>
 			<ImageBackground
-				source={{
-					uri: imageDisplay,
-				}}
+				source={
+					typeof imageDisplay !== "undefined" && imageDisplay !== ""
+						? {
+								uri: imageDisplay,
+						  }
+						: avatarDefault
+				}
 				contentFit="cover"
 				style={{
 					width: "100%",

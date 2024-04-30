@@ -7,7 +7,7 @@ import { COLORS, icons } from "@constants";
 import { CircleButton } from "@components";
 import { Dimensions } from "react-native";
 import Swiper from "react-native-deck-swiper";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GetData from "../../utils/getdata";
@@ -18,6 +18,16 @@ const Home = () => {
 
 	const screenWidth = Dimensions.get("window").width;
 	const screenHeight = Dimensions.get("window").height;
+	const [backButtonSize, setBackButtonSize] = useState(
+		(screenWidth / 100) * 18
+	);
+    let previousCardIndex = 0;
+
+	const [users, setUsers] = useState([]);
+	const isLoading = useLoadingHome((state) => state.loading);
+	const setIsLoading = useLoadingHome((state) => state.setLoading);
+	const swiperRef = useRef(null);
+
 	const handleSwipeLeft = () => {
 		console.log("swiped left");
 	};
@@ -25,10 +35,6 @@ const Home = () => {
 	const handleSwipeRight = () => {
 		console.log("swiped right");
 	};
-
-	const [users, setUsers] = useState([]);
-	const isLoading = useLoadingHome((state) => state.loading);
-	const setIsLoading = useLoadingHome((state) => state.setLoading);
 
 	useEffect(() => {
 		const obj = {
@@ -52,12 +58,6 @@ const Home = () => {
 		};
 		getUsers();
 	}, []);
-
-	console.log(users);
-
-	const [backButtonSize, setBackButtonSize] = useState(
-		(screenWidth / 100) * 18
-	);
 
 	if (isLoading) {
 		return (
@@ -94,31 +94,29 @@ const Home = () => {
 			<View style={{ height: "95%", width: "100%" }}>
 				<View style={{ marginTop: 10, height: "80%" }}>
 					<Swiper
+						ref={swiperRef}
 						infinite
 						cardStyle={{ height: "100%", width: "100%" }}
+                        onSwiped={(cardIndex) => {
+                            previousCardIndex = cardIndex;
+                        }}
 						cardHorizontalMargin={0}
 						backgroundColor="white"
-						goBackToPreviousCardOnSwipeLeft={true}
 						swipeBackCard
 						renderCard={(user, index) => {
-							if (user) {
-                                console.log(user);
-								return (
-									<ProfileCard
-										username={user?.username}
-										skill={user?.skill}
-										birthDay={user?.birthDay}
-										userTopicSkill={user?.userTopicSkill}
-										avatar={user?.avatar}
-										imageCerti={user?.imageCerti}
-										description={user?.description}
-										key={index}
-									/>
-                                    // <></>
-								);
-							} else {
-								return <></>;
-							}
+							return (
+								<ProfileCard
+									username={user?.username}
+									skill={user?.skill}
+									birthDay={user?.birthDay}
+									userTopicSkill={user?.userTopicSkill}
+									imageDisplay={user?.avatar}
+									imageCerti={user?.imageCerti}
+									description={user?.description}
+									key={index}
+								/>
+								// <Text>{user.id}</Text>
+							);
 						}}
 						// onSwiped={() => this.onSwiped("general")}
 						// onSwipedLeft={() => this.onSwiped("left")}
@@ -131,7 +129,7 @@ const Home = () => {
 						cardVerticalMargin={0}
 						onSwipedAll={this.onSwipedAllCards}
 						showSecondCard={true}
-						stackSize={2}
+						stackSize={3}
 						disableTopSwipe={true}
 						disableBottomSwipe={true}
 						stackSeparation={5}
@@ -191,7 +189,7 @@ const Home = () => {
 						iconUrl={icons.cancel}
 						width={backButtonSize}
 						height={backButtonSize}
-						handlePress={() => {}}
+						handlePress={() => swiperRef.current.swipeLeft()}
 						style={{ flex: 1 }}
 					/>
 
@@ -199,14 +197,18 @@ const Home = () => {
 						iconUrl={icons.backLoading}
 						width={backButtonSize - 13}
 						height={backButtonSize - 13}
-						handlePress={() => {}}
+						handlePress={() => {
+                            swiperRef.current.jumpToCardIndex(previousCardIndex);
+                        }}
 					/>
 
 					<CircleButton
 						iconUrl={icons.tickCircle}
 						width={backButtonSize}
 						height={backButtonSize}
-						handlePress={() => {}}
+						handlePress={() => {
+                            swiperRef.current.swipeRight();
+                        }}
 					/>
 				</View>
 			</View>
