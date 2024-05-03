@@ -9,20 +9,23 @@ const InputTextBox = () => {
 
   const handleOnChangeText = (text) => {
     setQuery(text);
+    getuser();
   };
 
   const getuser = async () => {
-    const accessToken = await AsyncStorage.getItem('accessToken');
+    const refreshtoken = await AsyncStorage.getItem('refreshtoken');
+    const accessToken = CheckRefreshToken(refreshtoken);
+    const bareUrl = "https://se346-skillexchangebe.onrender.com";
     try {
-      const response = await axios.get(
-        "https://se346-skillexchangebe.onrender.com/api/v1/user/find/topic?topics=" + query,
-        {
-          headers: {
-            Authorization: 'Bearer ' + accessToken, // Thay YOUR_TOKEN bằng token thực tế của bạn
-          }
+      const response = await axios({
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: `${bareUrl}/api/v1/user/find/topic?topics=${query}`,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
         }
-      );
-
+      });
+    
       if (response.status === 200) {
         const users = response.data.users;
         navigateToUserScreen(users);
@@ -44,9 +47,7 @@ const InputTextBox = () => {
       <InputText
         placeholder="Enter your topic"
         label="Enter your query"
-        iconName="search"
         onChangeText={handleOnChangeText}
-        onBlur={getuser}
         onSubmitEditing={getuser} // Thêm hàm xử lý sự kiện onSubmitEditing
         value={query}
         style={{ marginTop: 20 }}

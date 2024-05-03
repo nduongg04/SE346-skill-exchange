@@ -1,17 +1,38 @@
-import React from "react";
 import { View, FlatList, TouchableOpacity, StyleSheet } from "react-native";
-import Data from "./Data_Topic_List";
 import Category from "./Category/Category";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+
+const useData = () => {
+    const [data, setData] = useState([]);
+    const bareUrl = "https://se346-skillexchangebe.onrender.com";
+    const limit = 6;
+    useEffect(() => {
+        const fetchData = async ()=>{
+            const response = await axios({
+                method: 'get',
+                maxBodyLength: Infinity,
+                url: `${bareUrl}/api/v1/topic/limit/:${limit}`,
+                headers: { }
+            })
+            setData(response.data);
+        }
+        fetchData();
+    }, []);
+
+    return data;
+}
 
 const renderItem = ({ item }) => (
     <Category id={item._id} imageUri={item.imageUrl} name={item.name} />
 );
 
 const Topic_List = () => {
+    const data = useData();
     return (
         <View style={styles.container}>
             <FlatList
-                data={Data}
+                data={data}
                 renderItem={renderItem}
                 keyExtractor={(item) => item.id}
                 horizontal={true}
