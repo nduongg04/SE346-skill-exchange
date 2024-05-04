@@ -1,12 +1,15 @@
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { Stack } from "expo-router";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { StyleSheet, SafeAreaView } from "react-native";
 import { COLORS } from "@constants";
-import { Image } from "react-native";
+import { Image } from "expo-image";
 import { BackHeader } from "../../components";
 import { Topic } from "../../components";
 import { CircleButton } from "../../components";
 import { router } from "expo-router";
+import formatDate from "../../utils/formatdate";
+import { icons } from "@constants";
+
 const Information = ({
 	username,
 	skill,
@@ -17,7 +20,7 @@ const Information = ({
 	description,
 }) => {
 	const handleBackButton = () => {
-		router.replace("/home");
+		router.back();
 	};
 	return (
 		<SafeAreaView
@@ -29,6 +32,7 @@ const Information = ({
 			<Stack.Screen
 				options={{
 					title: "Information",
+					headerBackVisible: false,
 					headerShown: true,
 					headerShadowVisible: true,
 					headerTitle: (props) => (
@@ -37,7 +41,7 @@ const Information = ({
 							headerText={username}
 							handleBackButton={handleBackButton}
 						/>
-					), 
+					),
 				}}
 			/>
 			<View style={styles.buttonContainer}>
@@ -47,7 +51,13 @@ const Information = ({
 			<ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
 				<View style={styles.container}>
 					<View style={styles.avatar}>
-						<Image style={{ width: "100%", height: "100%" }} source={avatar} />
+						<Image
+							placeholder={require("@assets/images/avatarDefault.jpg")}
+							style={{ width: "100%", height: "100%" }}
+							source={{
+								uri: avatar,
+							}}
+						/>
 					</View>
 
 					<View style={styles.boxContainer}>
@@ -55,7 +65,7 @@ const Information = ({
 						<Text style={styles.detailText}>{description}</Text>
 
 						<Text style={styles.headerText}>Birthday</Text>
-						<Text style={styles.detailText}>{birthDay}</Text>
+						<Text style={styles.detailText}>{formatDate(birthDay)}</Text>
 					</View>
 
 					<View style={styles.boxContainer}>
@@ -71,26 +81,32 @@ const Information = ({
 								</View>
 							</>
 						) : null}
-						<Text style={styles.headerText}>Topic</Text>
+						<Text style={styles.headerText}>Skill topic</Text>
 						<View style={styles.topicContainer}>
-							{userTopicSkill?.map((topic, index) => (
-								<Topic
-									key={index}
-									style={styles.detailText}
-									topicContent={topic}
-								/>
-							))}
+							{userTopicSkill?.length !== 0 ? (
+								userTopicSkill?.map((topic, index) => (
+									<Topic
+										key={index}
+										style={styles.detailText}
+										topicContent={topic.name}
+									/>
+								))
+							) : (
+								<Text style={styles.detailText}>No topic</Text>
+							)}
 						</View>
 
-						{imageCerti?.length > 0 ? (
+						{imageCerti?.length > 0 &&
+						imageCerti?.length === 1 &&
+						imageCerti[0] === "" ? (
 							<>
 								<Text style={styles.headerText}>Certification</Text>
 								<View style={styles.certiContainer}>
 									{imageCerti.map((certi, index) => (
 										<Image
 											key={index}
-											source={certi}
-											resizeMode="cover"
+											source={{ uri: certi }}
+											contentFit="cover"
 											style={{ width: "100%", height: 300, borderRadius: 10 }}
 										/>
 									))}
@@ -128,6 +144,7 @@ const styles = StyleSheet.create({
 	},
 	boxContainer: {
 		width: "100%",
+        flex: 1,
 		paddingHorizontal: 20,
 		paddingVertical: 15,
 		gap: 9,
@@ -149,7 +166,7 @@ const styles = StyleSheet.create({
 	},
 	topicContainer: {
 		flexDirection: "row",
-        flexWrap: "wrap",
+		flexWrap: "wrap",
 		gap: 13,
 	},
 	skillContainer: {

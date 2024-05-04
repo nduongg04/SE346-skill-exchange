@@ -12,6 +12,16 @@ import { StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GetData from "../../utils/getdata";
 import useLoadingHome from "../../utils/useLoadingHome";
+import useUserStore from "../../utils/usersStore";
+import { useSession } from "../../context/AuthContext";
+
+function shuffleArray(array) {
+	for (let i = array.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[array[i], array[j]] = [array[j], array[i]];
+	}
+	return array;
+}
 
 const Home = () => {
 	const baseUrl = "https://se346-skillexchangebe.onrender.com";
@@ -21,20 +31,23 @@ const Home = () => {
 	const [backButtonSize, setBackButtonSize] = useState(
 		(screenWidth / 100) * 18
 	);
-    let previousCardIndex = 0;
+	let previousCardIndex = 0;
 
-	const [users, setUsers] = useState([]);
+	const { user } = useSession();
+
 	const isLoading = useLoadingHome((state) => state.loading);
 	const setIsLoading = useLoadingHome((state) => state.setLoading);
-	const swiperRef = useRef(null);
 
-	const handleSwipeLeft = () => {
-		console.log("swiped left");
-	};
+	const users = useUserStore((state) => state.users);
+	const setUsers = useUserStore((state) => state.setUsers);
+
+	const swiperRef = useRef(null);
 
 	const handleSwipeRight = () => {
 		console.log("swiped right");
 	};
+
+	const handleSwipe = (index) => {};
 
 	useEffect(() => {
 		const obj = {
@@ -49,14 +62,17 @@ const Home = () => {
 			AsyncStorage.setItem("refreshToken", obj.refresh_token);
 			const url = `${baseUrl}/api/v1/user/find`;
 			const data = await GetData(url);
-			setUsers(data);
+			setUsers(shuffleArray(data));
 			if (users) {
 				setIsLoading(false);
 			} else {
 				setIsLoading(true);
 			}
 		};
-		getUsers();
+		if (!user || users.length === 0) {
+			console.log("get users");
+			getUsers();
+		}
 	}, []);
 
 	if (isLoading) {
@@ -92,20 +108,29 @@ const Home = () => {
 			</View>
 
 			<View style={{ height: "95%", width: "100%" }}>
-				<View style={{ marginTop: 10, height: "80%" }}>
+				<View
+					style={{
+						marginTop: 10,
+						height: "80%",
+						width: "100%",
+					}}
+				>
 					<Swiper
 						ref={swiperRef}
-						infinite
-						cardStyle={{ height: "100%", width: "100%" }}
-                        onSwiped={(cardIndex) => {
-                            previousCardIndex = cardIndex;
-                        }}
+						cardStyle={{
+							height: "100%",
+							width: "100%",
+						}}
+						onSwipedLeft={(cardIndex) => {
+							previousCardIndex = cardIndex;
+						}}
 						cardHorizontalMargin={0}
 						backgroundColor="white"
 						swipeBackCard
 						renderCard={(user, index) => {
 							return (
 								<ProfileCard
+									id={user?.id}
 									username={user?.username}
 									skill={user?.skill}
 									birthDay={user?.birthDay}
@@ -115,17 +140,11 @@ const Home = () => {
 									description={user?.description}
 									key={index}
 								/>
-								// <Text>{user.id}</Text>
 							);
 						}}
-						// onSwiped={() => this.onSwiped("general")}
-						// onSwipedLeft={() => this.onSwiped("left")}
-						// onSwipedRight={() => this.onSwiped("right")}
-						// onSwipedTop={() => this.onSwiped("top")}
-						// onSwipedBottom={() => this.onSwiped("bottom")}
-						// onTapCard={this.swipeLeft}
+						onSwiped={handleSwipe}
+						onSwipedRight={handleSwipeRight}
 						cards={users}
-						// cardIndex={this.state.cardIndex}
 						cardVerticalMargin={0}
 						onSwipedAll={this.onSwipedAllCards}
 						showSecondCard={true}
@@ -198,8 +217,8 @@ const Home = () => {
 						width={backButtonSize - 13}
 						height={backButtonSize - 13}
 						handlePress={() => {
-                            swiperRef.current.jumpToCardIndex(previousCardIndex);
-                        }}
+							swiperRef.current.jumpToCardIndex(previousCardIndex);
+						}}
 					/>
 
 					<CircleButton
@@ -207,8 +226,8 @@ const Home = () => {
 						width={backButtonSize}
 						height={backButtonSize}
 						handlePress={() => {
-                            swiperRef.current.swipeRight();
-                        }}
+							swiperRef.current.swipeRight();
+						}}
 					/>
 				</View>
 			</View>

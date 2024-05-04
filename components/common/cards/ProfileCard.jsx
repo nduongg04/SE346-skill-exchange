@@ -15,7 +15,7 @@ const ProfileCard = ({
 	description,
 }) => {
 	handleInfoPress = () => {
-		router.replace({
+		router.push({
 			pathname: "/user/[id]",
 			params: { id: id },
 		});
@@ -26,8 +26,8 @@ const ProfileCard = ({
 			style={{
 				borderRadius: 10,
 				overflow: "hidden",
-
-				shadowColor: COLORS.shadowBlue,
+                
+                shadowColor: COLORS.shadowBlue,
 				shadowOffset: {
 					width: 0,
 					height: 5,
