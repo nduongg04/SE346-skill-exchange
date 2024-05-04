@@ -44,6 +44,7 @@ const SplashScreen = ({navigation}) => {
                 var refreshToken;
                 try{
                     refreshToken = await AsyncStorage.getItem('refreshToken');
+                    if(refreshToken === null) throw new Error('Refresh token is null');
                 } 
                 catch(e) {
                     navigation.navigate('EnterName');
