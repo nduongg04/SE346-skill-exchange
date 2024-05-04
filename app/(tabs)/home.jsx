@@ -45,8 +45,8 @@ const Home = () => {
 		};
 		const getUsers = async () => {
 			setIsLoading(true);
-			AsyncStorage.setItem("accessToken", obj.access_token);
-			AsyncStorage.setItem("refreshToken", obj.refresh_token);
+			// AsyncStorage.setItem("accessToken", obj.access_token);
+			// AsyncStorage.setItem("refreshToken", obj.refresh_token);
 			const url = `${baseUrl}/api/v1/user/find`;
 			const data = await GetData(url);
 			setUsers(data);

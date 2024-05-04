@@ -92,6 +92,9 @@ const Login = ({ navigation }) => {
           await AsyncStorage.setItem("user", JSON.stringify(json.data));
           await AsyncStorage.setItem("accessToken", json.access_token);
           await AsyncStorage.setItem("refreshToken", json.refresh_token);
+          console.log("refreshToken when login: ", json.refresh_token);
+          var check = await AsyncStorage.getItem("refreshToken");
+          console.log("refreshToken in storage: ", check);
         } catch (error) {
           alert("Store token failed!");
         }
