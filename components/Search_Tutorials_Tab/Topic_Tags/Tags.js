@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { TouchableOpacity, Text, StyleSheet } from 'react-native';
 import {styles} from '../Topic_Tags/Tag_styles';
-import { render } from 'react-dom';
 import axios from 'axios';
 import { Result } from '@ant-design/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,10 +17,11 @@ class TagsButton extends Component {
 
 
     handleOnPress = async()=>{
-       const accessToken = await AsyncStorage.getItem('accessToken');
+        const refreshtoken = await AsyncStorage.getItem('refreshtoken');
+        const accessToken = CheckRefreshToken(refreshtoken);
         const getUser = axios.get('https://se346-skillexchangebe.onrender.com'+'/api/v1/user/find/topic?topics'+this.props.name,
         {headers: {
-            Authorization: 'Bearer'+ accessToken
+            Authorization: `Bearer ${accessToken}`
           }})
         .then(response =>{
             if(response.status == 401) alert('Invalid Request')

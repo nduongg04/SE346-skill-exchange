@@ -1,4 +1,6 @@
 import { StyleSheet } from "react-native-web";
+import { COLORS } from "../../../constants";
+import { scale } from "react-native-size-matters";
 const styles = StyleSheet.create({
     button: {
         width: '30%', 
