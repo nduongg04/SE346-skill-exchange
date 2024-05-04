@@ -4,17 +4,18 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const useData = () => {
-    const [data, setData] = useState([]);
+    const [data, setData] = useState([]); 
     const bareUrl = "https://se346-skillexchangebe.onrender.com";
     const limit = 6;
     useEffect(() => {
-        const fetchData = async ()=>{
+        const fetchData = async ()=> {
             const response = await axios({
                 method: 'get',
                 maxBodyLength: Infinity,
-                url: `${bareUrl}/api/v1/topic/limit/:${limit}`,
+                url: `${bareUrl}/api/v1/topic/limit/${limit}`, 
                 headers: { }
             })
+            console.log(response.data);
             setData(response.data);
         }
         fetchData();
@@ -24,7 +25,7 @@ const useData = () => {
 }
 
 const renderItem = ({ item }) => (
-    <Category id={item._id} imageUri={item.imageUrl} name={item.name} />
+    <Category _id={item.id} imageUri={item.imageUrl} name={item.name} />
 );
 
 const Topic_List = () => {
@@ -34,7 +35,7 @@ const Topic_List = () => {
             <FlatList
                 data={data}
                 renderItem={renderItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item._id}
                 horizontal={true}
             />
         </View>

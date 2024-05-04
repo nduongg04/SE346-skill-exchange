@@ -3,18 +3,17 @@ import InputText from "../../register/Button/InputText";
 import { SafeAreaView, Alert, Image, TouchableOpacity } from "react-native";
 import axios from "axios";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import CheckRefreshToken from '../../../utils/checkrefreshtoken';
 const InputTextBox = () => {
   const [query, setQuery] = useState("");
 
   const handleOnChangeText = (text) => {
     setQuery(text);
-    getuser();
   };
 
   const getuser = async () => {
     const refreshtoken = await AsyncStorage.getItem('refreshtoken');
-    const accessToken = CheckRefreshToken(refreshtoken);
+    const accessToken = await CheckRefreshToken(refreshtoken); // Add await here
     const bareUrl = "https://se346-skillexchangebe.onrender.com";
     try {
       const response = await axios({
@@ -28,6 +27,7 @@ const InputTextBox = () => {
     
       if (response.status === 200) {
         const users = response.data.users;
+        Alert.alert("Success", "We get it!");
         navigateToUserScreen(users);
       } else {
         Alert.alert("Error", "Failed to fetch users. Please try again later.");
@@ -48,7 +48,7 @@ const InputTextBox = () => {
         placeholder="Enter your topic"
         label="Enter your query"
         onChangeText={handleOnChangeText}
-        onSubmitEditing={getuser} // Thêm hàm xử lý sự kiện onSubmitEditing
+        onSubmitEditing={getuser} // Call getuser when the user submits the input
         value={query}
         style={{ marginTop: 20 }}
       />

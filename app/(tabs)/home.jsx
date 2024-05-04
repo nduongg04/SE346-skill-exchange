@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { View, Text, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import favicon from "@assets/favicon.svg";
@@ -7,19 +7,27 @@ import { COLORS, icons } from "@constants";
 import { CircleButton } from "@components";
 import { Dimensions } from "react-native";
 import Swiper from "react-native-deck-swiper";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { StyleSheet } from "react-native";
-import Suzy from "@assets/icons/Suzy.png";
-import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import GetData from "../../utils/getdata";
-import { useSession } from "../../context/AuthContext";
+import useLoadingHome from "../../utils/useLoadingHome";
 
 const Home = () => {
 	const baseUrl = "https://se346-skillexchangebe.onrender.com";
 
 	const screenWidth = Dimensions.get("window").width;
 	const screenHeight = Dimensions.get("window").height;
+	const [backButtonSize, setBackButtonSize] = useState(
+		(screenWidth / 100) * 18
+	);
+    let previousCardIndex = 0;
+
+	const [users, setUsers] = useState([]);
+	const isLoading = useLoadingHome((state) => state.loading);
+	const setIsLoading = useLoadingHome((state) => state.setLoading);
+	const swiperRef = useRef(null);
+
 	const handleSwipeLeft = () => {
 		console.log("swiped left");
 	};
@@ -28,31 +36,37 @@ const Home = () => {
 		console.log("swiped right");
 	};
 
-	const [users, setUsers] = useState([]);
-	const { user } = useSession();
-    console.log(user);
-
 	useEffect(() => {
 		const obj = {
 			access_token:
-				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWY2NzE5MGY5MTA2ZTk0ZDJhN2E5YzAiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzE0MDY3NTU5LCJleHAiOjE3MTQwNzExNTl9.SgAc_CPW0fWm0jEKXlHvK0hI7HlFkMr2UAIK1Df3xNo",
+				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWY2NzE5MGY5MTA2ZTk0ZDJhN2E5YzAiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzE0MTQyNzA2LCJleHAiOjE3MTQxNDYzMDZ9.W0I3ubbo9bSwE7icWJRqcpn9YFPS3RD_Iqu-z8RMQr0",
 			refresh_token:
 				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NWY2NzE5MGY5MTA2ZTk0ZDJhN2E5YzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxNDA2NzU1OSwiZXhwIjoxNzE2NjU5NTU5fQ.WCgSogFxxaqfpRD99ve_e-N5FbQXMgmUADP3xZef_pE",
 		};
 		const getUsers = async () => {
+			setIsLoading(true);
 			AsyncStorage.setItem("accessToken", obj.access_token);
 			AsyncStorage.setItem("refreshToken", obj.refresh_token);
 			const url = `${baseUrl}/api/v1/user/find`;
 			const data = await GetData(url);
-
 			setUsers(data);
+			if (users) {
+				setIsLoading(false);
+			} else {
+				setIsLoading(true);
+			}
 		};
 		getUsers();
 	}, []);
 
-	const [backButtonSize, setBackButtonSize] = useState(
-		(screenWidth / 100) * 18
-	);
+	if (isLoading) {
+		return (
+			<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+				<ActivityIndicator size="large" color={COLORS.darkOrange} />
+			</View>
+		);
+	}
+
 	return (
 		<SafeAreaView
 			style={{
@@ -80,26 +94,28 @@ const Home = () => {
 			<View style={{ height: "95%", width: "100%" }}>
 				<View style={{ marginTop: 10, height: "80%" }}>
 					<Swiper
+						ref={swiperRef}
+						infinite
 						cardStyle={{ height: "100%", width: "100%" }}
+                        onSwiped={(cardIndex) => {
+                            previousCardIndex = cardIndex;
+                        }}
 						cardHorizontalMargin={0}
 						backgroundColor="white"
-						goBackToPreviousCardOnSwipeLeft={true}
 						swipeBackCard
-						renderCard={(user) => {
+						renderCard={(user, index) => {
 							return (
 								<ProfileCard
-									username={"Bae Suzy"}
-									userTopicSkill={[
-										"Coding",
-										"English",
-										"React Native",
-										"Hello",
-										"Hello",
-										"Hello",
-									]}
-									imageDisplay={Suzy}
-									description={`I’m an actress. I have participated in several K-dramas: "Dream High," Suzy starred in several popular K-dramas, including "Gu Family Book" (2013), "Uncontrollably Fond" (2016), and "Vagabond" (2019).`}
+									username={user?.username}
+									skill={user?.skill}
+									birthDay={user?.birthDay}
+									userTopicSkill={user?.userTopicSkill}
+									imageDisplay={user?.avatar}
+									imageCerti={user?.imageCerti}
+									description={user?.description}
+									key={index}
 								/>
+								// <Text>{user.id}</Text>
 							);
 						}}
 						// onSwiped={() => this.onSwiped("general")}
@@ -113,7 +129,7 @@ const Home = () => {
 						cardVerticalMargin={0}
 						onSwipedAll={this.onSwipedAllCards}
 						showSecondCard={true}
-						stackSize={2}
+						stackSize={3}
 						disableTopSwipe={true}
 						disableBottomSwipe={true}
 						stackSeparation={5}
@@ -173,7 +189,7 @@ const Home = () => {
 						iconUrl={icons.cancel}
 						width={backButtonSize}
 						height={backButtonSize}
-						handlePress={() => {}}
+						handlePress={() => swiperRef.current.swipeLeft()}
 						style={{ flex: 1 }}
 					/>
 
@@ -181,14 +197,18 @@ const Home = () => {
 						iconUrl={icons.backLoading}
 						width={backButtonSize - 13}
 						height={backButtonSize - 13}
-						handlePress={() => {}}
+						handlePress={() => {
+                            swiperRef.current.jumpToCardIndex(previousCardIndex);
+                        }}
 					/>
 
 					<CircleButton
 						iconUrl={icons.tickCircle}
 						width={backButtonSize}
 						height={backButtonSize}
-						handlePress={() => {}}
+						handlePress={() => {
+                            swiperRef.current.swipeRight();
+                        }}
 					/>
 				</View>
 			</View>

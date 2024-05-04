@@ -1,20 +1,19 @@
-import { View, FlatList, TouchableOpacity, StyleSheet } from "react-native";
+import { View, FlatList, TouchableOpacity, StyleSheet, Alert } from "react-native";
 import Category from "./Category/Category";
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-
-const [data, setData] = useState([]);
 const useData = () => {
+    const [data, setData] = useState([]); // Move this inside the hook
     const bareUrl = "https://se346-skillexchangebe.onrender.com";
     const limit = 6;
     const page = 1 ;
     useEffect(() => {
-        const fetchData = async ()=>{
+        const fetchData = async ()=> {
             const response = await axios({
                 method: 'get',
                 maxBodyLength: Infinity,
-                url: `${bareUrl}/api/v1/topic/pagination?page=${page}&limit=${limit}}`,
+                url: `${bareUrl}/api/v1/topic/pagination?page=${page}&limit=${limit}`, 
                 headers: { }
             })
             setData(response.data);
@@ -26,7 +25,7 @@ const useData = () => {
 }
 
 const renderItem = ({ item }) => (
-    <Category id={item._id} imageUrl={item.imageUrl} name={item.name} />
+    <Category _id={item._id} imageUrl={item.imageUrl} name={item.name} />
 );
 
 const numColumns = 2;
@@ -37,7 +36,7 @@ const Topic_Remarkable_List = () => {
             <FlatList
                 data={data}
                 renderItem={renderItem}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item._id}
                 numColumns={numColumns}
                 columnWrapperStyle={styles.columnWrapper}
                 horizontal={false}

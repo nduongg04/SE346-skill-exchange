@@ -8,8 +8,8 @@ import InputTextBox from "../../components/Search_Tutorials_Tab/Search_Input/Inp
 
 // Search.jsx
 const Search = () => {
-    const screenWidth = Dimensions.get("window").width;
-    const backButtonSize = (screenWidth / 100) * 18;
+    //const screenWidth = Dimensions.get("window").width;
+    //const backButtonSize = (screenWidth / 100) * 18;
 
     const sections = [
         { title: 'Topic Remarkable List', data: ['Topic_Remarkable_List'] },
@@ -17,7 +17,7 @@ const Search = () => {
         { title: 'Remarkable Issue', data: ['Topic_Remarkable_List'] },
     ];
 
-    const renderItem = ({ item }) => {
+    const renderItem = ({ item }) => {  
         switch (item) {
             case 'Topic_Remarkable_List':
                 return <Topic_Remarkable_List />;
