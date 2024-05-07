@@ -17,6 +17,7 @@ import { useNavigation,useIsFocused } from '@react-navigation/native';
 import { useSocketContext } from "../../../context/SocketContext";
 import { useSession } from "../../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import CheckRefreshToken from "../../../utils/checkrefreshtoken";
 
 
 
@@ -32,12 +33,11 @@ const ScreenMess = () => {
 	const prevSearchText = useRef('');
 	const navigation = useNavigation();
 	const {socket,setSocket,onlineUsers,setOnlineUsers} = useSocketContext()
-	const {user} = useSession();
+	const {user, login, logout} = useSession();
 	const [latestMessage, setLatestMessage] = useState([]);
 	const isFocused = useIsFocused();
 //Socket
 	useEffect(()=>{
-		console.log(onlineUsers)
 		if(socket==null)
 		return
 		socket.on("getOnlineUsers", (users)=>{
@@ -121,7 +121,26 @@ const ScreenMess = () => {
 	const loadToken= async()=>{
 		const token = await AsyncStorage.getItem('refreshToken');
 		if(token)
-		setAccessToken(token);
+		{
+			console.log(token)
+			const access= await CheckRefreshToken(token);
+			console.log(typeof(access))
+			if(access===null || access==="Session expired")
+			{
+				await logout();
+				
+			}
+			else
+			{
+				setAccessToken(access);
+				console.log(user)
+				console.log(accessToken)
+			}
+		}
+		else
+		{
+			await logout();
+		}
 	}
 	const loadChat=  async ()=>{
 		try{
@@ -189,7 +208,7 @@ const ScreenMess = () => {
 		if(accessToken!='')
 		loadChat();
 	}
-  }, [searchText,accessToken,isFocused]);
+  }, [searchText,isFocused,accessToken]);
 	useEffect(()=>{
 	const loadFont = async () => {
 	await loadFonts();

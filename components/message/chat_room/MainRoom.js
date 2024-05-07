@@ -17,11 +17,12 @@ import { useNavigation } from '@react-navigation/native';
 import { useSession } from '../../../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingOverlay from '../loadingOverlay';
+import CheckRefreshToken from '../../../utils/checkrefreshtoken';
 
 
 const ScreenChatRoom = ({router}) => {
   const route = useRoute();
-  const {user} = useSession();
+  const {user, login, logout} = useSession();
   const scrollViewRef = useRef(null);
   const [isFontLoaded, setFontLoaded] = useState(false);
   const [isPressed, setIsPressed] = useState(false);
@@ -150,11 +151,25 @@ const ScreenChatRoom = ({router}) => {
   };
 
   //Load
-  const loadToken =async ()=>{
-    const token = await AsyncStorage.getItem('refreshToken');
-    if(token)
-    setAccessToken(token);
-  }
+  const loadToken= async()=>{
+		const token = await AsyncStorage.getItem('refreshToken');
+		if(token)
+		{
+			const access= await CheckRefreshToken(token);
+			if(access===null || access=="Session expired")
+			{
+        await logout();
+			}
+			else
+			{
+				setAccessToken(access);
+			}
+		}
+		else
+		{
+			await logout();
+		}
+	}
   const loadMessage = async ()=>{
     try{
       const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/message/find/${chatId}`, {
@@ -409,7 +424,6 @@ const ScreenChatRoom = ({router}) => {
       const response = await uploadFile(uri, name);
       if(response)
       {
-        console.log(response);
         sendMessage('file',response.image)
       }
       else{
@@ -428,7 +442,8 @@ const ScreenChatRoom = ({router}) => {
     {
       await stopRecording();
       setUploading(true);
-      const response= await uploadFile(record.getURI(),user.id);
+      const currentTime = new Date();
+      const response= await uploadFile(record.getURI(),currentTime);
       if(response)
       {
         await sendMessage('record',response.image);
@@ -450,7 +465,7 @@ const ScreenChatRoom = ({router}) => {
 
       <View style={styles.Header}>
         <TouchableOpacity onPress={()=>{ navigation.goBack('(tabs)');}} >
-          <Image source={icons.back} style={[{ height: 50, width: 25.5,marginRight:40}]}  ></Image>
+          <Image source={icons.back} style={[{ height: 25, width: 25.5,marginRight:40}]}  ></Image>
         </TouchableOpacity>
         <Text style={styles.Name} numberOfLines={1} ellipsizeMode="tail">{name}</Text>
         <TouchableOpacity >

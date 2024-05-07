@@ -45,7 +45,7 @@ export const  Message=  (props) =>{
     const handlePressPlay= async ()=>{
         if(!isPlay)
         {
-            // console.log(props.Content);
+            setSound(null)
             const { sound } = await Audio.Sound.createAsync({uri: props.Content});
             setSound(sound);
             setIsPlay(!isPlay);
@@ -57,7 +57,9 @@ export const  Message=  (props) =>{
         }
         else
         {
+            if(sound)
             await sound.stopAsync();
+            setSound(null)
             setIsPlay(!isPlay);
         }
         

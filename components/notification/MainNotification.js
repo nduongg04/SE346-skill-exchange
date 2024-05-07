@@ -1,4 +1,4 @@
-import { View, Text, Image, ImageBackground, TextInput, ScrollView, TouchableOpacity,FlatList,ActivityIndicator } from "react-native";
+import { View, Text, Image, ImageBackground, TextInput, ScrollView, TouchableOpacity,FlatList,ActivityIndicator, Alert} from "react-native";
 import React, { useState, useEffect } from 'react';
 import { registerRootComponent } from 'expo';
 import { icons } from "@constants";
@@ -10,6 +10,7 @@ import axios from 'axios';
 import { useSession } from "../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation,useIsFocused } from '@react-navigation/native';
+import CheckRefreshToken from "../../utils/checkrefreshtoken";
 const ScreenNotification = () => {
   const [isLoading, setLoading] = useState(true);
   const [isFontLoaded, setFontLoaded] = useState(false);
@@ -17,13 +18,30 @@ const ScreenNotification = () => {
   const[requests, setRequest]= useState([]);
   const[systems, setSystem]=useState([])
   const [accessToken,setAccessToken]=useState('');
-  const {user} = useSession()
+  const {user, login, logout} = useSession()
   const isFocused = useIsFocused();
   
   const loadToken= async()=>{
 		const token = await AsyncStorage.getItem('refreshToken');
+
 		if(token)
-		setAccessToken(token);
+		{
+
+			const access=await CheckRefreshToken(token);
+			if(access===null || access=="Session expired")
+			{
+        await logout();
+				
+			}
+			else
+			{
+				setAccessToken(access);
+			}
+		}
+		else
+		{
+			await logout();
+		}
 	}
 const createChat= async (id1,id2)=>{
 		const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/chat/create',{
@@ -77,7 +95,7 @@ const refeshReques= (idRemove)=>{
 }
 const getRequest = async () => {
     try {
-      const response = await fetch("https://se346-skillexchangebe.onrender.com/api/v1/request/find/receiver/661c1c99928fad8a0e8d01e6",
+      const response = await fetch(`https://se346-skillexchangebe.onrender.com/api/v1/request/find/receiver/${user.id}`,
       {
         method: 'GET',
         headers: {
