@@ -10,4 +10,6 @@ export default function Index() {
     } else {
         return <Redirect href="/signing/Signing" />;
     }
+    //return <Redirect href="/home"/>;
+    
 }

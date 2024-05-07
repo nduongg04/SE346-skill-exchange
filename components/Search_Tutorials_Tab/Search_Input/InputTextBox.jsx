@@ -1,68 +1,65 @@
+import React, { useState } from 'react';
 import InputText from "../../register/Button/InputText";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { search } from "@assets/icons/search.svg";
+import { SafeAreaView, Alert, Image, TouchableOpacity } from "react-native";
 import axios from "axios";
-import { useState } from "react";
-import { Keyboard, Alert, Image, TouchableOpacity } from "react-native";
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import CheckRefreshToken from '../../../utils/checkrefreshtoken';
 const InputTextBox = () => {
-	const [query, setQuery] = useState("");
-	const handleFocus = () => {
-		Keyboard.show();
-	};
+  const [query, setQuery] = useState("");
 
-	handleOnChangeText = async (text) => {
-		setQuery(text); // Cập nhật giá trị của query
+  const handleOnChangeText = (text) => {
+    setQuery(text);
+  };
 
-		// Gọi API sử dụng Axios
-		const getuser = () => {
-			axios
-				.get(
-					"https://se346-skillexchangebe.onrender.com" +
-						"/api/v1/user/find/topic?topics=" +
-						text
-				)
-				.then((response) => {
-					if (response.status == 404) alert("Not Found");
-				})
-				.then((result) => {
-					const users = result.data.users;
-				});
+  const getuser = async () => {
+    const refreshtoken = await AsyncStorage.getItem('refreshtoken');
+    const accessToken = await CheckRefreshToken(refreshtoken); // Add await here
+    const bareUrl = "https://se346-skillexchangebe.onrender.com";
+    try {
+      const response = await axios({
+        method: 'get',
+        maxBodyLength: Infinity,
+        url: `${bareUrl}/api/v1/user/find/topic?topics=${query}`,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        }
+      });
+    
+      if (response.status === 200) {
+        const users = response.data.users;
+        Alert.alert("Success", "We get it!");
+        navigateToUserScreen(users);
+      } else {
+        Alert.alert("Error", "Failed to fetch users. Please try again later.");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Failed to fetch users. Please try again later.");
+      console.error(error);
+    }
+  };
 
-			// Chuyển hướng đến màn hình (hoặc component) chứa người dùng
-			this.navigateToUserScreen(users); // Hàm này cần được định nghĩa một cách phù hợp để thực hiện chuyển hướng
+  const navigateToUserScreen = (users) => {
+    console.log("Navigating to user screen with users:", users);
+  };
 
-			// Xử lý lỗi nếu có
-			Alert.alert("Error", "Failed to fetch users. Please try again later.");
-			console.error(error);
-		};
-	};
-	const navigateToUserScreen = (users) => {
-		// Thực hiện chuyển hướng đến màn hình (hoặc component) chứa người dùng
-		// Điều này có thể bao gồm việc hiển thị danh sách người dùng trên giao diện người dùng, hoặc chuyển hướng đến một màn hình (hoặc component) khác, tùy thuộc vào cách bạn tổ chức ứng dụng của bạn
-		console.log("Navigating to user screen with users:", users);
-		// Ví dụ: navigation.navigate('UserScreen', { users: users });
-	};
-
-	return (
-		<SafeAreaView>
-			<InputText
-				placeholder="Enter your topic"
-				label="Enter your query"
-				iconName="search"
-				onFocus={handleFocus}
-				onChangeText={handleOnChangeText} // Truyền hàm xử lý onChangeText
-				value={query} // Truyền giá trị của query
-				style={{ marginTop: 20 }} // Style cho InputText (nếu cần)
-			/>
-			<TouchableOpacity onPress={handleOnChangeText}>
-				<Image
-					source={search} // Đường dẫn đến hình ảnh
-					style={{ width: 30, height: 30 }} // Kích thước của hình ảnh và margin top (tuỳ chỉnh theo nhu cầu)
-				/>
-			</TouchableOpacity>
-		</SafeAreaView>
-	);
+  return (
+    <SafeAreaView>
+      <InputText
+        placeholder="Enter your topic"
+        label="Enter your query"
+        onChangeText={handleOnChangeText}
+        onSubmitEditing={getuser} // Call getuser when the user submits the input
+        value={query}
+        style={{ marginTop: 20 }}
+      />
+      <TouchableOpacity onPress={getuser}>
+        <Image
+          source={require("@assets/icons/search.svg")}
+          style={{ width: 30, height: 30 }}
+        />
+      </TouchableOpacity>
+    </SafeAreaView>
+  );
 };
 
 export default InputTextBox;

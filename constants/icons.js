@@ -12,6 +12,7 @@ import search from "../assets/icons/search.svg";
 import tickCircle from "../assets/icons/tickCircle.svg";
 
 import transparent_background from "../assets/icons/transparent_background.png";
+import info from "../assets/icons/infor.png";
 
 import location from "../assets/icons/location.svg";
 
@@ -55,6 +56,7 @@ export default {
 	transparent_background,
 	location,
 	backIcon,
+	info,
 
 	search_icon,
 	menu,

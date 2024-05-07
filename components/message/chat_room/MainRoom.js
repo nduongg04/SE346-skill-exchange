@@ -450,7 +450,7 @@ const ScreenChatRoom = ({router}) => {
 
       <View style={styles.Header}>
         <TouchableOpacity onPress={()=>{ navigation.goBack('(tabs)');}} >
-          <Image source={icons.back} style={[{ height: 25.5, width: 25.5,marginRight:40}]}  ></Image>
+          <Image source={icons.back} style={[{ height: 50, width: 25.5,marginRight:40}]}  ></Image>
         </TouchableOpacity>
         <Text style={styles.Name} numberOfLines={1} ellipsizeMode="tail">{name}</Text>
         <TouchableOpacity >

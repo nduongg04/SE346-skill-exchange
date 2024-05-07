@@ -14,6 +14,7 @@ const CircleButton = ({ iconUrl, width = 60, height = 60, handlePress }) => {
 			style={styles.button(width, height)}
             onPressIn={() => setIsFocused(true)}
             onPressOut={() => setIsFocused(false)}
+            onPress={handlePress}
 		>
 			<Image
 				source={iconUrl}
