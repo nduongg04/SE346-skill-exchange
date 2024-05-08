@@ -220,7 +220,7 @@ const ScreenMess = () => {
 		// if(accessToken!='')
 		// loadChat();
 	}
-  }, [searchText,isFocused]);
+  }, [searchText]);
   useEffect(()=>{
 	
 	const load = async()=>{
