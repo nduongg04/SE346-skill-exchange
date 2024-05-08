@@ -35,6 +35,7 @@ const ScreenMess = () => {
 	const {socket,setSocket,onlineUsers,setOnlineUsers} = useSocketContext()
 	const {user, login, logout} = useSession();
 	const [latestMessage, setLatestMessage] = useState([]);
+	const [checkToken, setCheckToken]= useState(false);
 	const isFocused = useIsFocused();
 //Socket
 	useEffect(()=>{
@@ -122,19 +123,14 @@ const ScreenMess = () => {
 		const token = await AsyncStorage.getItem('refreshToken');
 		if(token)
 		{
-			console.log(token)
 			const access= await CheckRefreshToken(token);
-			console.log(typeof(access))
 			if(access===null || access==="Session expired")
 			{
-				await logout();
-				
+				await logout();	
 			}
 			else
 			{
 				setAccessToken(access);
-				console.log(user)
-				console.log(accessToken)
 			}
 		}
 		else
@@ -161,6 +157,10 @@ const ScreenMess = () => {
 			  }
 			;
 		  }
+		  if(response.status==401)
+			{
+				setCheckToken(true);
+			}
 		  else
 		  {
 			Alert.alert(
@@ -180,7 +180,7 @@ const ScreenMess = () => {
 		}
 		
 	}
-  useEffect(() => {
+  useEffect(async () => {
 	if (searchText !== prevSearchText.current )
 	{
 		if(searchText.trim().length > 0)
@@ -204,21 +204,35 @@ const ScreenMess = () => {
 	else
 	{
 		setSearchText('')
-		loadToken();
-		if(accessToken!='')
-		loadChat();
+		// const {accessToken} =  await AsyncStorage.getItem("accessToken")
+		// setAccessToken(accessToken);
+		// if(accessToken!='')
+		// loadChat();
 	}
-  }, [searchText,isFocused,accessToken]);
-	useEffect(()=>{
+  }, [searchText,isFocused]);
+	useEffect(async()=>{
 	const loadFont = async () => {
 	await loadFonts();
 		setFontLoaded(true);}; 
 		loadFont();
+		const {accessToken} =  await AsyncStorage.getItem("accessToken");
+		setAccessToken(accessToken);
+		if(accessToken!='')
+		loadChat();
    })
 	if (!isFontLoaded) {
     return null; 
   }
- 
+ useEffect(async()=>{
+	if(checkToken)
+	{
+		if(accessToken=="")
+		{
+			await loadToken();
+			await loadChat();
+		}
+	}
+ }, [checkToken])
  
   const handleSearch=(text)=>{
 	setSearchText(''+text);

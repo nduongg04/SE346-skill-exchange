@@ -158,7 +158,7 @@ const ScreenChatRoom = ({router}) => {
 			const access= await CheckRefreshToken(token);
 			if(access===null || access=="Session expired")
 			{
-        await logout();
+        //await logout();
 			}
 			else
 			{
