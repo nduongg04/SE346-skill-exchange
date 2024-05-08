@@ -16,6 +16,7 @@ const Information = ({
 	imageCerti,
 	description,
 }) => {
+    console.log(userTopicSkill);
 	const handleBackButton = () => {
 		router.replace("/home");
 	};
@@ -63,7 +64,7 @@ const Information = ({
 							<>
 								<Text style={styles.headerText}>Skill description</Text>
 								<View style={styles.skillContainer}>
-									{skill.map((item, index) => (
+									{skill?.map((item, index) => (
 										<Text key={index} style={styles.detailText}>
 											{item}
 										</Text>

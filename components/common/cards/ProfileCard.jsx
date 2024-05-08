@@ -8,7 +8,7 @@ import { router } from "expo-router";
 import avatarDefault from "@assets/images/avatarDefault.jpg";
 
 const ProfileCard = ({
-	id,
+    id,
 	username,
 	userTopicSkill,
 	imageDisplay,
@@ -17,7 +17,9 @@ const ProfileCard = ({
 	handleInfoPress = () => {
 		router.replace({
 			pathname: "/user/[id]",
-			params: { id: id },
+			params: {
+				id: id
+			},
 		});
 	};
 
