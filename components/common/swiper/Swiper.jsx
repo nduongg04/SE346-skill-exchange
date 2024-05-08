@@ -78,6 +78,7 @@ const SwiperList = ({ users, onSwiped, swiperRef, onSwipedAll }) => {
 			renderCard={(user, index) => {
 				return (
 					<ProfileCard
+                        id={user?.id}
                         skill={user?.skill}
                         birthDay={user?.birthDay}
 						username={user?.username}
