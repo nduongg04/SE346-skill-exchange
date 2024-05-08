@@ -1,4 +1,6 @@
 import { Alert } from "react-native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { router } from "expo-router";
 
 const HandleSessionExpired = () => {
 	Alert.alert("Session Expired", "Please login again", [
@@ -7,10 +9,10 @@ const HandleSessionExpired = () => {
 			onPress: () => {
 				AsyncStorage.removeItem("refreshToken");
 				AsyncStorage.removeItem("accessToken");
+                router.replace("/signing/Signing");
 			},
 		},
 	]);
-	router.replace("/signing/Signing");
 };
 
 export default HandleSessionExpired;
