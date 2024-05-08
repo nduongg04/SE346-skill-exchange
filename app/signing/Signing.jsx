@@ -13,6 +13,7 @@ import SplashScreen from '../../components/register/SplashScreen';
 const Stack = createStackNavigator();
 
 export default function Signing({navigation}) {
+    console.log("sign in");
   return (
       <Stack.Navigator>
         <Stack.Screen
