@@ -35,7 +35,7 @@ const ScreenMess = () => {
 	const {socket,setSocket,onlineUsers,setOnlineUsers} = useSocketContext()
 	const {user, login, logout} = useSession();
 	const [latestMessage, setLatestMessage] = useState([]);
-	const [checkToken, setCheckToken]= useState(false);
+	const [checkToken, setCheckToken]= useState(true);
 	const isFocused = useIsFocused();
 //Socket
 	useEffect(()=>{
@@ -120,6 +120,8 @@ const ScreenMess = () => {
           }
 	}
 	const loadToken= async()=>{
+		console.log("1");
+		console.log(accessToken);
 		const token = await AsyncStorage.getItem('refreshToken');
 		if(token)
 		{
@@ -131,6 +133,7 @@ const ScreenMess = () => {
 			else
 			{
 				setAccessToken(access);
+				
 			}
 		}
 		else
@@ -139,48 +142,56 @@ const ScreenMess = () => {
 		}
 	}
 	const loadChat=  async ()=>{
-		try{
-		const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/chat/find/${user.id}`, {
-		  method: 'GET',
-		  headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${accessToken}`
-		  },});
-		  if(response.status == 200){
-			if (response.data && Array.isArray(response.data.data)) {
-				let list= [];
-				list =response.data.data;
-				setChatRooms(list);
-				setChatAppear(list);
-			  } else {
-				console.error("Invalid data format in response:", response.data);
-			  }
-			;
-		  }
-		  if(response.status==401)
-			{
-				setCheckToken(true);
-			}
-		  else
-		  {
-			Alert.alert(
-				'Thông báo', 
-				'Lỗi kết nối với sever', 
-			)
-		  }
-		}
-		catch{
-			Alert.alert(
-				'Thông báo', 
-				'Ứng dụng đang gặp lỗi', 
-			)
-		}
-		finally{
-			setLoading(false)
+		if(accessToken!='')
+		{
+			try{
+				const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/chat/find/${user.id}`, {
+				  method: 'GET',
+				  headers: {
+					'Content-Type': 'application/json',
+					Authorization: `Bearer ${accessToken}`
+				  },});
+				  console.log(response.status)
+				  if(response.status == 200){
+					if (response.data && Array.isArray(response.data.data)) {
+						let list= [];
+						list =response.data.data;
+						setChatRooms(list);
+						setChatAppear(list);
+					  } else {
+						console.error("Invalid data format in response:", response.data);
+					  }
+					;
+				  }
+				  else
+				  {
+					if(response.status==401)
+						{
+							setCheckToken(true);
+						}
+						  else
+						  {
+							Alert.alert(
+								'Thông báo', 
+								'Lỗi kết nối với sever', 
+							)
+						  }
+				  }
+				}
+				catch{
+					Alert.alert(
+						'Thông báo', 
+						'Ứng dụng đang gặp lỗi', 
+					)
+				}
+				finally{
+					setLoading(false)
+				}
 		}
 		
+		
 	}
-  useEffect(async () => {
+  useEffect(() => {
 	if (searchText !== prevSearchText.current )
 	{
 		if(searchText.trim().length > 0)
@@ -210,29 +221,32 @@ const ScreenMess = () => {
 		// loadChat();
 	}
   }, [searchText,isFocused]);
-	useEffect(async()=>{
+  useEffect(()=>{
+	
+	const load = async()=>{
+		
+		await loadToken();
+		await loadChat();
+		setCheckToken(false);
+	}
+	if(checkToken)
+	{		
+		load();
+	}
+ }, [checkToken,accessToken])
+ useEffect(()=>{
+	loadChat();
+ },[isFocused])
+	useEffect(()=>{
 	const loadFont = async () => {
 	await loadFonts();
 		setFontLoaded(true);}; 
 		loadFont();
-		const {accessToken} =  await AsyncStorage.getItem("accessToken");
-		setAccessToken(accessToken);
-		if(accessToken!='')
-		loadChat();
-   })
+   },[])
 	if (!isFontLoaded) {
     return null; 
   }
- useEffect(async()=>{
-	if(checkToken)
-	{
-		if(accessToken=="")
-		{
-			await loadToken();
-			await loadChat();
-		}
-	}
- }, [checkToken])
+ 
  
   const handleSearch=(text)=>{
 	setSearchText(''+text);

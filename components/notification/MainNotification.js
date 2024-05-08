@@ -22,26 +22,26 @@ const ScreenNotification = () => {
   const isFocused = useIsFocused();
   
   const loadToken= async()=>{
-		const token = await AsyncStorage.getItem('refreshToken');
+		// const token = await AsyncStorage.getItem('refreshToken');
 
-		if(token)
-		{
+		// if(token)
+		// {
 
-			const access=await CheckRefreshToken(token);
-			if(access===null || access=="Session expired")
-			{
-        //await logout();
+		// 	const access=await CheckRefreshToken(token);
+		// 	if(access===null || access=="Session expired")
+		// 	{
+    //     //await logout();
 				
-			}
-			else
-			{
-				setAccessToken(access);
-			}
-		}
-		else
-		{
-			await logout();
-		}
+		// 	}
+		// 	else
+		// 	{
+		// 		setAccessToken(access);
+		// 	}
+		// }
+		// else
+		// {
+		// 	await logout();
+		// }
 	}
 const createChat= async (id1,id2)=>{
 		const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/chat/create',{
