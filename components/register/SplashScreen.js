@@ -60,7 +60,7 @@ const SplashScreen = ({navigation}) => {
                         }),
                     });
                     const user = await AsyncStorage.getItem('user');
-                    if (response.ok) {
+                    if (response.ok && user !== null) {
                         await login(JSON.parse(user));
                         navigation.navigate('(tabs)');
                     } else {
@@ -71,13 +71,14 @@ const SplashScreen = ({navigation}) => {
             } catch (e) {
                 console.log('Failed to fetch the refresh token: ', e.error);
                 await logout();
+                setIsLoading(false);
                 navigation.navigate('EnterName');
             } finally {
                 setIsLoading(false);
             }
         };
         fetchData();
-    }, [navigation]);
+    }, []);
 
     return(
         <LinearGradient
