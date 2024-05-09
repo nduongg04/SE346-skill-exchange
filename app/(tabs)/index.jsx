@@ -4,12 +4,12 @@ import { ProfileCard, Topic } from "../../components";
 import Suzy from "@assets/icons/Suzy.png";
 import { useSession } from "../../context/AuthContext";
 export default function Index() {
-    const {user} = useSession();
-    if (user) {
-        return <Redirect href="/home" />;
-    } else {
-        return <Redirect href="/signing/Signing" />;
-    }
-    //return <Redirect href="/home"/>;
+    // const {user} = useSession();
+    // if (user) {
+    //     return <Redirect href="/home" />;
+    // } else {
+    //     return <Redirect href="/signing/Signing" />;
+    // }
+    return <Redirect href="/home"/>;
     
 }

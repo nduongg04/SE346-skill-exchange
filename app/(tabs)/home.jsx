@@ -23,7 +23,7 @@ const Home = () => {
 	const [backButtonSize, setBackButtonSize] = useState(
 		(screenWidth / 100) * 18
 	);
-	let previousCardIndex = 0;
+
 	// const { user } = useSession();
 	const user = {
 		_id: "6637113c92bdb2d7e5c22ffa",
@@ -93,26 +93,36 @@ const Home = () => {
 		return topicUrl;
 	};
 
-	useEffect(() => {
-		const obj = {
-			accessToken:
-				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjM3MTEzYzkyYmRiMmQ3ZTVjMjJmZmEiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzE0ODg0OTI1LCJleHAiOjE3MTQ4ODg1MjV9.XwKNWrF2_18fHkf3MM5TAMReHAiiPSPEIKARS1tChZQ",
-			refreshToken:
-				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjM3MTEzYzkyYmRiMmQ3ZTVjMjJmZmEiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxNDg4NDkyNSwiZXhwIjoxNzE3NDc2OTI1fQ.foDOgd6lygNV9eNUoZKgvF6Fn0GxPEYUq14dzvX5Dqk",
-		};
-		const getUsers = async () => {
+	const shuffleArray = (array) => {
+		for (let i = array.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[array[i], array[j]] = [array[j], array[i]];
+		}
+		return array;
+	};
+
+	const obj = {
+		accessToken:
+			"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjM3MTEzYzkyYmRiMmQ3ZTVjMjJmZmEiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzE0ODg0OTI1LCJleHAiOjE3MTQ4ODg1MjV9.XwKNWrF2_18fHkf3MM5TAMReHAiiPSPEIKARS1tChZQ",
+		refreshToken:
+			"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjM3MTEzYzkyYmRiMmQ3ZTVjMjJmZmEiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxNDg4NDkyNSwiZXhwIjoxNzE3NDc2OTI1fQ.foDOgd6lygNV9eNUoZKgvF6Fn0GxPEYUq14dzvX5Dqk",
+	};
+	const getUsers = async () => {
+		setIsLoading(true);
+		AsyncStorage.setItem("accessToken", obj.accessToken);
+		AsyncStorage.setItem("refreshToken", obj.refreshToken);
+		const url = getTopicUrl();
+		const data = await GetData(url);
+
+		setUsers(shuffleArray(data));
+		if (users) {
+			setIsLoading(false);
+		} else {
 			setIsLoading(true);
-			AsyncStorage.setItem("accessToken", obj.accessToken);
-			AsyncStorage.setItem("refreshToken", obj.refreshToken);
-			const url = getTopicUrl();
-			const data = await GetData(url);
-			setUsers(data);
-			if (users) {
-				setIsLoading(false);
-			} else {
-				setIsLoading(true);
-			}
-		};
+		}
+	};
+
+	useEffect(() => {
 		getUsers();
 	}, []);
 
@@ -151,15 +161,15 @@ const Home = () => {
 			<View style={{ height: "95%", width: "100%" }}>
 				<View style={{ marginTop: 10, height: "80%" }}>
 					<SwiperList
-                        users={users}
-                        swiperRef={swiperRef}
-                        onSwiped={(index) => {
-                            previousCardIndex = index;
-                        }}
-                        onSwipedAll={() => {
-                            console.log("Swiped all");
-                        }}
-                    />
+						users={users}
+						swiperRef={swiperRef}
+						onSwiped={(index) => {
+							previousCardIndex = index;
+						}}
+						onSwipedAll={() => {
+							console.log("Swiped all");
+						}}
+					/>
 				</View>
 
 				<View
