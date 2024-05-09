@@ -54,6 +54,7 @@ const GetData = async (url) => {
 	if (data === null) {
 		await checkRefreshToken();
 		const newData = await getUsingAccessToken();
+		if (newData === "Something went wrong") return "Something went wrong";
 		return newData.data;
 	} else if (data === "Something went wrong") {
 		return "Something went wrong";
