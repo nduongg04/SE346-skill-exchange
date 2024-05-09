@@ -10,7 +10,7 @@ class Category extends Component{
         data: [],
     };
 
-    async componentDidMount() {
+    async handleOnPress() {
         const refreshtoken = await AsyncStorage.getItem('refreshtoken');
         const accessToken = await CheckRefreshToken(refreshtoken);
         const bareUrl = "https://se346-skillexchangebe.onrender.com";
@@ -23,16 +23,19 @@ class Category extends Component{
             }
         });
         this.setState({ data: response.data });
+        if(response.status == 200) {
+            console.log(this.state.data);
+        }
     }
 
     render() {
         return(
             <TouchableOpacity
-            activeOpacity={0.8}  // Đặt độ trong suốt khi nhấn
-            style={{ height: 75, width: 75, marginLeft: 20, borderWidth: 0.5, borderColor: '#dddddd' }}>
-                <View style = {{height:75, width: 75, borderWidth: 0.5, borderColor: '#dddddd'}}>
+            activeOpacity={0.8} onPress={() => this.handleOnPress()}
+            style={{ height: 200, width: 200, marginLeft: 5, marginBottom: 5, borderWidth: 0.5, borderColor: '#dddddd',  borderRadius: 20  }}>
+                <View style = {{height:200, width: 200, borderWidth: 0.5, borderColor: '#dddddd',  borderRadius: 20,  overflow: 'hidden' }}>
                     <View style ={{flex: 2, }}>
-                        <ImageBackground style = { styles.backgroundImage} source={{ uri: this.props.imageUri }} resizeMode="cover" onError={(error) => console.log(error)}>
+                        <ImageBackground style = {[styles.backgroundImage, {borderRadius: 20}]} source={{ uri: this.props.imageUri }} resizeMode="cover" onError={(error) => console.log(error)}>
                             <Text style ={styles.fixToImage} numberOfLines={1} ellipsizeMode='tail'>{this.props.name}</Text>
                         </ImageBackground>
                     </View>
@@ -51,11 +54,11 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
     },
     backgroundImage: {
-      width: 75,
-      height: 75,
+      width: 200,
+      height: 200,
       justifyContent: 'center',
       alignItems: 'center',
-      position: 'relative'
+      position: 'relative',
     }
   });
 export default Category;

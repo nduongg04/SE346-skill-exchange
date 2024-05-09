@@ -60,10 +60,12 @@ const SplashScreen = ({navigation}) => {
                         }),
                     });
                     const user = await AsyncStorage.getItem('user');
-                    if (response.ok) {
+                    if (response.ok && user !== null) {
+                        console.log("user when check: "+ user);
                         await login(JSON.parse(user));
                         navigation.navigate('(tabs)');
                     } else {
+                        console.log('User null bị xóa trong quá trình code rồi: ');
                         await logout();
                         navigation.navigate('EnterName');
                     }
@@ -71,13 +73,14 @@ const SplashScreen = ({navigation}) => {
             } catch (e) {
                 console.log('Failed to fetch the refresh token: ', e.error);
                 await logout();
+                setIsLoading(false);
                 navigation.navigate('EnterName');
             } finally {
                 setIsLoading(false);
             }
         };
         fetchData();
-    }, [navigation]);
+    }, []);
 
     return(
         <LinearGradient

@@ -16,7 +16,7 @@ const useData = () => {
                 url: `${bareUrl}/api/v1/topic/pagination?page=${page}&limit=${limit}`, 
                 headers: { }
             })
-            setData(response.data);
+            setData(response.data.data);
         }
         fetchData();
     }, []);
@@ -25,7 +25,7 @@ const useData = () => {
 }
 
 const renderItem = ({ item }) => (
-    <Category _id={item._id} imageUrl={item.imageUrl} name={item.name} />
+    <Category imageUri={item.imageUrl} name={item.name} />
 );
 
 const numColumns = 2;
