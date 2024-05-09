@@ -16,12 +16,13 @@ const PostData = (url, data) => {
 			return response.data;
 		} catch (error) {
 			if (error.response.status !== 401) {
-				Alert.alert("Error", "Please try again", [
-					{
-						text: "OK",
-						onPress: () => {},
-					},
-				]);
+				// Alert.alert("Error", "Please try again", [
+				// 	{
+				// 		text: "OK",
+				// 		onPress: () => {},
+				// 	},
+				// ]);
+				return "Something went wrong";
 			} else {
 				const refreshToken = await AsyncStorage.getItem("refreshToken");
 				const newAccessToken = await CheckRefreshToken(refreshToken);
@@ -34,6 +35,7 @@ const PostData = (url, data) => {
 			}
 		}
 	};
+	return postUsingAccessToken();
 };
 
 export default PostData;
