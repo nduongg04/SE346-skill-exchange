@@ -15,8 +15,8 @@ const useData = () => {
                 url: `${bareUrl}/api/v1/topic/limit/${limit}`, 
                 headers: { }
             })
-            console.log(response.data);
-            setData(response.data);
+            console.log(response.data.data);
+            setData(response.data.data);
         }
         fetchData();
     }, []);
@@ -25,7 +25,7 @@ const useData = () => {
 }
 
 const renderItem = ({ item }) => (
-    <Category _id={item.id} imageUri={item.imageUrl} name={item.name} />
+    <Category imageUri={item.imageUrl} name={item.name} />
 );
 
 const Topic_List = () => {
