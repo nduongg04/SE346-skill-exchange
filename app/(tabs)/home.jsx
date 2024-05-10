@@ -14,6 +14,7 @@ import GetData from "../../utils/getdata";
 import useLoadingHome from "../../utils/useLoadingHome";
 import { useSession } from "../../context/AuthContext";
 import SwiperList from "../../components/common/swiper/Swiper";
+import { useAction } from "../../utils/useAction";
 
 const Home = () => {
 	const baseUrl = "https://se346-skillexchangebe.onrender.com";
@@ -82,7 +83,19 @@ const Home = () => {
 	const [users, setUsers] = useState([]);
 	const isLoading = useLoadingHome((state) => state.loading);
 	const setIsLoading = useLoadingHome((state) => state.setLoading);
+
+	const swipe = useAction((state) => state.swipe);
+	
+
 	const swiperRef = useRef(null);
+
+	useEffect(() => {
+		if (swipe === "left") {
+			swiperRef.current.swipeLeft();
+		} else if (swipe === "right") {
+			swiperRef.current.swipeRight();
+		}
+	}, [swipe]);
 
 	const getTopicUrl = () => {
 		let topicUrl = `${baseUrl}/api/v1/user/find/topic?topics=`;
@@ -100,17 +113,8 @@ const Home = () => {
 		}
 		return array;
 	};
-
-	const obj = {
-		accessToken:
-			"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjM3MTEzYzkyYmRiMmQ3ZTVjMjJmZmEiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzE0ODg0OTI1LCJleHAiOjE3MTQ4ODg1MjV9.XwKNWrF2_18fHkf3MM5TAMReHAiiPSPEIKARS1tChZQ",
-		refreshToken:
-			"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjM3MTEzYzkyYmRiMmQ3ZTVjMjJmZmEiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxNDg4NDkyNSwiZXhwIjoxNzE3NDc2OTI1fQ.foDOgd6lygNV9eNUoZKgvF6Fn0GxPEYUq14dzvX5Dqk",
-	};
 	const getUsers = async () => {
 		setIsLoading(true);
-		AsyncStorage.setItem("accessToken", obj.accessToken);
-		AsyncStorage.setItem("refreshToken", obj.refreshToken);
 		const url = getTopicUrl();
 		const data = await GetData(url);
 
@@ -163,11 +167,8 @@ const Home = () => {
 					<SwiperList
 						users={users}
 						swiperRef={swiperRef}
-						onSwiped={(index) => {
-							previousCardIndex = index;
-						}}
 						onSwipedAll={() => {
-							console.log("Swiped all");
+							getUsers();
 						}}
 					/>
 				</View>

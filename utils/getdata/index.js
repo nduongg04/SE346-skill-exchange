@@ -1,7 +1,6 @@
 import CheckRefreshToken from "../checkrefreshtoken";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Alert } from "react-native";
 
 import HandleSessionExpired from "../handlesession";
 
@@ -17,12 +16,6 @@ const GetData = async (url) => {
 			return response.data;
 		} catch (error) {
 			if (error.response.status !== 401) {
-				// Alert.alert("Error", "Please try again", [
-				// 	{
-				// 		text: "OK",
-				// 		onPress: () => {},
-				// 	},
-				// ]);
 				return "Something went wrong";
 			} else {
 				return null;
@@ -39,12 +32,7 @@ const GetData = async (url) => {
 		if (accessToken === "Session expired") {
 			HandleSessionExpired();
 		} else if (accessToken === null) {
-			Alert.alert("Error", "Please try again", [
-				{
-					text: "OK",
-					onPress: () => {},
-				},
-			]);
+			return "Something went wrong";
 		} else {
 			AsyncStorage.setItem("accessToken", accessToken);
 		}
