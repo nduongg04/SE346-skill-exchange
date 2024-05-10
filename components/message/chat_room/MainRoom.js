@@ -18,8 +18,8 @@ import { useSession } from '../../../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingOverlay from '../loadingOverlay';
 import CheckRefreshToken from '../../../utils/checkrefreshtoken';
-
-
+import GetData from '../../../utils/getdata';
+import PostData from '../../../utils/postdata';
 const ScreenChatRoom = ({router}) => {
   const route = useRoute();
   const {user, login, logout} = useSession();
@@ -170,76 +170,101 @@ const ScreenChatRoom = ({router}) => {
 			await logout();
 		}
 	}
-  const loadMessage = async ()=>{
-    try{
-      const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/message/find/${chatId}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${accessToken}`,
-      },}); 
-      if(response.status==200){
-        setMessageList(response.data.data);
-      }
-      else
-      {
-        Alert.alert(
-          'Thông báo', 
-          'Lỗi kết nối với sever', 
-        )
-      }
-    }
-    catch{
-      Alert.alert(
-				'Thông báo', 
-				'Ứng dụng đang gặp lỗi', 
-			)
-		}
-		finally{
-			setLoading(false)
-		}
+  // const loadMessage = async ()=>{
+  //   try{
+  //     const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/message/find/${chatId}`, {
+  //     method: 'GET',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //       Authorization: `Bearer ${accessToken}`,
+  //     },}); 
+  //     if(response.status==200){
+  //       setMessageList(response.data.data);
+  //     }
+  //     else
+  //     {
+  //       Alert.alert(
+  //         'Thông báo', 
+  //         'Lỗi kết nối với sever', 
+  //       )
+  //     }
+  //   }
+  //   catch{
+  //     Alert.alert(
+	// 			'Thông báo', 
+	// 			'Ứng dụng đang gặp lỗi', 
+	// 		)
+	// 	}
+	// 	finally{
+	// 		setLoading(false)
+	// 	}
 		
-  }
+  // }
+  const loadMessage = async ()=>
+    {
+        const url = `https://se346-skillexchangebe.onrender.com/api/v1/message/find/${chatId}`
+        const data= await GetData(url);
+        setMessageList(data);
+        setLoading(false);
+    }
+  // const sendMessage= async(Type,Content)=>{
+  //   if(!Content)
+  //   Content=message
+  // try{
+  //   const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/message/send',{
+  //     method:'POST',
+  //     headers:{
+  //       'Content-Type': 'application/json',
+  //       Authorization:`Bearer ${accessToken}`
+  //     },
+  //     body: JSON.stringify({
+  //      chatID:`${chatId}`,
+  //      senderID:`${user.id}`,
+  //      content:Content,
+  //      type:Type,
+  //     })
+  //   });
+  //   console.log(response)
+  //   if(response.status==200)
+  //   {
+  //     const json = await response.json();
+  //     setNewMessage(json.data)
+  //     setMessageList([...messageList,json.data])
+  //   }
+  //   else{
+  //     Alert.alert(
+	// 			'Thông báo', 
+	// 			'Không gửi được tin nhắn', 
+	// 		)
+  //   }
+  // }
+  // catch{
+  //   Alert.alert(
+  //     'Thông báo', 
+  //     'Không gửi được tin nhắn', 
+  //   )
+  // }
+    
+    
+    
+  // }
   const sendMessage= async(Type,Content)=>{
     if(!Content)
-    Content=message
-  try{
-    const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/message/send',{
-      method:'POST',
-      headers:{
-        'Content-Type': 'application/json',
-        Authorization:`Bearer ${accessToken}`
-      },
-      body: JSON.stringify({
-       chatID:`${chatId}`,
-       senderID:`${user.id}`,
-       content:Content,
-       type:Type,
-      })
-    });
-    console.log(response)
-    if(response.status==200)
-    {
-      const json = await response.json();
-      setNewMessage(json.data)
-      setMessageList([...messageList,json.data])
-    }
-    else{
-      Alert.alert(
-				'Thông báo', 
-				'Không gửi được tin nhắn', 
-			)
-    }
-  }
-  catch{
-    Alert.alert(
-      'Thông báo', 
-      'Không gửi được tin nhắn', 
-    )
-  }
-    
-    
-    
+      Content=message;
+    const dataPost={
+           chatID:`${chatId}`,
+           senderID:`${user.id}`,
+           content:Content,
+           type:Type,
+          }
+    const url='https://se346-skillexchangebe.onrender.com/api/v1/message/send';
+    const data= await PostData(url,dataPost);
+    // console.log(data)
+    if(data)
+      {
+        setNewMessage(data)
+        setMessageList([...messageList,data])
+      }
   }
   const uploadImage = async (imageUri, name) => {
     const formData = new FormData();
@@ -319,10 +344,10 @@ const ScreenChatRoom = ({router}) => {
       setFontLoaded(true);
     };
     loadFont();
-    loadToken();
-    if(accessToken!='')
+    // loadToken();
+    // if(accessToken!='')
     loadMessage();
-  }, [accessToken]);
+  }, []);
   if (!isFontLoaded) {
     return null; // Return null or a loading indicator while the font is loading
   };

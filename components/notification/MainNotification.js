@@ -73,21 +73,20 @@ const createRequest= async()=>
       method:'POST',
       headers:{
         'Content-Type': 'application/json',
-        Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODI5NSwiZXhwIjoxNzE1NzkwMjk1fQ.4EHaQTxyYqJrQARjGcPXBYG6BYUOTRzZ51tYBju6JRQ"
+        Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFjMWM5OTkyOGZhZDhhMGU4ZDAxZTYiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxNTE5NTk4NywiZXhwIjoxNzE3Nzg3OTg3fQ.9tlJNB-8NqfxtxeJ2Y0khcmuucbEUvdo0zSPe49ctg4"
       },
       body: JSON.stringify({
-        senderID: "661aceb50b954258a9b6dc70",
-        receiverID: "661c1c99928fad8a0e8d01e6"
+        senderID: "661c1c99928fad8a0e8d01e6",
+        receiverID: "661aceb50b954258a9b6dc70 "
       })
     })
-   data = await response.json();
-    console.log(data);
+  
     if(response.status==200)
     {
         console.log('create success')
     }
     else{
-      console.log(response.statusText)
+      console.log(response)
     }
 }
 const refeshReques= (idRemove)=>{
@@ -127,10 +126,9 @@ const refeshReques= (idRemove)=>{
 //     }
 // };
 const getRequest= async()=>{
-  console.log(user);
   const url=`https://se346-skillexchangebe.onrender.com/api/v1/request/find/receiver/${user.id}`
   const data=await GetData(url);
-  console.log(data);
+  setRequest(data);
   setLoading(false);
 };
  

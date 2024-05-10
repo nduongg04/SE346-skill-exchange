@@ -18,7 +18,7 @@ import { useSocketContext } from "../../../context/SocketContext";
 import { useSession } from "../../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import CheckRefreshToken from "../../../utils/checkrefreshtoken";
-
+import GetData from "../../../utils/getdata";
 
 
 
@@ -120,8 +120,6 @@ const ScreenMess = () => {
           }
 	}
 	const loadToken= async()=>{
-		console.log("1");
-		console.log(accessToken);
 		const token = await AsyncStorage.getItem('refreshToken');
 		if(token)
 		{
@@ -141,55 +139,66 @@ const ScreenMess = () => {
 			await logout();
 		}
 	}
-	const loadChat=  async ()=>{
-		if(accessToken!='')
-		{
-			try{
-				const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/chat/find/${user.id}`, {
-				  method: 'GET',
-				  headers: {
-					'Content-Type': 'application/json',
-					Authorization: `Bearer ${accessToken}`
-				  },});
-				  console.log(response.status)
-				  if(response.status == 200){
-					if (response.data && Array.isArray(response.data.data)) {
-						let list= [];
-						list =response.data.data;
-						setChatRooms(list);
-						setChatAppear(list);
-					  } else {
-						console.error("Invalid data format in response:", response.data);
-					  }
-					;
-				  }
-				  else
-				  {
-					if(response.status==401)
-						{
-							setCheckToken(true);
-						}
-						  else
-						  {
-							Alert.alert(
-								'Thông báo', 
-								'Lỗi kết nối với sever', 
-							)
-						  }
-				  }
-				}
-				catch{
-					Alert.alert(
-						'Thông báo', 
-						'Ứng dụng đang gặp lỗi', 
-					)
-				}
-				finally{
-					setLoading(false)
-				}
-		}
+	// const loadChat=  async ()=>{
+	// 	if(accessToken!='')
+	// 	{
+	// 		try{
+	// 			const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/chat/find/${user.id}`, {
+	// 			  method: 'GET',
+	// 			  headers: {
+	// 				'Content-Type': 'application/json',
+	// 				Authorization: `Bearer ${accessToken}`
+	// 			  },});
+	// 			  console.log(response.status)
+	// 			  if(response.status == 200){
+	// 				if (response.data && Array.isArray(response.data.data)) {
+	// 					let list= [];
+	// 					list =response.data.data;
+	// 					setChatRooms(list);
+	// 					setChatAppear(list);
+	// 				  } else {
+	// 					console.error("Invalid data format in response:", response.data);
+	// 				  }
+	// 				;
+	// 			  }
+	// 			  else
+	// 			  {
+	// 				if(response.status==401)
+	// 					{
+	// 						setCheckToken(true);
+	// 					}
+	// 					  else
+	// 					  {
+	// 						Alert.alert(
+	// 							'Thông báo', 
+	// 							'Lỗi kết nối với sever', 
+	// 						)
+	// 					  }
+	// 			  }
+	// 			}
+	// 			catch{
+	// 				Alert.alert(
+	// 					'Thông báo', 
+	// 					'Ứng dụng đang gặp lỗi', 
+	// 				)
+	// 			}
+	// 			finally{
+	// 				setLoading(false)
+	// 			}
+	// 	}
 		
 		
+	// }
+	const loadChat= async()=>{
+		const url = `https://se346-skillexchangebe.onrender.com/api/v1/chat/find/${user.id}`
+		const data= await GetData(url);
+		if(Array.isArray(data))
+			{
+				setChatRooms(data);
+	 	setChatAppear(data);
+			}
+		
+		setLoading(false);
 	}
   useEffect(() => {
 	if (searchText !== prevSearchText.current )
@@ -215,25 +224,21 @@ const ScreenMess = () => {
 	else
 	{
 		setSearchText('')
-		// const {accessToken} =  await AsyncStorage.getItem("accessToken")
-		// setAccessToken(accessToken);
-		// if(accessToken!='')
-		// loadChat();
 	}
   }, [searchText]);
-  useEffect(()=>{
+//   useEffect(()=>{
 	
-	const load = async()=>{
+// 	const load = async()=>{
 		
-		await loadToken();
-		await loadChat();
-		setCheckToken(false);
-	}
-	if(checkToken)
-	{		
-		load();
-	}
- }, [checkToken,accessToken])
+// 		await loadToken();
+// 		await loadChat();
+// 		setCheckToken(false);
+// 	}
+// 	if(checkToken)
+// 	{		
+// 		load();
+// 	}
+//  }, [checkToken])
  useEffect(()=>{
 	loadChat();
  },[isFocused])

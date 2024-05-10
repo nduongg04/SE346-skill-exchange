@@ -94,16 +94,16 @@ const Home = () => {
 	};
 
 	useEffect(() => {
-		const obj = {
-			accessToken:
-				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjM3MTEzYzkyYmRiMmQ3ZTVjMjJmZmEiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzE0ODg0OTI1LCJleHAiOjE3MTQ4ODg1MjV9.XwKNWrF2_18fHkf3MM5TAMReHAiiPSPEIKARS1tChZQ",
-			refreshToken:
-				"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjM3MTEzYzkyYmRiMmQ3ZTVjMjJmZmEiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxNDg4NDkyNSwiZXhwIjoxNzE3NDc2OTI1fQ.foDOgd6lygNV9eNUoZKgvF6Fn0GxPEYUq14dzvX5Dqk",
-		};
+		// const obj = {
+		// 	accessToken:
+		// 		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjM3MTEzYzkyYmRiMmQ3ZTVjMjJmZmEiLCJ0eXBlIjoiYWNjZXNzIiwiaWF0IjoxNzE0ODg0OTI1LCJleHAiOjE3MTQ4ODg1MjV9.XwKNWrF2_18fHkf3MM5TAMReHAiiPSPEIKARS1tChZQ",
+		// 	refreshToken:
+		// 		"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjM3MTEzYzkyYmRiMmQ3ZTVjMjJmZmEiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxNDg4NDkyNSwiZXhwIjoxNzE3NDc2OTI1fQ.foDOgd6lygNV9eNUoZKgvF6Fn0GxPEYUq14dzvX5Dqk",
+		// };
 		const getUsers = async () => {
 			setIsLoading(true);
-			AsyncStorage.setItem("accessToken", obj.accessToken);
-			AsyncStorage.setItem("refreshToken", obj.refreshToken);
+			// AsyncStorage.setItem("accessToken", obj.accessToken);
+			// AsyncStorage.setItem("refreshToken", obj.refreshToken);
 			const url = getTopicUrl();
 			const data = await GetData(url);
 			setUsers(data);
