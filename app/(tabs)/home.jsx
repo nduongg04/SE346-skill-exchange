@@ -14,6 +14,7 @@ import GetData from "../../utils/getdata";
 import useLoadingHome from "../../utils/useLoadingHome";
 import { useSession } from "../../context/AuthContext";
 import SwiperList from "../../components/common/swiper/Swiper";
+import { useAction } from "../../utils/useAction";
 
 const Home = () => {
 	const baseUrl = "https://se346-skillexchangebe.onrender.com";
@@ -82,7 +83,19 @@ const Home = () => {
 	const [users, setUsers] = useState([]);
 	const isLoading = useLoadingHome((state) => state.loading);
 	const setIsLoading = useLoadingHome((state) => state.setLoading);
+
+	const swipe = useAction((state) => state.swipe);
+	
+
 	const swiperRef = useRef(null);
+
+	useEffect(() => {
+		if (swipe === "left") {
+			swiperRef.current.swipeLeft();
+		} else if (swipe === "right") {
+			swiperRef.current.swipeRight();
+		}
+	}, [swipe]);
 
 	const getTopicUrl = () => {
 		let topicUrl = `${baseUrl}/api/v1/user/find/topic?topics=`;
@@ -167,7 +180,7 @@ const Home = () => {
 							previousCardIndex = index;
 						}}
 						onSwipedAll={() => {
-							console.log("Swiped all");
+							getUsers();
 						}}
 					/>
 				</View>

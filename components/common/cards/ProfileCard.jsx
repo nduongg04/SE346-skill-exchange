@@ -15,7 +15,7 @@ const ProfileCard = ({
 	description,
 }) => {
 	handleInfoPress = () => {
-		router.replace({
+		router.push({
 			pathname: "/user/[id]",
 			params: {
 				id: id

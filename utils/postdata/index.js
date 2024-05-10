@@ -5,6 +5,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const PostData = (url, data) => {
 	const postUsingAccessToken = async () => {
+        console.log("PostData -> url", url)
 		const accessToken = await AsyncStorage.getItem("accessToken");
 		try {
 			const response = await axios.post(url, data, {

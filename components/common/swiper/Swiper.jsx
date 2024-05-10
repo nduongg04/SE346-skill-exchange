@@ -2,7 +2,7 @@ import Swiper from "react-native-deck-swiper";
 import ProfileCard from "../cards/ProfileCard";
 import PostData from "../../../utils/postdata";
 
-const SwiperList = ({ users, onSwiped, swiperRef, onSwipedAll }) => {
+const SwiperList = ({ users, swiperRef, onSwipedAll }) => {
     const baseUrl = "https://se346-skillexchangebe.onrender.com"
 
     // const { user } = useSession();
@@ -71,7 +71,6 @@ const SwiperList = ({ users, onSwiped, swiperRef, onSwipedAll }) => {
             }}
 
 			cardStyle={{ height: "100%", width: "100%" }}
-			onSwiped={onSwiped}
 			cardHorizontalMargin={0}
 			backgroundColor="white"
 			swipeBackCard
