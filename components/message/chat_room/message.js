@@ -76,7 +76,7 @@ export const  Message=  (props) =>{
             const filePath = parsedUrl.pathname;       
             // Tách tên tệp từ phần path
             const fileName = filePath.split('/').pop();
-            return fileName.replace('files%2F', '');
+            return decodeURIComponent(decodeURIComponent(fileName.replace('files%2F', '')));
         } else {
             console.log('Đường dẫn không trỏ đến nội dung truyền thông.');
         }
@@ -101,7 +101,7 @@ export const  Message=  (props) =>{
                 </View>;
             break;
         case 'record':
-            contentType=<View style={{ justifyContent: 'center',alignItems:'center',width:70, height:45,borderRadius:20, backgroundColor:"#D4D1D1", marginTop:5, marginRight:5 }}>
+            contentType=<View style={{ justifyContent: 'center',alignItems:'center',width:70, height:45,borderRadius:20, backgroundColor:"#FF9557", marginTop:5, marginRight:5 }}>
                 <TouchableOpacity onPress={handlePressPlay}>
                     <Image source={isPlay?icons.pause:icons.play} style={isPlay?{width:23, height:23, resizeMode:"cover"}:{width:30, height:30, resizeMode:"cover"}}/>
                 </TouchableOpacity>
@@ -111,9 +111,9 @@ export const  Message=  (props) =>{
             const fileName= getFileName(props.Content);           
             contentType=
             <TouchableOpacity onPress={getFile} >
-                <View style={{flexDirection:'row',justifyContent: 'center',alignItems:'center',borderRadius:10, backgroundColor:"#FF823A", paddingVertical:7, marginTop:5,marginRight:5,paddingHorizontal:10}}>             
+                <View style={{flexDirection:'row',justifyContent: 'center',alignItems:'center',borderRadius:10, backgroundColor:"#FF9557", paddingVertical:7, marginTop:5,marginRight:5,paddingHorizontal:10}}>             
                     <Image source={icons.file} style={{width:35, height:35, resizeMode:"cover"}}/>
-                    <Text style={styles.TextFile}>{fileName}</Text>
+                    <Text style={styles.TextFile} numberOfLines={1} ellipsizeMode="tail">{fileName}</Text>
                 </View>
                 </TouchableOpacity>;
             break;
@@ -152,7 +152,7 @@ export const  Message=  (props) =>{
             </View>;
             break;
         case 'record':
-            contentType=<View style={{ justifyContent: 'center',alignItems:'center',width:70, height:45,borderRadius:20, backgroundColor:"#D4D1D1",marginTop:5, marginLeft:5  }}>
+            contentType=<View style={{ justifyContent: 'center',alignItems:'center',width:70, height:45,borderRadius:20, backgroundColor:"#FF9557",marginTop:5, marginLeft:5  }}>
                 <TouchableOpacity onPress={handlePressPlay}>
                     <Image source={isPlay?icons.pause:icons.play} style={isPlay?{width:23, height:23, resizeMode:"cover"}:{width:30, height:30, resizeMode:"cover"}}/>
                 </TouchableOpacity>
@@ -162,9 +162,9 @@ export const  Message=  (props) =>{
             const fileName= getFileName(props.Content);           
             contentType=
             <TouchableOpacity onPress={getFile} >
-                <View style={{flexDirection:'row',justifyContent: 'center',alignItems:'center',borderRadius:10, backgroundColor:"#FF823A", paddingVertical:7, marginTop:5,marginLeft:5,paddingHorizontal:10}}>             
+                <View style={{flexDirection:'row',justifyContent: 'center',alignItems:'center',borderRadius:10, backgroundColor:"#FF9557", paddingVertical:7, marginTop:5,marginLeft:5,paddingHorizontal:10}}>             
                     <Image source={icons.file} style={{width:35, height:35, resizeMode:"cover"}}/>
-                    <Text style={styles.TextFile}>{fileName}</Text>
+                    <Text style={styles.TextFile} numberOfLines={1} ellipsizeMode="tail">{fileName}</Text>
                 </View>
             </TouchableOpacity>;
         break;

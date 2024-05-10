@@ -31,8 +31,7 @@ export const styles = StyleSheet.create(
         marginTop:'9%',
         paddingHorizontal:'5%',
         
-        borderBottomWidth:1.2,
-        borderBottomColor:'#939393'
+        
     },
     Name:
     {
@@ -159,6 +158,8 @@ export const styles = StyleSheet.create(
     TextFile:{
         fontSize:15, 
         marginLeft:10,
+        maxWidth:150,
+        color:'#383636',
         fontFamily:'Inter-SemiBold'
     }
     

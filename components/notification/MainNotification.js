@@ -44,29 +44,29 @@ const ScreenNotification = () => {
 		// 	await logout();
 		// }
 	}
-const createChat= async (id1,id2)=>{
-		const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/chat/create',{
-			method:'POST',
-			headers:{
-			  'Content-Type': 'application/json',
-			  Authorization:`Bearer ${accessToken}`
-			},
-			body: JSON.stringify({
-				"firstID": id1,
-				"secondID": id2
-			})
-		  })
-		  const data = await response.json();
-		  console.log(response.status)
-		  console.log(data);
-		  if(response.status==400)
-		  {
-			console.log(response.statusText)
-		  }
-		  else{
-			console.log(response.statusText)
-		  }
-}
+// const createChat= async (id1,id2)=>{
+// 		const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/chat/create',{
+// 			method:'POST',
+// 			headers:{
+// 			  'Content-Type': 'application/json',
+// 			  Authorization:`Bearer ${accessToken}`
+// 			},
+// 			body: JSON.stringify({
+// 				"firstID": id1,
+// 				"secondID": id2
+// 			})
+// 		  })
+// 		  const data = await response.json();
+// 		  console.log(response.status)
+// 		  console.log(data);
+// 		  if(response.status==400)
+// 		  {
+// 			console.log(response.statusText)
+// 		  }
+// 		  else{
+// 			console.log(response.statusText)
+// 		  }
+// }
 const createRequest= async()=>
 {
   const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/request/create',{
@@ -128,7 +128,10 @@ const refeshReques= (idRemove)=>{
 const getRequest= async()=>{
   const url=`https://se346-skillexchangebe.onrender.com/api/v1/request/find/receiver/${user.id}`
   const data=await GetData(url);
-  setRequest(data);
+  if (data !== "Something went wrong"){
+    setRequest(data);
+  }
+  
   setLoading(false);
 };
  
