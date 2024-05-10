@@ -6,7 +6,7 @@ import { useSession } from "../../context/AuthContext";
 export default function Index() {
     const {user} = useSession();
     if (user) {
-        return <Redirect href="/home" />;
+        return <Redirect href="/search" />;
     } else {
         return <Redirect href="/signing/Signing" />;
     }
