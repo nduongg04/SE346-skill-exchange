@@ -18,14 +18,17 @@ const Information = ({
 	avatar,
 	imageCerti,
 	description,
-    // handleBackButton,
+	handleBackButton,
 }) => {
-    const swipeLeft = useAction((state) => state.swipeLeft);
+	const swipeLeft = useAction((state) => state.swipeLeft);
 	const swipeRight = useAction((state) => state.swipeRight);
 
-    const handleBackButton = () => {
-		router.back();
-	};
+	function convertDate(isoDate) {
+		const date = new Date(isoDate);
+		const formattedDate = date.toLocaleDateString("en-GB");
+		return formattedDate;
+	}
+
 	return (
 		<SafeAreaView
 			style={{
@@ -38,7 +41,7 @@ const Information = ({
 					title: "Information",
 					headerShown: true,
 					headerShadowVisible: true,
-                    headerBackVisible: false,
+					headerBackVisible: false,
 					headerTitle: (props) => (
 						<BackHeader
 							{...props}
@@ -49,14 +52,20 @@ const Information = ({
 				}}
 			/>
 			<View style={styles.buttonContainer}>
-				<CircleButton iconUrl={require("@assets/icons/cancel.svg")} handlePress={() => {
-                    router.back();
-                    swipeLeft();
-                }} />
-				<CircleButton iconUrl={require("@assets/icons/tickCircle.svg")} handlePress={() => {
-                    router.back();
-                    swipeRight();
-                }}/>
+				<CircleButton
+					iconUrl={require("@assets/icons/cancel.svg")}
+					handlePress={() => {
+						router.back();
+						swipeLeft();
+					}}
+				/>
+				<CircleButton
+					iconUrl={require("@assets/icons/tickCircle.svg")}
+					handlePress={() => {
+						router.back();
+						swipeRight();
+					}}
+				/>
 			</View>
 
 			<ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
@@ -64,7 +73,7 @@ const Information = ({
 					<View style={styles.avatar}>
 						<Image
 							style={{ width: "100%", height: "100%" }}
-                            placeholder={avatarDefault}
+							placeholder={avatarDefault}
 							source={{
 								uri: avatar,
 							}}
@@ -76,7 +85,7 @@ const Information = ({
 						<Text style={styles.detailText}>{description}</Text>
 
 						<Text style={styles.headerText}>Birthday</Text>
-						<Text style={styles.detailText}>{birthDay}</Text>
+						<Text style={styles.detailText}>{convertDate(birthDay)}</Text>
 					</View>
 
 					<View style={styles.boxContainer}>

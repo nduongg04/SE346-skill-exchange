@@ -2,10 +2,11 @@ import HandleSessionExpired from "../handlesession";
 import axios from "axios";
 import CheckRefreshToken from "../checkrefreshtoken";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Alert } from "react-native";
 
 const PostData = (url, data) => {
 	const postUsingAccessToken = async () => {
-        console.log("PostData -> url", url)
+		console.log("PostData");
 		const accessToken = await AsyncStorage.getItem("accessToken");
 		try {
 			const response = await axios.post(url, data, {
@@ -14,15 +15,12 @@ const PostData = (url, data) => {
 				},
 				body: JSON.stringify(data),
 			});
+            console.log(response.data);
 			return response.data;
 		} catch (error) {
-			if (error.response.status !== 401) {
-				// Alert.alert("Error", "Please try again", [
-				// 	{
-				// 		text: "OK",
-				// 		onPress: () => {},
-				// 	},
-				// ]);
+			if (error.response.status === 404) {
+				return "404";
+			} else if (error.response.status !== 401) {
 				return "Something went wrong";
 			} else {
 				const refreshToken = await AsyncStorage.getItem("refreshToken");

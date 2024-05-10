@@ -6,9 +6,10 @@ import { Image } from "expo-image";
 import { TouchableOpacity } from "react-native";
 import { router } from "expo-router";
 import avatarDefault from "@assets/images/avatarDefault.jpg";
+import { useState } from "react";
 
 const ProfileCard = ({
-    id,
+	id,
 	username,
 	userTopicSkill,
 	imageDisplay,
@@ -18,10 +19,12 @@ const ProfileCard = ({
 		router.push({
 			pathname: "/user/[id]",
 			params: {
-				id: id
+				id: id,
 			},
 		});
 	};
+
+	const [sourceBackgroud, setSourceBackgroud] = useState(avatarDefault);
 
 	return (
 		<View
@@ -41,13 +44,8 @@ const ProfileCard = ({
 			}}
 		>
 			<ImageBackground
-				source={
-					typeof imageDisplay !== "undefined" && imageDisplay !== ""
-						? {
-								uri: imageDisplay,
-						  }
-						: avatarDefault
-				}
+				onLoad={() => setSourceBackgroud({ uri: imageDisplay })}
+				source={sourceBackgroud}
 				contentFit="cover"
 				style={{
 					width: "100%",

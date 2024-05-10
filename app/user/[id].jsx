@@ -5,20 +5,6 @@ import GetData from "../../utils/getdata";
 import { router } from "expo-router";
 
 const User = () => {
-	const props = {
-		username: "Suzy",
-		skill: ["Actress", "Singer"],
-		birthDay: "11/08/2004",
-		userTopicSkill: ["Actress", "Singer"],
-		avatar: require("../../assets/icons/Suzy.png"),
-		imageCerti: [
-			require("../../assets/icons/Suzy.png"),
-			require("../../assets/icons/Suzy.png"),
-		],
-		description:
-			"I’m an actress. I have participated in several K-dramas: 'Dream High,' Suzy starred in several popular K-dramas, including 'Gu Family Book' (2013), 'Uncontrollably Fond' (2016), and 'Vagabond' (2019).",
-	};
-
 	const baseUrl = "https://se346-skillexchangebe.onrender.com";
 
 	const { id } = useLocalSearchParams();
