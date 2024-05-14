@@ -18,7 +18,6 @@ const Information = ({
 	avatar,
 	imageCerti,
 	description,
-	handleBackButton,
 }) => {
 	const swipeLeft = useAction((state) => state.swipeLeft);
 	const swipeRight = useAction((state) => state.swipeRight);
@@ -28,6 +27,10 @@ const Information = ({
 		const formattedDate = date.toLocaleDateString("en-GB");
 		return formattedDate;
 	}
+
+	const handleBackButton = () => {
+		router.back();
+	};
 
 	return (
 		<SafeAreaView
