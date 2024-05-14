@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Request=(props)=>
 {
     const createChat= async (id1,id2)=>{
-        const token= await AsyncStorage.getItem('refreshToken');
+        const token= await AsyncStorage.getItem('accessToken');
         try{
             const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/chat/create',{
 			method:'POST',
@@ -23,13 +23,17 @@ const Request=(props)=>
 			return true
 		  }
 		  else{
+            Alert.alert(
+                'Thông báo', 
+                'Kết bạn không thành công', 
+            )
 			return false
 		  }
         }
         catch{
             Alert.alert(
                 'Thông báo', 
-                'Ứng dụng đang gặp lỗi', 
+                'Kết bạn không thành công', 
             )
             return false
          }
@@ -71,8 +75,7 @@ const Request=(props)=>
           }
     }
     const handlePressDecline= async ()=>{
-        deleteRequest();
-       
+        deleteRequest(); 
     }
     const handlePressAccept= async ()=>{
        if( await createChat(props.SenderId,props.MyId));

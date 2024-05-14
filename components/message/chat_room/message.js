@@ -28,11 +28,11 @@ export const  Message=  (props) =>{
             onRequestClose={closeModal}
            
         >
-            <View  style={{width:'100%', height:'100%', backgroundColor:'rgba(217, 217, 217, 0.9)'}}>
+            <View  style={{width:'100%', height:'100%', backgroundColor:'rgba(217, 217, 217, 0.95)'}}>
             <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
                 <Image source={icons.close} style={{width:35,height:35,marginLeft:'auto'}} />
             </TouchableOpacity>
-            <View style={{width:'80%',height:'80%', marginLeft:'10%',marginTop:'10%'}}>
+            <View style={{width:'85%',height:'85%', marginLeft:'7.5%',marginTop:'7.5%'}}>
             
             <Image source={{uri: props.Content}} style={{width:'100%', height: '100%', resizeMode:'contain'}} />
             </View>
@@ -45,7 +45,7 @@ export const  Message=  (props) =>{
     const handlePressPlay= async ()=>{
         if(!isPlay)
         {
-            // console.log(props.Content);
+            setSound(null)
             const { sound } = await Audio.Sound.createAsync({uri: props.Content});
             setSound(sound);
             setIsPlay(!isPlay);
@@ -57,7 +57,9 @@ export const  Message=  (props) =>{
         }
         else
         {
+            if(sound)
             await sound.stopAsync();
+            setSound(null)
             setIsPlay(!isPlay);
         }
         
@@ -74,7 +76,7 @@ export const  Message=  (props) =>{
             const filePath = parsedUrl.pathname;       
             // Tách tên tệp từ phần path
             const fileName = filePath.split('/').pop();
-            return fileName.replace('files%2F', '');
+            return decodeURIComponent(decodeURIComponent(fileName.replace('files%2F', '')));
         } else {
             console.log('Đường dẫn không trỏ đến nội dung truyền thông.');
         }
@@ -93,13 +95,13 @@ export const  Message=  (props) =>{
         case 'image':
             contentType=
                 <View style={{marginTop:3, marginRight:5}}>
-                    <TouchableOpacity  style={{width:150,height:200,overflow: 'hidden'}} onPress={openModal}>
+                    <TouchableOpacity  style={{width:150,height:200,overflow: 'hidden',borderRadius:15, borderColor:'#FFBE98', borderWidth:1}} onPress={openModal}>
                         <Image  style={{width:'100%', height: '100%', resizeMode: "cover"}} source={{uri: props.Content}}/>  
                     </TouchableOpacity>
                 </View>;
             break;
         case 'record':
-            contentType=<View style={{ justifyContent: 'center',alignItems:'center',width:70, height:45,borderRadius:20, backgroundColor:"#F2F2F2" }}>
+            contentType=<View style={{ justifyContent: 'center',alignItems:'center',width:70, height:45,borderRadius:20, backgroundColor:"#FF9557", marginTop:5, marginRight:5 }}>
                 <TouchableOpacity onPress={handlePressPlay}>
                     <Image source={isPlay?icons.pause:icons.play} style={isPlay?{width:23, height:23, resizeMode:"cover"}:{width:30, height:30, resizeMode:"cover"}}/>
                 </TouchableOpacity>
@@ -109,9 +111,9 @@ export const  Message=  (props) =>{
             const fileName= getFileName(props.Content);           
             contentType=
             <TouchableOpacity onPress={getFile} >
-                <View style={{flexDirection:'row',justifyContent: 'center',alignItems:'center',borderRadius:10, backgroundColor:"#FF823A", paddingVertical:7, marginTop:5,marginRight:5,paddingHorizontal:10}}>             
+                <View style={{flexDirection:'row',justifyContent: 'center',alignItems:'center',borderRadius:10, backgroundColor:"#FF9557", paddingVertical:7, marginTop:5,marginRight:5,paddingHorizontal:10}}>             
                     <Image source={icons.file} style={{width:35, height:35, resizeMode:"cover"}}/>
-                    <Text style={styles.TextFile}>{fileName}</Text>
+                    <Text style={styles.TextFile} numberOfLines={1} ellipsizeMode="tail">{fileName}</Text>
                 </View>
                 </TouchableOpacity>;
             break;
@@ -144,13 +146,13 @@ export const  Message=  (props) =>{
         case 'image':
             contentType=
             <View style={{marginTop:3,  marginLeft:5}}>
-                    <TouchableOpacity  style={{width:150,height:200,overflow: 'hidden'}} onPress={openModal}>
+                    <TouchableOpacity  style={{width:150,height:200,overflow: 'hidden',borderRadius:15, borderColor:'#FF823A', borderWidth:1}} onPress={openModal}>
                         <Image  style={{width:'100%', height: '100%', resizeMode: "cover"}} source={{uri: props.Content}}/>  
                     </TouchableOpacity>
             </View>;
             break;
         case 'record':
-            contentType=<View style={{ justifyContent: 'center',alignItems:'center',width:70, height:45,borderRadius:20, backgroundColor:"#F2F2F2" }}>
+            contentType=<View style={{ justifyContent: 'center',alignItems:'center',width:70, height:45,borderRadius:20, backgroundColor:"#FF9557",marginTop:5, marginLeft:5  }}>
                 <TouchableOpacity onPress={handlePressPlay}>
                     <Image source={isPlay?icons.pause:icons.play} style={isPlay?{width:23, height:23, resizeMode:"cover"}:{width:30, height:30, resizeMode:"cover"}}/>
                 </TouchableOpacity>
@@ -160,9 +162,9 @@ export const  Message=  (props) =>{
             const fileName= getFileName(props.Content);           
             contentType=
             <TouchableOpacity onPress={getFile} >
-                <View style={{flexDirection:'row',justifyContent: 'center',alignItems:'center',borderRadius:10, backgroundColor:"#FF823A", paddingVertical:7, marginTop:5,marginLeft:5,paddingHorizontal:10}}>             
+                <View style={{flexDirection:'row',justifyContent: 'center',alignItems:'center',borderRadius:10, backgroundColor:"#FF9557", paddingVertical:7, marginTop:5,marginLeft:5,paddingHorizontal:10}}>             
                     <Image source={icons.file} style={{width:35, height:35, resizeMode:"cover"}}/>
-                    <Text style={styles.TextFile}>{fileName}</Text>
+                    <Text style={styles.TextFile} numberOfLines={1} ellipsizeMode="tail">{fileName}</Text>
                 </View>
             </TouchableOpacity>;
         break;

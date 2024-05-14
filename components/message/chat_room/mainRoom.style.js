@@ -31,8 +31,7 @@ export const styles = StyleSheet.create(
         marginTop:'9%',
         paddingHorizontal:'5%',
         
-        borderBottomWidth:1.2,
-        borderBottomColor:'#939393'
+        
     },
     Name:
     {
@@ -102,12 +101,13 @@ export const styles = StyleSheet.create(
         borderTopRightRadius:15,
         borderBottomLeftRadius:15,
         borderBottomRightRadius:2,
-        padding:12,
+        padding:10,
        maxWidth:200,
        fontFamily:'Inter-Regular',
-       fontSize:14,
+       fontSize:15,
        marginTop:5,
-       marginRight:5
+       marginRight:5,
+       color:'#FFFFFF'
         
     },
     AvatarContainer:
@@ -137,10 +137,10 @@ export const styles = StyleSheet.create(
         borderTopRightRadius:15,
         borderBottomLeftRadius:2,
         borderBottomRightRadius:15,
-        padding:12,
+        padding:10,
        maxWidth:'70%',
        fontFamily:'Inter-Regular',
-       fontSize:14,
+       fontSize:15,
        marginTop:5,
        marginLeft:5
         
@@ -158,6 +158,8 @@ export const styles = StyleSheet.create(
     TextFile:{
         fontSize:15, 
         marginLeft:10,
+        maxWidth:150,
+        color:'#383636',
         fontFamily:'Inter-SemiBold'
     }
     
