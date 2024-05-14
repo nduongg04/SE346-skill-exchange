@@ -24,7 +24,7 @@ const ProfileCard = ({
 		});
 	};
 
-	const [sourceBackgroud, setSourceBackgroud] = useState(avatarDefault);
+	const [sourceBackground, setSourceBackground] = useState(avatarDefault);
 
 	return (
 		<View
@@ -44,8 +44,8 @@ const ProfileCard = ({
 			}}
 		>
 			<ImageBackground
-				onLoad={() => setSourceBackgroud({ uri: imageDisplay })}
-				source={sourceBackgroud}
+				onLoad={() => setSourceBackground({ uri: imageDisplay })}
+				source={sourceBackground}
 				contentFit="cover"
 				style={{
 					width: "100%",
