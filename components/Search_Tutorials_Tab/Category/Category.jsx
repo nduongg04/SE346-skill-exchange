@@ -1,29 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { TouchableOpacity, Text, StyleSheet, ImageBackground, View } from 'react-native';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import CheckRefreshToken from '../../../utils/checkrefreshtoken';
+import { router } from "expo-router";
+
 
 const Category = (props) => {
-    const [data, setData] = useState([]);
-
-    const handleOnPress = async () => {
-        const refreshtoken = await AsyncStorage.getItem('refreshtoken');
-        const accessToken = await CheckRefreshToken(refreshtoken);
-        const bareUrl = "https://se346-skillexchangebe.onrender.com";
-        const response = await axios({
-            method: 'get',
-            maxBodyLength: Infinity,
-            url: `${bareUrl}/api/v1/user/find/topic?topics=${props.name}`,
-            headers: {
-                'Authorization': `Bearer ${accessToken}`
-            }
+    const handleOnPress = () => {
+        router.push({
+            pathname: "/result/[id]",
+            params: {
+              data: props.name,
+            },
         });
-        if(response.status == 200) {
-            console.log(data);
-        }
-        setData(response.data.data);
-        <SwiperList users={yourUsersArray} />       
     }
 
     return(

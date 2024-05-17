@@ -2,35 +2,37 @@ import React, { useState } from 'react';
 import InputText from "../../register/Button/InputText";
 import { SafeAreaView, Alert, Image, TouchableOpacity } from "react-native";
 import axios from "axios";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import CheckRefreshToken from '../../../utils/checkrefreshtoken';
+import { router } from "expo-router";
 const InputTextBox = () => {
   const [query, setQuery] = useState("");
-
   const handleOnChangeText = (text) => {
     setQuery(text);
   };
-
   const getuser = async () => {
-    const refreshtoken = await AsyncStorage.getItem('refreshtoken');
-    const accessToken = await CheckRefreshToken(refreshtoken); // Add await here
     const bareUrl = "https://se346-skillexchangebe.onrender.com";
     try {
       const response = await axios({
         method: 'get',
         maxBodyLength: Infinity,
-        url: `${bareUrl}/api/v1/user/find/topic?topics=${query}`,
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        }
+        url: `${bareUrl}/api/v1/topic/find`,
+        headers: {}
       });
     
       if (response.status === 200) {
-        const users = response.data.users;
-        Alert.alert("Success", "We get it!");
-        navigateToUserScreen(users);
-      } else {
-        Alert.alert("Error", "Failed to fetch users. Please try again later.");
+        const data = response.data.data;
+        const isQueryInData = data.some(topic => topic.name === query);
+        if (isQueryInData) {
+          router.push({
+            pathname: "/result/[id]",
+            params: {
+              data: query,
+            },
+          });
+          setQuery("");
+        } else {
+          // If query is not in data, show an alert
+          Alert.alert("Error", "Topic not found. Please try again.");
+        }
       }
     } catch (error) {
       Alert.alert("Error", "Failed to fetch users. Please try again later.");
@@ -38,9 +40,6 @@ const InputTextBox = () => {
     }
   };
 
-  const navigateToUserScreen = (users) => {
-    console.log("Navigating to user screen with users:", users);
-  };
 
   return (
     <SafeAreaView>

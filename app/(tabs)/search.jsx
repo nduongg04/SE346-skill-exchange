@@ -9,8 +9,6 @@ import Topic_Tags_List from "../../components/Search_Tutorials_Tab/Topic_Tags_Li
 
 // Search.jsx
 const Search = () => {
-    
-
     const sections = [
         { title: null, data: ['Topic_Tags_List'] },
         { title: 'Topic List', data: ['Topic_List'] },
@@ -32,13 +30,7 @@ const Search = () => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
-            <Stack.Screen
-                options={{
-                    headerStyle: { backgroundColor: COLORS.lightWhite },
-                    headerShadowVisible: false,
-                    headerTitle: "Search",
-                }}
-            />
+            
             <InputTextBox />
             <SectionList
                 sections={sections}
@@ -47,7 +39,7 @@ const Search = () => {
                     title ? (
                         <View style={{ marginTop: 20, paddingHorizontal: 20 }}>
                             <Text style={{ fontSize: 20, fontWeight: "700" }}>{title}</Text>
-                            <Text>_____________________________________</Text>
+                            <Text> _____________________________________</Text>
                         </View>
                     ) : null
                 )}
