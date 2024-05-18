@@ -2,14 +2,12 @@ import { View, Text, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import favicon from "@assets/favicon.svg";
-import { ProfileCard, ScreenHeaderBtn } from "../../components";
+import { ScreenHeaderBtn } from "../../components";
 import { COLORS, icons } from "@constants";
 import { CircleButton } from "@components";
 import { Dimensions } from "react-native";
-import Swiper from "react-native-deck-swiper";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import GetData from "../../utils/getdata";
 import useLoadingHome from "../../utils/useLoadingHome";
 import { useSession } from "../../context/AuthContext";
@@ -32,7 +30,6 @@ const Home = () => {
 	const setIsLoading = useLoadingHome((state) => state.setLoading);
 
 	const swipe = useAction((state) => state.swipe);
-	
 
 	const swiperRef = useRef(null);
 
@@ -64,7 +61,7 @@ const Home = () => {
 		setIsLoading(true);
 		const url = getTopicUrl();
 		const data = await GetData(url);
-
+		if (data?.length === 0) return;
 		setUsers(shuffleArray(data));
 		if (users) {
 			setIsLoading(false);
