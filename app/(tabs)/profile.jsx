@@ -1,19 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from "react";
 import { View, Text, Image, ImageBackground, StyleSheet, ScrollView, TouchableOpacity, items, TouchableWithoutFeedback } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack } from 'expo-router';
 import { COLORS } from '@constants';
-
 import favicon from '@assets/favicon.svg';
 import Background from '@assets/icons/Background.png';
 import Ellipse from '@assets/icons/Ellipse 1.png';
 import EditProfile from '@assets/icons/Edit profile.png';
 import ProfileButton from '@assets/icons/ProfileButton.png';
 import LogOut from '@assets/icons/LogOut.png';
-import BaeSuzy from '@assets/icons/Suzy.png';
-
+import { useSession } from '../../context/AuthContext';
+import { useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 
 const Profile = () => {
+	const { user, username } = useSession();
+	useEffect (() => {
+		console.log(user.username)
+		console.log(user.gmail)
+		console.log(user.birthDay)
+	},[])
+
+	function convertDate(isoDate) {
+		const date = new Date(isoDate);
+		const formattedDate = date.toLocaleDateString("en-GB");
+		return formattedDate;
+	}
+
 	return (
 		<SafeAreaView style={{ flex: 1, backgroundColor: COLORS.darkGrayProfile }}>
 			<ImageBackground source={Background} style={styles.backgroundImage} resizeMode="cover">
@@ -29,36 +42,29 @@ const Profile = () => {
 							</TouchableOpacity>
 						</View>
 						<View style={styles.textContainer}>
-							<Text style={styles.usernameText}>Bae Suzy</Text>
+							<Text style={styles.usernameText}>{user.username}</Text>
 						</View>
 					</View>
 					<View style={styles.informationContainer}>
-						<Text style={styles.headerInformation}>General Information</Text>
 						<View style={styles.items}>
 							<View>
-								<Text>Phone Number</Text>
-							</View>
-							<Text>0xxx xxx xxx</Text>
-						</View>
-						<View style={styles.items}>
-							<View>
-								<Text>Password</Text>
+								<Text>General Information</Text>
 							</View>
 							<TouchableOpacity>
-								<Text style={{ color: 'blue' }}>Change Password</Text>
+								<Text style={{ color: 'blue' }}>Change Information</Text>
 							</TouchableOpacity>
 						</View>
 						<View style={styles.items}>
 							<View>
 								<Text>Birthday</Text>
 							</View>
-							<Text>11/08/2004</Text>
+							<Text>{user && convertDate(user.birthDay)}</Text>
 						</View>
 						<View style={styles.items}>
 							<View>
 								<Text>Email</Text>
 							</View>
-							<Text>abc123@gmail.com</Text>
+							<Text>{user && user.email}</Text>
 						</View>
 
 						<View style={styles.rectangle}>
@@ -149,13 +155,19 @@ const styles = StyleSheet.create({
 		marginTop: -30
 	},
 	usernameText: {
-		fontSize: 18
+		fontSize: 22,
+		fontWeight: 'bold',
+	
 	},
 	headerInformation: {
 		fontSize: 24,
 		fontWeight: 'bold',
 		marginRight: 100,
 		marginTop: 15
+	},
+	informationContainer: {
+		marginTop: 20, 
+		paddingHorizontal: 20,
 	},
 	items: {
 		flexDirection: 'row',
