@@ -18,28 +18,41 @@ import SwiperList from "../common/swiper/Swiper";
 import { useAction } from "../../utils/useAction";
 import { router } from "expo-router";
 
-const Result_Screen = ({user, handleBackButton}) => {
-	useEffect(()=>{
-		console.log("pass here");
-	})
+const Result_Screen = ({topic, handleBackButton}) => {
+
+	const [user, setUser] = useState([])
 	const baseUrl = "https://se346-skillexchangebe.onrender.com";
+
+	const shuffleArray = (array) => {
+		for (let i = array.length - 1; i > 0; i--) {
+			const j = Math.floor(Math.random() * (i + 1));
+			[array[i], array[j]] = [array[j], array[i]];
+		}
+		return array;
+	};
+
+	const getuser = async () => {
+		setIsLoading(true);
+		const url = `${baseUrl}/api/v1/user/find/topic?topics=${topic}`;
+		const data = await GetData(url);
+		setUser(shuffleArray(data));
+		if(user) {
+			setIsLoading(false)
+		}
+	};
+
+	useEffect(() => {
+		getuser();
+	}, [])
+
+	console.log(user);
+	
 	const screenWidth = Dimensions.get("window").width;
 	const screenHeight = Dimensions.get("window").height;
 	const [backButtonSize, setBackButtonSize] = useState(
 		(screenWidth / 100) * 18
 	);
-	useEffect(() => {
-		console.log(user);
-		setUsers(user);
-	}, []);
-	useEffect(() => {
-		getUsers();
-	}, [key]);
-	useEffect(()=>{
-		console.log(users);
-	},[])
-	const [users, setUsers] = useState([]);
-	const [key, setKey] = useState(0);
+
 	const isLoading = useLoadingHome((state) => state.loading);
 	const setIsLoading = useLoadingHome((state) => state.setLoading);
 
@@ -64,27 +77,6 @@ const Result_Screen = ({user, handleBackButton}) => {
 	// 	});
 	// 	return topicUrl;
 	// };
-
-	const shuffleArray = (array) => {
-		for (let i = array.length - 1; i > 0; i--) {
-			const j = Math.floor(Math.random() * (i + 1));
-			[array[i], array[j]] = [array[j], array[i]];
-		}
-		return array;
-	};
-	const getUsers = async () => {
-		setIsLoading(true);
-		console.log("run");
-		const shuffledUsers = shuffleArray([...user]);
-		setUsers(shuffledUsers);
-		if (users) {
-			setKey(key + 1);
-			console.log("R",users);
-		  setIsLoading(false);
-		} else {
-		  setIsLoading(true);
-		}
-	};
 
 	
 	
@@ -122,13 +114,13 @@ const Result_Screen = ({user, handleBackButton}) => {
 				/>
 			</View>
 
-			<View style={{ height: "95%", width: "100%" }}>
+			<View style={{ height: "100%", width: "100%" }}>
 				<View style={{ marginTop: 10, height: "80%" }}>
 					<SwiperList
-						users={users}
+						users={user}
 						swiperRef={swiperRef}
 						onSwipedAll={() => {
-							getUsers();
+							getuser();
 						}}
 					/>
 				</View>

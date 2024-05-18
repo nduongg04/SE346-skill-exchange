@@ -8,6 +8,8 @@ const SwiperList = ({ users, swiperRef, onSwipedAll }) => {
 
 	const { user } = useSession();
 
+	console.log(users[0]?.avatar)
+
 	return (
 		<Swiper
 			ref={swiperRef}
