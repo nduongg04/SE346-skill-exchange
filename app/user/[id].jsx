@@ -22,10 +22,6 @@ const User = () => {
 		getUserById();
 	}, []);
 
-	const handleBackButton = () => {
-		router.back();
-	};
-
-	return <Information {...user} handleBackButton={handleBackButton} />;
+	return <Information {...user} />;
 };
 export default User;
