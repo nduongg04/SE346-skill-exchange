@@ -9,8 +9,6 @@ import Topic_Tags_List from "../../components/Search_Tutorials_Tab/Topic_Tags_Li
 
 // Search.jsx
 const Search = () => {
-    
-
     const sections = [
         { title: null, data: ['Topic_Tags_List'] },
         { title: 'Topic List', data: ['Topic_List'] },
@@ -20,38 +18,34 @@ const Search = () => {
     const renderItem = ({ item }) => {  
         switch (item) {
             case 'Topic_Tags_List':
-                return <Topic_Tags_List/>;
+                return <Topic_Tags_List  style={{zIndex:1}}/>;
             case 'Topic_Remarkable_List':
-                return <Topic_Remarkable_List />;
+                return <Topic_Remarkable_List  style={{zIndex:1}}/>;
             case 'Topic_List':
-                return <Topic_List />;
+                return <Topic_List  style={{zIndex:1}}/>;
             default:
                 return null;
         }
     };
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
-            <Stack.Screen
-                options={{
-                    headerStyle: { backgroundColor: COLORS.lightWhite },
-                    headerShadowVisible: false,
-                    headerTitle: "Search",
-                }}
-            />
-            <InputTextBox />
-            <SectionList
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite, position: 'relative' }}>
+            <View style={{zIndex: 2}}>
+                <InputTextBox style={{zIndex: 2}}/>
+            </View>
+            <SectionList 
                 sections={sections}
                 renderItem={renderItem}
                 renderSectionHeader={({ section: { title } }) => (
                     title ? (
                         <View style={{ marginTop: 20, paddingHorizontal: 20 }}>
                             <Text style={{ fontSize: 20, fontWeight: "700" }}>{title}</Text>
-                            <Text>_____________________________________</Text>
+                            <Text> _____________________________________</Text>
                         </View>
                     ) : null
                 )}
                 stickySectionHeadersEnabled={false} 
+                style={{zIndex:1, marginTop: 120}}
             />
         </SafeAreaView>
     );

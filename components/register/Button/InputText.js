@@ -35,8 +35,9 @@ const InputText = ({
                     onFocus={() => {
                         onFocus();
                         setIsFocused(true);
+                        props.onFocus && props.onFocus();
                     }} 
-                    onBlur={() => setIsFocused(false)}
+                    onBlur={() => {setIsFocused(false);props.onBlur && props.onBlur();}}
                     style={{color: COLORS.black, flex: 1}}
                     />
                 

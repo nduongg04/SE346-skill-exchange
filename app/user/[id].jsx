@@ -16,7 +16,6 @@ const User = () => {
 		const getUserById = async () => {
 			const url = `${baseUrl}/api/v1/user/findbyid/${id}`;
 			const data = await GetData(url);
-
 			setUser(data);
 		};
 
