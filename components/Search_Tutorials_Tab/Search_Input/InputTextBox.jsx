@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { SafeAreaView, Alert, StyleSheet, TouchableOpacity, FlatList, Text } from "react-native";
+import React, { useState, useEffect,useRef } from 'react';
+import { SafeAreaView, Alert, StyleSheet, TouchableOpacity, FlatList, Text, View } from "react-native";
 import { scale } from "react-native-size-matters";
 import axios from "axios";
 import Autocomplete from 'react-native-autocomplete-input';
@@ -12,6 +12,8 @@ const InputTextBox = () => {
   const [query, setQuery] = useState("");
   const [topicdata, setTopicData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
+  const inputRef = useRef(null);
+  const topicListRef = useRef(null);
 
   useEffect(() => {
     if (query) {
@@ -29,7 +31,10 @@ const InputTextBox = () => {
     setQuery(text);
   };
   const handleOnBlur= () => {
-    setFilteredData([]);
+    if (topicListRef.current.blur) {
+      topicListRef.current.blur();
+    }
+    setFilteredData([]);  
   };
 
   const handleonFocus=() =>{
@@ -93,7 +98,7 @@ const InputTextBox = () => {
     router.push({
       pathname: "/result/[id]",
       params: {
-        data: topic,
+        data: topic.name,
       },
     });
     setQuery("");
@@ -102,35 +107,53 @@ const InputTextBox = () => {
 
   return (
     <SafeAreaView>
+      
+      <View style={styles.TopicList}>
       <InputText
+        ref={inputRef}
         placeholder="Enter your topic"
         label="Enter your query"
         onChangeText={handleOnChangeText}
         onFocus={handleonFocus}
-        onBlur = {handleOnBlur}
         onSubmitEditing={getTopic}
         value={query}
-        style={{ marginTop: 20 }}
       />
-      <FlatList
-        data={filteredData}
-        keyExtractor={item => item._id}
-        renderItem={({ item }) => (
-          <TouchableOpacity style={{marginLeft: 20, marginBottom: 3,zIndex: 1}} onPress={() => handleSelectTopic(item.name)}>
-            <Text style ={styles.TopicText}>{item.name}</Text>
-          </TouchableOpacity>
-        )}
-        style={{ position: 'relative', top: 0, left: 0, right: 0, zIndex: 1 }}
-      />
+        <FlatList
+          ref={topicListRef}
+          data={filteredData}
+          keyExtractor={item => item._id}
+          renderItem={({ item }) => (
+            <TouchableOpacity 
+              style={{marginLeft: 20, marginBottom: 3, height: 25, zIndex: 4}} 
+              onPress={() => handleSelectTopic(item)}
+              >
+                <Text style ={styles.TopicText}>{item.name}</Text>
+            </TouchableOpacity>
+          )}
+          onBlur = {handleOnBlur}
+          style = {{zIndex:4}}
+        />
+      </View>
     </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
   TopicText: {
-      fontSize: scale(12),
-      textAlign:'left',
-      fontFamily: 'Coda-Regular',
-      color: COLORS.black,
+    fontSize: 14,
+    textAlign: 'left',
+    fontFamily: 'Coda-Regular',
+    color: COLORS.black,
   },
+  TopicList: {
+    position: 'absolute', 
+    width: '100%',
+    top: 0 ,
+    backgroundColor: COLORS.white,
+    zIndex: 3,
+    borderWidth: 1,
+    borderColor: 'black',
+    borderRadius: 10,
+  },
+  
 });
 export default InputTextBox;

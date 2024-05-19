@@ -18,21 +18,22 @@ const Search = () => {
     const renderItem = ({ item }) => {  
         switch (item) {
             case 'Topic_Tags_List':
-                return <Topic_Tags_List/>;
+                return <Topic_Tags_List  style={{zIndex:1}}/>;
             case 'Topic_Remarkable_List':
-                return <Topic_Remarkable_List />;
+                return <Topic_Remarkable_List  style={{zIndex:1}}/>;
             case 'Topic_List':
-                return <Topic_List />;
+                return <Topic_List  style={{zIndex:1}}/>;
             default:
                 return null;
         }
     };
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite }}>
-            
-            <InputTextBox />
-            <SectionList
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite, position: 'relative' }}>
+            <View style={{zIndex: 2}}>
+                <InputTextBox style={{zIndex: 2}}/>
+            </View>
+            <SectionList 
                 sections={sections}
                 renderItem={renderItem}
                 renderSectionHeader={({ section: { title } }) => (
@@ -44,6 +45,7 @@ const Search = () => {
                     ) : null
                 )}
                 stickySectionHeadersEnabled={false} 
+                style={{zIndex:1, marginTop: 120}}
             />
         </SafeAreaView>
     );

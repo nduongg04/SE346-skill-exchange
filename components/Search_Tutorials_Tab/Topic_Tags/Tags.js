@@ -15,7 +15,7 @@ const TagsButton = (props) => {
     }
 
     return (
-        <TouchableOpacity onPress={handleOnPress}  style={styles.button}>
+        <TouchableOpacity onPress={handleOnPress}  style={styles.button} >
             <Text style={styles.buttonText} numberOfLines={1} ellipsizeMode='tail'>{props.name}</Text>
         </TouchableOpacity>
     );
