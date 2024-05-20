@@ -1,29 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { TouchableOpacity, Text, StyleSheet, ImageBackground, View } from 'react-native';
-import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import CheckRefreshToken from '../../../utils/checkrefreshtoken';
+import { router } from "expo-router";
+import { LinearGradient } from 'expo-linear-gradient';
+
 
 const Category = (props) => {
-    const [data, setData] = useState([]);
-
-    const handleOnPress = async () => {
-        const refreshtoken = await AsyncStorage.getItem('refreshtoken');
-        const accessToken = await CheckRefreshToken(refreshtoken);
-        const bareUrl = "https://se346-skillexchangebe.onrender.com";
-        const response = await axios({
-            method: 'get',
-            maxBodyLength: Infinity,
-            url: `${bareUrl}/api/v1/user/find/topic?topics=${props.name}`,
-            headers: {
-                'Authorization': `Bearer ${accessToken}`
-            }
+    const handleOnPress = () => {
+        router.push({
+            pathname: "/result/[id]",
+            params: {
+              data: props.name,
+            },
         });
-        if(response.status == 200) {
-            console.log(data);
-        }
-        setData(response.data.data);
-        <SwiperList users={yourUsersArray} />       
     }
 
     return(
@@ -33,7 +21,12 @@ const Category = (props) => {
             <View style = {{height:200, width: 200, borderWidth: 0.5, borderColor: '#dddddd',  borderRadius: 20,  overflow: 'hidden' }}>
                 <View style ={{flex: 2, }}>
                     <ImageBackground style = {[styles.backgroundImage, {borderRadius: 20}]} source={{ uri: props.imageUri }} resizeMode="cover" onError={(error) => console.log(error)}>
-                        <Text style ={styles.fixToImage} numberOfLines={1} ellipsizeMode='tail'>{props.name}</Text>
+                    <LinearGradient
+                        colors={['transparent', 'rgba(0,0,0,0.8)']}
+                        style={{ position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, alignItems: 'center', justifyContent: 'center' }}
+                        >
+                            <Text style ={styles.fixToImage} numberOfLines={2}>{props.name}</Text>
+                    </LinearGradient>
                     </ImageBackground>
                 </View>
             </View>
@@ -44,10 +37,10 @@ const Category = (props) => {
 const styles = StyleSheet.create({ 
     fixToImage: {
     position: 'absolute',
-      top: '85%', // Điều chỉnh theo yêu cầu
+      top: '40%', // Điều chỉnh theo yêu cầu
       textAlign: 'center',
       color: 'white', // Màu văn bản 
-      fontSize: 20,
+      fontSize: 15,
       fontWeight: 'bold',
     },
     backgroundImage: {
