@@ -14,7 +14,6 @@ const InputTextBox = () => {
   const [filteredData, setFilteredData] = useState([]);
   const inputRef = useRef(null);
   const topicListRef = useRef(null);
-
   useEffect(() => {
     if (query) {
       setFilteredData(topicdata.filter(topic => topic.name.includes(query)));
@@ -31,10 +30,9 @@ const InputTextBox = () => {
     setQuery(text);
   };
   const handleOnBlur= () => {
-    if (topicListRef.current.blur) {
-      topicListRef.current.blur();
-    }
-    setFilteredData([]);  
+      if (topicListRef.current.blur) {
+        topicListRef.current.blur();
+      }
   };
 
   const handleonFocus=() =>{
@@ -115,6 +113,7 @@ const InputTextBox = () => {
         label="Enter your query"
         onChangeText={handleOnChangeText}
         onFocus={handleonFocus}
+        onBlur ={handleOnBlur}
         onSubmitEditing={getTopic}
         value={query}
       />
@@ -125,12 +124,11 @@ const InputTextBox = () => {
           renderItem={({ item }) => (
             <TouchableOpacity 
               style={{marginLeft: 20, marginBottom: 3, height: 25, zIndex: 4}} 
-              onPress={() => handleSelectTopic(item)}
+              onPressOut={() => handleSelectTopic(item)}
               >
                 <Text style ={styles.TopicText}>{item.name}</Text>
             </TouchableOpacity>
           )}
-          onBlur = {handleOnBlur}
           style = {{zIndex:4}}
         />
       </View>
