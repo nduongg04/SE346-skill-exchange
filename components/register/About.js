@@ -44,10 +44,10 @@ class About extends React.Component {
         </TextInput>
         <CustomButton text='Next' onPress={()=>{
 
-          if(this.state.description === ''){
-            alert('Please fill the description');
-            return;
-          }
+          // if(this.state.description === ''){
+          //   alert('Please fill the description');
+          //   return;
+          // }
           this.props.navigation.navigate('ChooseKnowTopic', params)
         }
           }></CustomButton>             
