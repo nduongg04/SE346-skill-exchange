@@ -36,6 +36,7 @@ class UploadCertification extends React.Component {
       name: passing.name,
       image:  passing.image,
       description: passing.description,
+      userTopic: passing.userTopic,
       skills: passing.skills,
       certification: this.state.certification
     }
@@ -90,10 +91,10 @@ class UploadCertification extends React.Component {
                 color: COLORS.orange}}>Upload</Text>
           </TouchableOpacity>       
           <CustomButton text='Next' onPress={()=>{
-            if(this.state.certification.length === 0){
-              alert('Please upload your certification');
-              return;
-            }
+            // if(this.state.certification.length === 0){
+            //   alert('Please upload your certification');
+            //   return;
+            // }
             this.props.navigation.navigate('ChooseTopic', params)
           }
             }></CustomButton>             

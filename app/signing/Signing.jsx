@@ -43,6 +43,10 @@ export default function Signing({navigation}) {
           component={About} 
           options={{headerShown: false}}/>
         <Stack.Screen
+          name="ChooseKnowTopic"
+          component={ChooseKnowTopic}
+          options={{headerShown: false}}/>
+        <Stack.Screen
           name="SkillInput"
           component={SkillInput}
           options={{headerShown: false}}/>
@@ -53,10 +57,6 @@ export default function Signing({navigation}) {
         <Stack.Screen
           name="ChooseTopic"
           component={ChooseTopic}
-          options={{headerShown: false}}/>
-        <Stack.Screen
-          name="ChooseKnowTopic"
-          component={ChooseKnowTopic}
           options={{headerShown: false}}/>
         <Stack.Screen
           name="UploadInfo"

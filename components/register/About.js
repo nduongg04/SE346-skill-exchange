@@ -48,7 +48,7 @@ class About extends React.Component {
             alert('Please fill the description');
             return;
           }
-          this.props.navigation.navigate('SkillInput', params)
+          this.props.navigation.navigate('ChooseKnowTopic', params)
         }
           }></CustomButton>             
       </GradienLayout>
