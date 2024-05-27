@@ -24,6 +24,7 @@ class ChooseTopic extends React.Component {
       )
   }));
   };
+  
   fetchTopic = async () => {
     this.setState({isLoading: true, loadingMore: true});
     try {
