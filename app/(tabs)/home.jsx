@@ -64,7 +64,6 @@ const Home = () => {
 		const url = getTopicUrl();
 		const data = await GetData(url);
 		if (data?.length === 0) {
-			setIsLoading(false);
 			return;
 		}
 		setUsers(shuffleArray(data));

@@ -17,6 +17,7 @@ class SkillInput extends React.Component {
       name: passing.name,
       image:  passing.image,
       description: passing.description,
+      userTopic: passing.userTopic,
       skills: this.state.skills
     }
     return (
@@ -24,8 +25,8 @@ class SkillInput extends React.Component {
         <BackButton onPress={() => this.props.navigation.goBack()}></BackButton>
         <Image source={require('../../assets/images/skill.png')}
             style={{height: scale(122),width: scale(210), alignSelf: 'center'}}></Image>
-        <Text style={[styles.text_center, {marginTop: 10}]}>WHICH SKILLS</Text>
-        <Text style={styles.text_center}>do you know?</Text>
+        <Text style={[styles.text_center, {marginTop: 10}]}>DESCRIPTION</Text>
+        <Text style={styles.text_center}>your skills</Text>
         <View 
             style={{
                 height: 4, 

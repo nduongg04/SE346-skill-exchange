@@ -7,7 +7,7 @@ const useData = () => {
     const [data, setData] = useState([]); // Move this inside the hook
     const bareUrl = "https://se346-skillexchangebe.onrender.com";
     const limit = 6;
-    const page = 1 ;
+    const page = 2 ;
     useEffect(() => {
         const fetchData = async ()=> {
             const response = await axios({

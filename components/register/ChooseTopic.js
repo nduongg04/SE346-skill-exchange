@@ -46,15 +46,11 @@ class ChooseTopic extends React.Component {
     }
 }
   componentDidMount = async () =>{
+    const page = await AsyncStorage.getItem('topicPage');
+    this.setState({page: parseInt(page)});
+    const topic = await AsyncStorage.getItem('topic');
+    this.setState({topic: JSON.parse(topic)});
     this.fetchTopic();
-    try{
-      const value = await AsyncStorage.getItem('refreshToken');
-      console.log('refresh token: ' +value);
-    }
-    catch(e){
-      console.log(e);
-    }
-    console.log()
   }
   render() {
     const passing = this.props.route.params;
@@ -63,6 +59,7 @@ class ChooseTopic extends React.Component {
       name: passing.name,
       image:  passing.image,
       description: passing.description,
+      userTopic: passing.userTopic,
       skills: passing.skills,
       certification: passing.certification,
       topic: topicID
@@ -110,13 +107,8 @@ class ChooseTopic extends React.Component {
               alert('Please choose at least 1 topic');
               return;
             }
-            const learnTopicReset = this.state.learnTopic.map(topic => ({ ...topic, chosen: false }));
-
-            const learnTopicJson = JSON.stringify(learnTopicReset);
-            const pageJson = JSON.stringify(this.state.page);
-            await AsyncStorage.setItem('topic', learnTopicJson);
-            await AsyncStorage.setItem('topicPage', pageJson);
-            this.props.navigation.navigate('ChooseKnowTopic', params)
+            
+            this.props.navigation.navigate('UploadInfo', params)
           }
           }></CustomButton>             
       </GradienLayout>
