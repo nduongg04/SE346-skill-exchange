@@ -5,7 +5,6 @@ import Topic from "@components/common/cards/Topic";
 import { Image } from "expo-image";
 import { TouchableOpacity } from "react-native";
 import { router } from "expo-router";
-import avatarDefault from "@assets/images/avatarDefault.jpg";
 import { useState } from "react";
 
 const ProfileCard = ({
@@ -24,7 +23,9 @@ const ProfileCard = ({
 		});
 	};
 
-	const [sourceBackground, setSourceBackground] = useState(avatarDefault);
+	const [sourceBackground, setSourceBackground] = useState(
+		require("@assets/images/avatarDefault.jpg")
+	);
 
 	return (
 		<View
@@ -35,17 +36,21 @@ const ProfileCard = ({
 				shadowColor: COLORS.shadowBlue,
 
 				shadowOffset: {
-                    width: 0,
-                    height: 7,
-                  },
-                  shadowOpacity:  0.21,
-                  shadowRadius: 7.68,
+					width: 0,
+					height: 7,
+				},
+				shadowOpacity: 0.21,
+				shadowRadius: 7.68,
 
 				elevation: 10,
 			}}
 		>
 			<ImageBackground
-				onLoad={() => setSourceBackground({ uri: imageDisplay })}
+				onLoad={() => {
+					if (imageDisplay) {
+						setSourceBackground({ uri: imageDisplay });
+					}
+				}}
 				source={sourceBackground}
 				contentFit="cover"
 				style={{

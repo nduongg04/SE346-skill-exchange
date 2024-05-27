@@ -1,4 +1,3 @@
-import React from "react";
 import {
 	View,
 	Text,
@@ -7,44 +6,63 @@ import {
 	StyleSheet,
 	ScrollView,
 	TouchableOpacity,
-	items,
-	TouchableWithoutFeedback,
+	TouchableHighlight,
 } from "react-native";
 import { SafeAreaView } from "react-native";
-import { Stack } from "expo-router";
 import { COLORS } from "@constants";
 
-import favicon from "@assets/favicon.svg";
 import Background from "@assets/icons/Background.png";
 import Ellipse from "@assets/icons/Ellipse 1.png";
 import EditProfile from "@assets/icons/Edit profile.png";
-import ProfileButton from "@assets/icons/ProfileButton.png";
-import LogOut from "@assets/icons/LogOut.png";
-import BaeSuzy from "@assets/icons/Suzy.png";
+import React, { useEffect } from "react";
+import { Stack, router } from "expo-router";
+import { useSession } from "../../context/AuthContext";
 
 const Profile = () => {
+	const { user, username } = useSession();
+
+	function convertDate(isoDate) {
+		const date = new Date(isoDate);
+		const formattedDate = date.toLocaleDateString("en-GB");
+		return formattedDate;
+	}
+
+	const handleYourSkillsPress = () => {
+        router.push("/change-your-skills");
+    };
+
+	const handleNewSkillsPress = () => {
+        router.navigate("/change-new-skills");
+    };
+
+	const handleCertificationsPress = () => {
+        router.navigate("/change-certifications");
+    };
+
 	return (
 		<SafeAreaView
 			style={{
 				flex: 1,
 				backgroundColor: COLORS.darkGrayProfile,
-                width: "100%"
+				width: "100%",
 			}}
 		>
-            <Stack.Screen
+			<Stack.Screen
 				options={{
 					title: "Profile",
 					headerShown: false,
 				}}
 			/>
+
 			<ImageBackground
 				source={Background}
 				style={styles.backgroundImage}
 				resizeMode="cover"
 			>
-				<ScrollView showsVerticalScrollIndicator={false}
-                style={{width: "100%", padding: 20}}>
-
+				<ScrollView
+					showsVerticalScrollIndicator={false}
+					style={{ width: "100%" }}
+				>
 					<View style={styles.profileContainer}>
 						<View style={styles.headerContainer}>
 							<Text style={styles.headerText}>Personal</Text>
@@ -56,102 +74,129 @@ const Profile = () => {
 							</TouchableOpacity>
 						</View>
 						<View style={styles.textContainer}>
-							<Text style={styles.usernameText}>Bae Suzy</Text>
+							<Text style={styles.usernameText}>{user.username}</Text>
 						</View>
 					</View>
+
 					<View style={styles.informationContainer}>
-						<Text style={styles.headerInformation}>General Information</Text>
-						<View style={styles.items}>
-							<View>
-								<Text>Phone Number</Text>
+						<View>
+							<View style={styles.items}>
+								<View>
+									<Text>General Information</Text>
+								</View>
+								<TouchableOpacity>
+									<Text style={{ color: "blue" }}>Change Password</Text>
+									<Text style={{ color: "blue" }}>Change Information</Text>
+								</TouchableOpacity>
 							</View>
-							<Text>0xxx xxx xxx</Text>
+
+							<View style={styles.items}>
+								<View>
+									<Text>Birthday</Text>
+								</View>
+								<Text>{user && convertDate(user.birthDay)}</Text>
+							</View>
+							<View style={styles.items}>
+								<View>
+									<Text>Email</Text>
+								</View>
+								<Text>{user && user.email}</Text>
+							</View>
 						</View>
-						<View style={styles.items}>
-							<View>
-								<Text>Password</Text>
+
+						<View
+							style={{
+								backgroundColor: "white",
+								borderRadius: 7,
+								elevation: 5,
+								shadowColor: COLORS.shadowBlue,
+								paddingHorizontal: 2,
+							}}
+						>
+							{/* My skills */}
+							<View style={{ paddingHorizontal: 10, paddingVertical: 25 }}>
+								<Text
+									style={{
+										fontSize: 15,
+										fontWeight: "500",
+										color: "#222222",
+									}}
+								>
+									Skills information
+								</Text>
 							</View>
-							<TouchableOpacity>
-								<Text style={{ color: "blue" }}>Change Password</Text>
+
+							<TouchableOpacity
+								style={{
+									paddingHorizontal: 10,
+									paddingVertical: 20,
+									paddingTop: 0,
+									borderBottomWidth: 1,
+									borderColor: "#D1D1D1",
+									display: "flex",
+									flexDirection: "row",
+									justifyContent: "space-between",
+								}}
+								onPress={handleYourSkillsPress}
+							>
+								<Text style={{ fontSize: 15, color: "#222222" }}>
+									Your skills
+								</Text>
+
+								<Text style={{ fontSize: 15, color: "#0386D0" }}>
+									Change your skills
+								</Text>
+							</TouchableOpacity>
+
+							<TouchableOpacity
+								style={{
+									paddingHorizontal: 10,
+									paddingVertical: 20,
+									paddingTop: 20,
+									borderBottomWidth: 1,
+									borderColor: "#D1D1D1",
+									display: "flex",
+									flexDirection: "row",
+									justifyContent: "space-between",
+								}}
+								onPress={handleNewSkillsPress}
+							>
+								<Text style={{ fontSize: 15, color: "#222222" }}>
+									New skills
+								</Text>
+
+								<Text style={{ fontSize: 15, color: "#0386D0" }}>
+									Change new skills
+								</Text>
+							</TouchableOpacity>
+
+							<TouchableOpacity
+								style={{
+									paddingHorizontal: 10,
+									paddingVertical: 20,
+									paddingTop: 20,
+									borderBottomWidth: 1,
+									borderColor: "#D1D1D1",
+									display: "flex",
+									flexDirection: "row",
+									justifyContent: "space-between",
+								}}
+								onPress={handleCertificationsPress}
+							>
+								<Text style={{ fontSize: 15, color: "#222222" }}>
+									Certifications
+								</Text>
+
+								<Text style={{ fontSize: 15, color: "#0386D0" }}>
+									Change certifications
+								</Text>
 							</TouchableOpacity>
 						</View>
-						<View style={styles.items}>
-							<View>
-								<Text>Birthday</Text>
-							</View>
-							<Text>11/08/2004</Text>
-						</View>
-						<View style={styles.items}>
-							<View>
-								<Text>Email</Text>
-							</View>
-							<Text>abc123@gmail.com</Text>
-						</View>
 
-						<View style={styles.rectangle}>
-							<ImageBackground
-								source={ProfileButton}
-								style={{ flex: 1 }}
-								imageStyle={{ borderRadius: 10 }}
-							>
-								<TouchableOpacity style={{ flex: 1 }} onPress={() => {}}>
-									<View
-										style={{
-											height: "100%",
-											width: "100%",
-											justifyContent: "center",
-											marginLeft: 20,
-										}}
-									>
-										<Text>Skills that I know</Text>
-									</View>
-								</TouchableOpacity>
-							</ImageBackground>
-
-							<ImageBackground
-								source={ProfileButton}
-								style={{ flex: 1, marginTop: 15 }}
-								imageStyle={{ borderRadius: 10 }}
-							>
-								<TouchableOpacity style={{ flex: 1 }} onPress={() => {}}>
-									<View
-										style={{
-											height: "100%",
-											width: "100%",
-											justifyContent: "center",
-											marginLeft: 20,
-										}}
-									>
-										<Text>Skills that I learn</Text>
-									</View>
-								</TouchableOpacity>
-							</ImageBackground>
-
-							<ImageBackground
-								source={ProfileButton}
-								style={{ flex: 1, marginTop: 15 }}
-								imageStyle={{ borderRadius: 10 }}
-							>
-								<TouchableOpacity>
-									<View
-										style={{
-											height: "100%",
-											width: "100%",
-											justifyContent: "center",
-											marginLeft: 20,
-										}}
-									>
-										<Text>My certifications</Text>
-									</View>
-								</TouchableOpacity>
-							</ImageBackground>
-                            
-						</View>
+						<View></View>
 					</View>
 				</ScrollView>
 			</ImageBackground>
-
-			
 		</SafeAreaView>
 	);
 };
@@ -178,9 +223,6 @@ const styles = StyleSheet.create({
 		fontSize: 25,
 	},
 
-	informationContainer: {
-		width: "100%",
-	},
 	avatarImage: {
 		width: 120,
 		height: 120,
@@ -196,6 +238,8 @@ const styles = StyleSheet.create({
 	},
 	usernameText: {
 		fontSize: 18,
+		fontSize: 22,
+		fontWeight: "bold",
 	},
 	headerInformation: {
 		fontSize: 24,
@@ -203,11 +247,16 @@ const styles = StyleSheet.create({
 		marginRight: 100,
 		marginTop: 15,
 	},
+	informationContainer: {
+		display: "flex",
+		flexDirection: "column",
+		gap: 20,
+		marginTop: 20,
+		paddingHorizontal: 10,
+	},
 	items: {
 		flexDirection: "row",
 		backgroundColor: "#FFFFFF",
-		marginBottom: 10,
-		marginTop: 5,
 		paddingVertical: 20,
 		paddingHorizontal: 10,
 		borderRadius: 10,

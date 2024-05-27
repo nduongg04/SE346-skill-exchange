@@ -26,6 +26,8 @@ const Home = () => {
 	const { user } = useSession();
 
 	const [users, setUsers] = useState([]);
+	// const [isEndUsers, setIsEndUsers] = useState(false);
+
 	const isLoading = useLoadingHome((state) => state.loading);
 	const setIsLoading = useLoadingHome((state) => state.setLoading);
 
@@ -61,17 +63,29 @@ const Home = () => {
 		setIsLoading(true);
 		const url = getTopicUrl();
 		const data = await GetData(url);
+		if (data?.length === 0) {
+			setIsLoading(false);
+			return;
+		}
+		setUsers(shuffleArray(data));
+		setIsLoading(false);
+	};
+
+	const getAllUsers = async () => {
+		setIsLoading(true);
+		const data = await GetData(`${baseUrl}/api/v1/user/find`);
 		if (data?.length === 0) return;
 		setUsers(shuffleArray(data));
 		if (users) {
 			setIsLoading(false);
-		} else {
-			setIsLoading(true);
 		}
 	};
 
 	useEffect(() => {
 		getUsers();
+		if (users.length === 0) {
+			getAllUsers();
+		}
 	}, []);
 
 	if (isLoading) {
@@ -107,42 +121,71 @@ const Home = () => {
 			</View>
 
 			<View style={{ height: "95%", width: "100%" }}>
-				<View style={{ marginTop: 10, height: "80%" }}>
-					<SwiperList
-						users={users}
-						swiperRef={swiperRef}
-						onSwipedAll={() => {
-							getUsers();
-						}}
-					/>
-				</View>
+				{users.length > 0 ? (
+					<View style={{height: "100%", width: "100%"}}>
+						<View style={{ marginTop: 10, height: "80%" }}>
+							<SwiperList
+								users={users}
+								swiperRef={swiperRef}
+								onSwipedAll={() => {
+									getUsers();
+									if (users.length === 0) {
+										setIsEndUsers(true);
+									}
+								}}
+							/>
+						</View>
 
-				<View
-					style={{
-						flex: 1,
-						flexDirection: "row",
-						justifyContent: "center",
-						alignItems: "center",
-						gap: (screenWidth / 100) * 7,
-					}}
-				>
-					<CircleButton
-						iconUrl={icons.cancel}
-						width={backButtonSize}
-						height={backButtonSize}
-						handlePress={() => swiperRef.current.swipeLeft()}
-						style={{ flex: 1 }}
-					/>
+						<View
+							style={{
+								flex: 1,
+								flexDirection: "row",
+								justifyContent: "center",
+								alignItems: "center",
+								gap: (screenWidth / 100) * 7,
+							}}
+						>
+							<CircleButton
+								iconUrl={icons.cancel}
+								width={backButtonSize}
+								height={backButtonSize}
+								handlePress={() => swiperRef.current.swipeLeft()}
+								style={{ flex: 1 }}
+							/>
 
-					<CircleButton
-						iconUrl={icons.tickCircle}
-						width={backButtonSize}
-						height={backButtonSize}
-						handlePress={() => {
-							swiperRef.current.swipeRight();
+							<CircleButton
+								iconUrl={icons.tickCircle}
+								width={backButtonSize}
+								height={backButtonSize}
+								handlePress={() => {
+									swiperRef.current.swipeRight();
+								}}
+							/>
+						</View>
+					</View>
+				) : (
+					<View
+						style={{
+							width: "100%",
+							height: "100%",
+							alignItems: "center",
+							justifyContent: "center",
 						}}
-					/>
-				</View>
+					>
+						<Text
+							style={{
+								fontSize: 15,
+								color: COLORS.lightOrange,
+								fontWeight: "500",
+								lineHeight: 23,
+								textAlign: "center",
+							}}
+						>
+							You have browsed through all the users in the topic you want to
+							learn, go to the search tab to find more
+						</Text>
+					</View>
+				)}
 			</View>
 		</SafeAreaView>
 	);
