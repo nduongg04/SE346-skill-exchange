@@ -1,14 +1,12 @@
 import CheckRefreshToken from "../checkrefreshtoken";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Alert } from "react-native";
 
 import HandleSessionExpired from "../handlesession";
 
 const GetData = async (url) => {
-
 	const getUsingAccessToken = async () => {
-        const accessToken = await AsyncStorage.getItem("accessToken");
+		const accessToken = await AsyncStorage.getItem("accessToken");
 		try {
 			const response = await axios.get(url, {
 				headers: {
@@ -18,12 +16,7 @@ const GetData = async (url) => {
 			return response.data;
 		} catch (error) {
 			if (error.response.status !== 401) {
-				Alert.alert("Error", "Please try again", [
-					{
-						text: "OK",
-						onPress: () => {},
-					},
-				]);
+				return "Something went wrong";
 			} else {
 				return null;
 			}
@@ -31,7 +24,7 @@ const GetData = async (url) => {
 	};
 
 	const checkRefreshToken = async () => {
-        const refreshToken = await AsyncStorage.getItem("refreshToken");
+		const refreshToken = await AsyncStorage.getItem("refreshToken");
 		if (!refreshToken) {
 			HandleSessionExpired();
 		}
@@ -39,12 +32,7 @@ const GetData = async (url) => {
 		if (accessToken === "Session expired") {
 			HandleSessionExpired();
 		} else if (accessToken === null) {
-			Alert.alert("Error", "Please try again", [
-				{
-					text: "OK",
-					onPress: () => {},
-				},
-			]);
+			return "Something went wrong";
 		} else {
 			AsyncStorage.setItem("accessToken", accessToken);
 		}
@@ -54,9 +42,12 @@ const GetData = async (url) => {
 	if (data === null) {
 		await checkRefreshToken();
 		const newData = await getUsingAccessToken();
+		if (newData === "Something went wrong") return "Something went wrong";
 		return newData.data;
+	} else if (data === "Something went wrong") {
+		return "Something went wrong";
 	} else {
-        console.log("Session not expired")
+		console.log("Session not expired");
 		return data.data;
 	}
 };

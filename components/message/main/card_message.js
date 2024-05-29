@@ -21,7 +21,7 @@ return(
         </View>
         <View style={styles.StatusContainer}>
             <View style={[styles.Status,OnOff]}></View>
-            <Text style={styles.Time}>{props.Time}</Text>
+            
 
         </View>
     </View>

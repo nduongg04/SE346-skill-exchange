@@ -2,11 +2,14 @@ import { View, Text, ScrollView, TouchableOpacity } from "react-native";
 import { Stack } from "expo-router";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { COLORS } from "@constants";
-import { Image } from "react-native";
+import { Image } from "expo-image";
 import { BackHeader } from "../../components";
 import { Topic } from "../../components";
 import { CircleButton } from "../../components";
 import { router } from "expo-router";
+import avatarDefault from "@assets/images/avatarDefault.jpg";
+import { useAction } from "../../utils/useAction";
+
 const Information = ({
 	username,
 	skill,
@@ -16,9 +19,19 @@ const Information = ({
 	imageCerti,
 	description,
 }) => {
+	const swipeLeft = useAction((state) => state.swipeLeft);
+	const swipeRight = useAction((state) => state.swipeRight);
+
+	function convertDate(isoDate) {
+		const date = new Date(isoDate);
+		const formattedDate = date.toLocaleDateString("en-GB");
+		return formattedDate;
+	}
+
 	const handleBackButton = () => {
-		router.replace("/home");
+		router.back();
 	};
+
 	return (
 		<SafeAreaView
 			style={{
@@ -31,23 +44,43 @@ const Information = ({
 					title: "Information",
 					headerShown: true,
 					headerShadowVisible: true,
+					headerBackVisible: false,
 					headerTitle: (props) => (
 						<BackHeader
 							{...props}
 							headerText={username}
 							handleBackButton={handleBackButton}
 						/>
-					), 
+					),
 				}}
 			/>
 			<View style={styles.buttonContainer}>
-				<CircleButton iconUrl={require("@assets/icons/cancel.svg")} />
-				<CircleButton iconUrl={require("@assets/icons/tickCircle.svg")} />
+				<CircleButton
+					iconUrl={require("@assets/icons/cancel.svg")}
+					handlePress={() => {
+						router.back();
+						swipeLeft();
+					}}
+				/>
+				<CircleButton
+					iconUrl={require("@assets/icons/tickCircle.svg")}
+					handlePress={() => {
+						router.back();
+						swipeRight();
+					}}
+				/>
 			</View>
+
 			<ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
 				<View style={styles.container}>
 					<View style={styles.avatar}>
-						<Image style={{ width: "100%", height: "100%" }} source={avatar} />
+						<Image
+							style={{ width: "100%", height: "100%" }}
+							placeholder={avatarDefault}
+							source={{
+								uri: avatar,
+							}}
+						/>
 					</View>
 
 					<View style={styles.boxContainer}>
@@ -55,7 +88,7 @@ const Information = ({
 						<Text style={styles.detailText}>{description}</Text>
 
 						<Text style={styles.headerText}>Birthday</Text>
-						<Text style={styles.detailText}>{birthDay}</Text>
+						<Text style={styles.detailText}>{convertDate(birthDay)}</Text>
 					</View>
 
 					<View style={styles.boxContainer}>
@@ -63,7 +96,7 @@ const Information = ({
 							<>
 								<Text style={styles.headerText}>Skill description</Text>
 								<View style={styles.skillContainer}>
-									{skill.map((item, index) => (
+									{skill?.map((item, index) => (
 										<Text key={index} style={styles.detailText}>
 											{item}
 										</Text>
@@ -77,7 +110,7 @@ const Information = ({
 								<Topic
 									key={index}
 									style={styles.detailText}
-									topicContent={topic}
+									topicContent={topic.name}
 								/>
 							))}
 						</View>
@@ -90,7 +123,7 @@ const Information = ({
 										<Image
 											key={index}
 											source={certi}
-											resizeMode="cover"
+											contentFit="cover"
 											style={{ width: "100%", height: 300, borderRadius: 10 }}
 										/>
 									))}
@@ -149,7 +182,7 @@ const styles = StyleSheet.create({
 	},
 	topicContainer: {
 		flexDirection: "row",
-        flexWrap: "wrap",
+		flexWrap: "wrap",
 		gap: 13,
 	},
 	skillContainer: {

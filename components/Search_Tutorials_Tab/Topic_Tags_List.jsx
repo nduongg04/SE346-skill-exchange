@@ -1,18 +1,41 @@
-import React from 'react';
 import { TouchableOpacity, Text, StyleSheet, View, FlatList } from 'react-native';
-import Tag_Data from './Topic_Tags/Tag_Data';
+import React, { useState, useEffect } from 'react';
 import TagsButton from './Topic_Tags/Tags';
+import axios from 'axios';
 
+
+const useData = () => {
+    const [data, setData] = useState([]); 
+    const bareUrl = "https://se346-skillexchangebe.onrender.com";
+    const limit = 6;
+    const page = 3 ;
+    useEffect(() => {
+        const fetchData = async ()=> {
+            const response = await axios({
+                method: 'get',
+                maxBodyLength: Infinity,
+                url: `${bareUrl}/api/v1/topic/pagination?page=${page}&limit=${limit}`, 
+                headers: { }
+            })
+            console.log(response.data.data);
+            setData(response.data.data);
+        }
+        fetchData();
+    }, []);
+
+    return data;
+}
 const renderItem = ({ item }) => (
     <TagsButton name={item.name} />
 );
 
 const numColumns = 3;
 const Topic_Tags_List = () => {
+    const data = useData();
     return (
         <View style={styles.container}>
             <FlatList
-                data={Tag_Data}
+                data={data}
                 renderItem={renderItem}
                 horizontal={false}
                 numColumns={numColumns}

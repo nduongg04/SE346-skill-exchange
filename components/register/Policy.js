@@ -42,7 +42,7 @@ Changes
 We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days' notice prior to any new terms taking effect.
             </Text>
           </ScrollView>
-        <BackButton style={{position: 'absolute',bottom: 10}} onPress={onPress}></BackButton>
+        <BackButton  onPress={onPress}></BackButton>
         </View>
       </View>
     );

@@ -23,7 +23,7 @@ const Login = ({ navigation }) => {
   const [errorPassword, setErrorPassword] = useState(null);
   const [showPolicy, setShowPolicy] = useState(false);
   const [showMessage, setShowMessage] = useState(false);
-  const {user, login} = useSession();
+  const { user, login } = useSession();
   const [username, setUsername] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const { socket, setSocket, onlineUsers, setOnlineUsers } = useSocketContext();
@@ -33,7 +33,7 @@ const Login = ({ navigation }) => {
   useEffect(() => {
     const newSocket = io(`${baseURL}`);
     setSocket(newSocket);
-    
+
     return () => {
       newSocket.disconnect();
     };
@@ -65,9 +65,9 @@ const Login = ({ navigation }) => {
     }
 
     setIsLoading(true);
-    
+
     try {
-      const response = await 
+      const response = await
         fetch("https://se346-skillexchangebe.onrender.com/api/v1/user/login", {
           method: "POST",
           headers: {
@@ -92,6 +92,9 @@ const Login = ({ navigation }) => {
           await AsyncStorage.setItem("user", JSON.stringify(json.data));
           await AsyncStorage.setItem("accessToken", json.access_token);
           await AsyncStorage.setItem("refreshToken", json.refresh_token);
+          console.log("refreshToken when login: ", json.refresh_token);
+          var check = await AsyncStorage.getItem("refreshToken");
+          console.log("refreshToken in storage: ", check);
         } catch (error) {
           alert("Store token failed!");
         }

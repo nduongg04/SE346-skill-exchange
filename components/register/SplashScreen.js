@@ -4,7 +4,7 @@ import Spinner from "react-native-loading-spinner-overlay";
 import { LinearGradient } from 'expo-linear-gradient';
 import { COLORS } from "../../constants";
 
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useSession } from '../../context/AuthContext';
 import { io } from 'socket.io-client';
 import { useSocketContext } from '../../context/SocketContext';
@@ -41,15 +41,13 @@ const SplashScreen = ({navigation}) => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                var refreshToken;
-                try{
-                    refreshToken = await AsyncStorage.getItem('refreshToken');
-                } 
-                catch(e) {
+                const refreshToken = await AsyncStorage.getItem("refreshToken");
+                console.log("refreshToken when check: "+ refreshToken);
+                if (refreshToken === null) {
+                    setIsLoading(false);
                     navigation.navigate('EnterName');
-                    console.log('Failed to fetch the refresh token: ', e.error);
+                    return;
                 }
-                console.log('refreshToken: ', refreshToken);
                 setIsLoading(true);
                 if (refreshToken !== null) {
                     const response = await fetch('https://se346-skillexchangebe.onrender.com/api/v1/token/checktoken', {
@@ -62,22 +60,27 @@ const SplashScreen = ({navigation}) => {
                         }),
                     });
                     const user = await AsyncStorage.getItem('user');
-                    if (response.ok) {
+                    if (response.ok && user !== null) {
+                        console.log("user when check: "+ user);
                         await login(JSON.parse(user));
                         navigation.navigate('(tabs)');
                     } else {
+                        console.log('User null bị xóa trong quá trình code rồi: ');
                         await logout();
                         navigation.navigate('EnterName');
                     }
                 }
             } catch (e) {
                 console.log('Failed to fetch the refresh token: ', e.error);
+                await logout();
+                setIsLoading(false);
+                navigation.navigate('EnterName');
             } finally {
                 setIsLoading(false);
             }
         };
         fetchData();
-    }, [navigation]);
+    }, []);
 
     return(
         <LinearGradient

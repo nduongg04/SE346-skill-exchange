@@ -7,7 +7,7 @@ const useData = () => {
     const [data, setData] = useState([]); // Move this inside the hook
     const bareUrl = "https://se346-skillexchangebe.onrender.com";
     const limit = 6;
-    const page = 1 ;
+    const page = 2 ;
     useEffect(() => {
         const fetchData = async ()=> {
             const response = await axios({
@@ -16,7 +16,7 @@ const useData = () => {
                 url: `${bareUrl}/api/v1/topic/pagination?page=${page}&limit=${limit}`, 
                 headers: { }
             })
-            setData(response.data);
+            setData(response.data.data);
         }
         fetchData();
     }, []);
@@ -25,7 +25,7 @@ const useData = () => {
 }
 
 const renderItem = ({ item }) => (
-    <Category _id={item._id} imageUrl={item.imageUrl} name={item.name} />
+    <Category imageUri={item.imageUrl} name={item.name} />
 );
 
 const numColumns = 2;
