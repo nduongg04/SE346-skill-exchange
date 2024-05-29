@@ -4863,7 +4863,7 @@ expo-web-browser@^13.0.3:
   resolved "https://registry.npmjs.org/expo-web-browser/-/expo-web-browser-13.0.3.tgz"
   integrity sha512-HXb7y82ApVJtqk8tManyudtTrCtx8xcUnVzmJECeHCB0SsWSQ+penVLZxJkcyATWoJOsFMnfVSVdrTcpKKGszQ==
 
-expo@*, expo@~51.0.8:
+expo@*, expo@^51.0.8:
   version "51.0.8"
   resolved "https://registry.npmjs.org/expo/-/expo-51.0.8.tgz"
   integrity sha512-bdTOiMb1f3PChtuqEZ9czUm2gMTmS0r1+H+Pkm2O3PsuLnOgxfIBzL6S37+J4cUocLBaENrmx9SOGKpzhBqXpg==
@@ -7145,6 +7145,14 @@ metro-cache-key@0.80.8:
   resolved "https://registry.npmjs.org/metro-cache-key/-/metro-cache-key-0.80.8.tgz"
   integrity sha512-qWKzxrLsRQK5m3oH8ePecqCc+7PEhR03cJE6Z6AxAj0idi99dHOSitTmY0dclXVB9vP2tQIAE8uTd8xkYGk8fA==
 
+metro-cache@^0.80.9:
+  version "0.80.9"
+  resolved "https://registry.npmjs.org/metro-cache/-/metro-cache-0.80.9.tgz"
+  integrity sha512-ujEdSI43QwI+Dj2xuNax8LMo8UgKuXJEdxJkzGPU6iIx42nYa1byQ+aADv/iPh5sh5a//h5FopraW5voXSgm2w==
+  dependencies:
+    metro-core "0.80.9"
+    rimraf "^3.0.2"
+
 metro-cache@0.80.8:
   version "0.80.8"
   resolved "https://registry.npmjs.org/metro-cache/-/metro-cache-0.80.8.tgz"
@@ -7173,6 +7181,14 @@ metro-core@^0.80.3, metro-core@0.80.8:
   dependencies:
     lodash.throttle "^4.1.1"
     metro-resolver "0.80.8"
+
+metro-core@0.80.9:
+  version "0.80.9"
+  resolved "https://registry.npmjs.org/metro-core/-/metro-core-0.80.9.tgz"
+  integrity sha512-tbltWQn+XTdULkGdzHIxlxk4SdnKxttvQQV3wpqqFbHDteR4gwCyTR2RyYJvxgU7HELfHtrVbqgqAdlPByUSbg==
+  dependencies:
+    lodash.throttle "^4.1.1"
+    metro-resolver "0.80.9"
 
 metro-file-map@0.80.8:
   version "0.80.8"
@@ -7203,6 +7219,11 @@ metro-resolver@0.80.8:
   version "0.80.8"
   resolved "https://registry.npmjs.org/metro-resolver/-/metro-resolver-0.80.8.tgz"
   integrity sha512-JdtoJkP27GGoZ2HJlEsxs+zO7jnDUCRrmwXJozTlIuzLHMRrxgIRRby9fTCbMhaxq+iA9c+wzm3iFb4NhPmLbQ==
+
+metro-resolver@0.80.9:
+  version "0.80.9"
+  resolved "https://registry.npmjs.org/metro-resolver/-/metro-resolver-0.80.9.tgz"
+  integrity sha512-wAPIjkN59BQN6gocVsAvvpZ1+LQkkqUaswlT++cJafE/e54GoVkMNCmrR4BsgQHr9DknZ5Um/nKueeN7kaEz9w==
 
 metro-runtime@^0.80.3, metro-runtime@0.80.8:
   version "0.80.8"

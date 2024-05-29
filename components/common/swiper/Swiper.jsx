@@ -3,12 +3,16 @@ import ProfileCard from "../cards/ProfileCard";
 import PostData from "../../../utils/postdata";
 import { useSession } from "../../../context/AuthContext";
 
-const SwiperList = ({ users, swiperRef, onSwipedAll }) => {
+const SwiperList = ({
+	users, // List user cần show để lướt
+	swiperRef, // Reference đến swiper (để lấy các property của thư viện swiper)
+	onSwipedAll, // Hàm xử lý khi người dùng lướt hết tất cả các card
+}) => {
 	const baseUrl = "https://se346-skillexchangebe.onrender.com";
 
 	const { user } = useSession();
 
-	console.log(users[0]?.avatar)
+    console.log(users);
 
 	return (
 		<Swiper

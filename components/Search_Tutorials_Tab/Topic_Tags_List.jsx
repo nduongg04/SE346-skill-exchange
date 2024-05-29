@@ -8,12 +8,13 @@ const useData = () => {
     const [data, setData] = useState([]); 
     const bareUrl = "https://se346-skillexchangebe.onrender.com";
     const limit = 6;
+    const page = 3 ;
     useEffect(() => {
         const fetchData = async ()=> {
             const response = await axios({
                 method: 'get',
                 maxBodyLength: Infinity,
-                url: `${bareUrl}/api/v1/topic/limit/${limit}`, 
+                url: `${bareUrl}/api/v1/topic/pagination?page=${page}&limit=${limit}`, 
                 headers: { }
             })
             console.log(response.data.data);
