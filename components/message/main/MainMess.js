@@ -46,8 +46,9 @@ const ScreenMess = () => {
 		})
 
 		socket.on("getLatestMessage", (res) => {
+			
 			const msg = latestMessage.findIndex((message) => message.chatID === res.chatID)
-			if (msg) {
+			if (msg !== -1) {
 				const newLatestMessage = [...latestMessage]
 				newLatestMessage[msg] = res
 				setLatestMessage(newLatestMessage)
