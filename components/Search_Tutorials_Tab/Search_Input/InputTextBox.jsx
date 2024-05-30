@@ -28,9 +28,7 @@ const InputTextBox = () => {
     setQuery(text);
   };
   const handleOnBlur= () => {
-      setTimeout(() => {
-        setFilteredData([]);
-    }, 100);
+    setFilteredData([]);
   };
 
   const handleonFocus=() =>{
@@ -111,6 +109,7 @@ const InputTextBox = () => {
         label="Enter your query"
         onChangeText={handleOnChangeText}
         onFocus={handleonFocus}
+        onBlur={() => setTimeout(() => handleOnBlur(), 1000)}
         onSubmitEditing={getTopic}
         value={query}
       />
@@ -119,14 +118,15 @@ const InputTextBox = () => {
           keyExtractor={item => item._id}
           renderItem={({ item }) => (
             <TouchableHighlight  
-              style={{marginLeft: 20, marginBottom: 3, height: 25, zIndex: 4}} 
-              onPress={() => {handleSelectTopic}
+              style={{ marginBottom: 3, height: 30, zIndex: 4,width: '100%'}} 
+              underlayColor={'#C1C1C1'}
+              onPress={(item) => {handleSelectTopic(item)}
               }
               >
                 <Text style ={styles.TopicText}>{item.name}</Text>
             </TouchableHighlight >
           )}
-          style = {{zIndex:3,maxHeight: 250}}
+          style = {[styles.ItemList, {borderColor: filteredData.length === 0 ? 'white' : 'black'}]}
         />
       </View>
     </SafeAreaView>
@@ -134,6 +134,7 @@ const InputTextBox = () => {
 };
 const styles = StyleSheet.create({
   TopicText: {
+    marginLeft: 20,
     fontSize: 14,
     textAlign: 'left',
     fontFamily: 'Coda-Regular',
@@ -145,10 +146,14 @@ const styles = StyleSheet.create({
     top: 0 ,
     backgroundColor: COLORS.white,
     zIndex: 3,
-    borderWidth: 1,
-    borderColor: 'black',
-    borderRadius: 10,
+    borderRadius: 20,
   },
-  
+  ItemList: {
+    borderWidth: 1,
+    borderRadius: 10,
+    zIndex:3,
+    maxHeight: 300,
+    marginHorizontal: 20,
+  },
 });
 export default InputTextBox;

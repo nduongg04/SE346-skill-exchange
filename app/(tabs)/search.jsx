@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { SafeAreaView, SectionList, Text, Dimensions, View } from "react-native";
 import { Stack } from "expo-router";
+import { ScreenHeaderBtn } from "../../components";
+import favicon from "@assets/favicon.svg";
 import { COLORS, icons } from "../../constants";
 import Topic_List from "../../components/Search_Tutorials_Tab/Topic_List";
 import Topic_Remarkable_List from "../../components/Search_Tutorials_Tab/Topic_Remarkable_List";
@@ -33,6 +35,21 @@ const Search = () => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite, position: 'relative' }}>
+            <Stack.Screen
+				options={{
+					title: "Search",
+					headerShown: false,
+					headerTitle: "",
+				}}
+			/>
+            <View style={{ marginLeft: 15, zIndex: -1 }}>
+				<ScreenHeaderBtn
+					iconUrl={favicon}
+					dimension={40}
+					string="SkillExchange"
+					style={{ marginLeft: 10 }}
+				/>
+			</View>
             <View style={{zIndex: 2}}>
                 <InputTextBox style={{zIndex: 2}}/>
             </View>
