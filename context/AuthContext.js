@@ -7,9 +7,12 @@ export function useSession() {
     return useContext(AuthContext);
 }
 
-export const AuthProvider = ({children}) => {
+export const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
 
+    useEffect(()=>{
+        console.log("User: " + JSON.stringify(user))
+    }, [user])
     const login = async (userData) => {
         await AsyncStorage.setItem('user', JSON.stringify(userData));
         setUser(userData);
