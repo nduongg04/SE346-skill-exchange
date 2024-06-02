@@ -126,6 +126,7 @@ const refeshReques= (idRemove)=>{
 //     }
 // };
 const getRequest= async()=>{
+ console.log("đã lấy")
   const url=`https://se346-skillexchangebe.onrender.com/api/v1/request/find/receiver/${user.id}`
   const data=await GetData(url);
   if (data !== "Something went wrong"){
@@ -179,7 +180,7 @@ const getRequest= async()=>{
 
       <View style={styles.Scroll}>
       {isLoading ? (
-        <ActivityIndicator />
+        <ActivityIndicator size="large" color="#FF9557" animating={true} style={{flex:1}} />
       ) :(isRequestTab)?
         (
           <FlatList
@@ -190,13 +191,13 @@ const getRequest= async()=>{
             )}
           />
         ):
-        (<FlatList
-        data={requests}
-        keyExtractor={(item) => item._id}
-        renderItem={({item}) => (
-          <System></System>
-        )}
-        />)
+        (
+          <View>
+            <System Content="The chat feature has been updated !" Time="10 Apr 2024 - 11:13"/>
+             <System Content="The version 2.0 has been updated !" Time="15 Jun 2024 - 22:13"></System>
+          </View>
+         
+        )
       }
     </View>
       <View style={styles.navbar}>
