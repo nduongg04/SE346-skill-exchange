@@ -1,4 +1,4 @@
-import { View, FlatList, TouchableOpacity, StyleSheet, Alert } from "react-native";
+import { View, FlatList, TouchableOpacity, StyleSheet } from "react-native";
 import Category from "./Category/Category";
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -7,7 +7,7 @@ const useData = () => {
     const [data, setData] = useState([]); 
     const bareUrl = "https://se346-skillexchangebe.onrender.com";
     const limit = 8;
-    const page = 2 ;
+    const page = 4 ;
     useEffect(() => {
         const fetchData = async ()=> {
             const response = await axios({
@@ -28,8 +28,7 @@ const renderItem = ({ item }) => (
     <Category imageUri={item.imageUrl} name={item.name} />
 );
 
-const numColumns = 2;
-const Topic_Remarkable_List = () => {
+const Topic_Hot_List = () => {
     const data = useData();
     return (
         <View style={styles.container}>
@@ -37,9 +36,7 @@ const Topic_Remarkable_List = () => {
                 data={data}
                 renderItem={renderItem}
                 keyExtractor={(item) => item._id}
-                numColumns={numColumns}
-                columnWrapperStyle={styles.columnWrapper}
-                horizontal={false}
+                horizontal={true}
             />
         </View>
     );
@@ -58,10 +55,6 @@ const styles = StyleSheet.create({
         margin: 5,
         backgroundColor: "#fff",
     },
-    columnWrapper: {
-        flexWrap: "wrap",
-        justifyContent: "space-between",
-    },
 });
 
-export default Topic_Remarkable_List;
+export default Topic_Hot_List;

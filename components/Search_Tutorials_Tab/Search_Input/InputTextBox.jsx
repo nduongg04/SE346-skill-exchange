@@ -1,5 +1,5 @@
 import React, { useState, useEffect,useRef } from 'react';
-import { SafeAreaView, Alert, StyleSheet, TouchableOpacity, FlatList, Text, View } from "react-native";
+import { SafeAreaView, Alert, StyleSheet, TouchableOpacity, FlatList, Text, View,TouchableHighlight  } from "react-native";
 import { scale } from "react-native-size-matters";
 import axios from "axios";
 import Autocomplete from 'react-native-autocomplete-input';
@@ -12,8 +12,6 @@ const InputTextBox = () => {
   const [query, setQuery] = useState("");
   const [topicdata, setTopicData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const inputRef = useRef(null);
-  const topicListRef = useRef(null);
   useEffect(() => {
     if (query) {
       setFilteredData(topicdata.filter(topic => topic.name.includes(query)));
@@ -30,9 +28,7 @@ const InputTextBox = () => {
     setQuery(text);
   };
   const handleOnBlur= () => {
-      if (topicListRef.current.blur) {
-        topicListRef.current.blur();
-      }
+    setFilteredData([]);
   };
 
   const handleonFocus=() =>{
@@ -93,6 +89,7 @@ const InputTextBox = () => {
   };
 
   const handleSelectTopic = (topic) => {
+    setQuery(topic.name);
     router.push({
       pathname: "/result/[id]",
       params: {
@@ -102,34 +99,34 @@ const InputTextBox = () => {
     setQuery("");
   };
 
-
   return (
     <SafeAreaView>
       
       <View style={styles.TopicList}>
       <InputText
-        ref={inputRef}
+        style = {{zIndex:3}}
         placeholder="Enter your topic"
         label="Enter your query"
         onChangeText={handleOnChangeText}
         onFocus={handleonFocus}
-        onBlur ={handleOnBlur}
+        onBlur={() => setTimeout(() => handleOnBlur(), 1000)}
         onSubmitEditing={getTopic}
         value={query}
       />
         <FlatList
-          ref={topicListRef}
           data={filteredData}
           keyExtractor={item => item._id}
           renderItem={({ item }) => (
-            <TouchableOpacity 
-              style={{marginLeft: 20, marginBottom: 3, height: 25, zIndex: 4}} 
-              onPressOut={() => handleSelectTopic(item)}
+            <TouchableHighlight  
+              style={{ marginBottom: 3, height: 30, zIndex: 4,width: '100%'}} 
+              underlayColor={'#C1C1C1'}
+              onPress={(item) => {handleSelectTopic(item)}
+              }
               >
                 <Text style ={styles.TopicText}>{item.name}</Text>
-            </TouchableOpacity>
+            </TouchableHighlight >
           )}
-          style = {{zIndex:4}}
+          style = {[styles.ItemList, {borderColor: filteredData.length === 0 ? 'white' : 'black'}]}
         />
       </View>
     </SafeAreaView>
@@ -137,6 +134,7 @@ const InputTextBox = () => {
 };
 const styles = StyleSheet.create({
   TopicText: {
+    marginLeft: 20,
     fontSize: 14,
     textAlign: 'left',
     fontFamily: 'Coda-Regular',
@@ -148,10 +146,14 @@ const styles = StyleSheet.create({
     top: 0 ,
     backgroundColor: COLORS.white,
     zIndex: 3,
-    borderWidth: 1,
-    borderColor: 'black',
-    borderRadius: 10,
+    borderRadius: 20,
   },
-  
+  ItemList: {
+    borderWidth: 1,
+    borderRadius: 10,
+    zIndex:3,
+    maxHeight: 300,
+    marginHorizontal: 20,
+  },
 });
 export default InputTextBox;
