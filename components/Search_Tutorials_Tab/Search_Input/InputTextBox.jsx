@@ -7,6 +7,7 @@ import { COLORS } from "../../../constants";
 import { router } from "expo-router";
 import InputText from "../../register/Button/InputText";
 
+
 const InputTextBox = () => {
   const bareUrl = "https://se346-skillexchangebe.onrender.com";
   const [query, setQuery] = useState("");
@@ -109,12 +110,13 @@ const InputTextBox = () => {
         label="Enter your query"
         onChangeText={handleOnChangeText}
         onFocus={handleonFocus}
-        onBlur={() => setTimeout(() => handleOnBlur(), 1000)}
+        onBlur={handleOnBlur}
         onSubmitEditing={getTopic}
         value={query}
       />
         <FlatList
           data={filteredData}
+          keyboardShouldPersistTaps='handled'
           keyExtractor={item => item._id}
           renderItem={({ item }) => (
             <TouchableHighlight  
