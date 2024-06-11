@@ -118,7 +118,7 @@ const Result_Screen = ({topic, handleBackButton}) => {
 						users={user}
 						swiperRef={swiperRef}
 						onSwipedAll={() => {
-							setTimeout(getuser, 1000);
+							setTimeout(getuser, 500);
 						}}
 					/>
 					</View>

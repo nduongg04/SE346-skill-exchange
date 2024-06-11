@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { TouchableOpacity, Text, StyleSheet, ImageBackground, View } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, ImageBackground, View, Dimensions } from 'react-native';
 import { router } from "expo-router";
 import { LinearGradient } from 'expo-linear-gradient';
 
+const windowWidth = Dimensions.get('window').width;
 
 const Category = (props) => {
     const handleOnPress = () => {
@@ -17,10 +18,10 @@ const Category = (props) => {
     return(
         <TouchableOpacity
         activeOpacity={0.8} onPress={handleOnPress}
-        style={{ height: 200, width: 200, marginLeft: 5, marginBottom: 5, borderWidth: 0.5, borderColor: '#dddddd',  borderRadius: 20  }}>
-            <View style = {{height:200, width: 200, borderWidth: 0.5, borderColor: '#dddddd',  borderRadius: 20,  overflow: 'hidden' }}>
+        style={{ height: windowWidth * 0.45, width: windowWidth * 0.45, marginLeft: 5, marginBottom: 5, borderWidth: 0.5, borderColor: '#dddddd',  borderRadius: 20  }}>
+            <View style = {{height:windowWidth * 0.45, width: windowWidth * 0.45, borderWidth: 0.5, borderColor: '#dddddd',  borderRadius: 20,  overflow: 'hidden' }}>
                 <View style ={{flex: 2, }}>
-                    <ImageBackground style = {[styles.backgroundImage, {borderRadius: 20}]} source={{ uri: props.imageUri }} resizeMode="cover" onError={(error) => console.log(error)}>
+                    <ImageBackground style = {[styles.backgroundImage, {borderRadius: 20, width: windowWidth * 0.45}]} source={{ uri: props.imageUri }} resizeMode="cover" onError={(error) => console.log(error)}>
                     <LinearGradient
                         colors={['transparent', 'rgba(0,0,0,0.8)']}
                         style={{ position: 'absolute', left: 0, right: 0, bottom: 0, top: 0, alignItems: 'center', justifyContent: 'center' }}
@@ -44,7 +45,6 @@ const styles = StyleSheet.create({
       fontWeight: 'bold',
     },
     backgroundImage: {
-      width: 200,
       height: 200,
       justifyContent: 'center',
       alignItems: 'center',
@@ -52,4 +52,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default Category;
+export default Category; 
