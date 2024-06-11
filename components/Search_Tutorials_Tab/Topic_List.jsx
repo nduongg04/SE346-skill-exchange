@@ -6,7 +6,7 @@ import axios from 'axios';
 const useData = () => {
     const [data, setData] = useState([]); 
     const bareUrl = "https://se346-skillexchangebe.onrender.com";
-    const limit = 6;
+    const limit = 8;
     useEffect(() => {
         const fetchData = async ()=> {
             const response = await axios({

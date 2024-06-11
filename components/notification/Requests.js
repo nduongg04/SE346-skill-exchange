@@ -2,8 +2,11 @@ import React from 'react'
 import { View,Text,Image,TouchableOpacity,Button ,Alert} from 'react-native'
 import {loadFonts,styles} from "./notification.style";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { router } from 'expo-router';
 const Request=(props)=>
 {
+    const navigation = useNavigation();
     const createChat= async (id1,id2)=>{
         const token= await AsyncStorage.getItem('accessToken');
         try{
@@ -43,12 +46,13 @@ const Request=(props)=>
     }
     const deleteRequest=async ()=>{
         try {
+            const token= await AsyncStorage.getItem('accessToken');
             const response = await fetch(`https://se346-skillexchangebe.onrender.com/api/v1/request/delete/${props.Id}`,
             {
               method: 'DELETE',
               headers: {
                 'Content-Type': 'application/json',
-                Authorization:"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFjMWM5OTkyOGZhZDhhMGU4ZDAxZTYiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODM4MiwiZXhwIjoxNzE1NzkwMzgyfQ.hVOeanp--ZtEqEMoPwvaHqnhQ0-7cah41w0DykAVl5Q" ,
+                Authorization:`Bearer ${token}`,
               }
             });
             console.log(response.status)
@@ -112,24 +116,30 @@ const Request=(props)=>
     else
     return(
         <View style={styles.RequestContainer} >
-            <View style={styles.AvatarContainer}>
+            <TouchableOpacity onPress={() => router.push({
+                pathname: "/informationRequest/redirect",
+                params: { id:props.SenderId, idRequest: props.Id }
+            })}>
+                <View style={styles.AvatarContainer}>
                     <Image source={{uri: props.Avatar}}
                             style={styles.Avatar}/>
-            </View>
+                </View>
+            </TouchableOpacity>
+            
             <View style={styles.ContentContainer}>
                 {/* thời gian */}
-                <Text style={styles.Time}>{dateTime}</Text>
+                <Text style={styles.Time} >{dateTime}</Text>
                 {/* Tên+ thông báo */}
-                <Text> 
-                    <Text style={styles.Name}>{props.Name}</Text>
+                <View style={styles.textContainer}> 
+                    <Text style={styles.Name} numberOfLines={1} ellipsizeMode='tail'>{props.Name}</Text>
                     <Text style={styles.Content}> wants to be your friend!</Text>
-                </Text>
+                </View>
                 {/* xem profile */}
                 <View style={styles.Response}>
-                    <TouchableOpacity style={styles.ButtonContainer2}>
-                        <Text onPress={handlePressAccept} style={[styles.Button,{color:'#27D785'}]}>Accept</Text>                   
+                    <TouchableOpacity style={styles.ButtonContainer2} onPress={()=>{handlePressAccept()}}>
+                        <Text  style={[styles.Button,{color:'#27D785'}]}>Accept</Text>                   
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={handlePressDecline} style={[styles.ButtonContainer2,{marginLeft:10}]}>
+                    <TouchableOpacity  style={[styles.ButtonContainer2,{marginLeft:10}]} onPress={()=>{handlePressDecline()}}>
                         <Text style={[styles.Button,{color:'#F55247'}]}>Decline</Text>                   
                     </TouchableOpacity>
                 </View>
