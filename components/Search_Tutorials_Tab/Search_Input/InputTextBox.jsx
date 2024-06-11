@@ -86,12 +86,12 @@ const InputTextBox = () => {
     }
   };
 
-  const handleSelectTopic = (topic) => {
-    setQuery(topic.name);
+  const handleSelectTopic = (item) => {
+    const topic = item.name
     router.push({
       pathname: "/result/[id]",
       params: {
-        data: topic.name,
+        data: topic,
       },
     });
   };
@@ -118,7 +118,7 @@ const InputTextBox = () => {
             <TouchableHighlight  
               style={{ marginBottom: 3, height: 30, zIndex: 4,width: '100%'}} 
               underlayColor={'#C1C1C1'}
-              onPress={(item) => {handleSelectTopic(item)}
+              onPress={() => {handleSelectTopic(item)}
               }
               >
                 <Text style ={styles.TopicText}>{"    "+item.name}</Text>

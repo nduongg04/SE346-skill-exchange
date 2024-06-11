@@ -22,7 +22,7 @@ const Result_Screen = ({topic, handleBackButton}) => {
 
 	const [user, setUser] = useState([])
 	const baseUrl = "https://se346-skillexchangebe.onrender.com";
-
+	const [isEndUsers, setIsEndUsers] = useState(false);
 	const shuffleArray = (array) => {
 		for (let i = array.length - 1; i > 0; i--) {
 			const j = Math.floor(Math.random() * (i + 1));
@@ -35,13 +35,14 @@ const Result_Screen = ({topic, handleBackButton}) => {
 		setIsLoading(true);
 		const url = `${baseUrl}/api/v1/user/find/topic?topics=${topic}`;
 		const data = await GetData(url);
-		console.log("data", data);
 		setUser(shuffleArray(data));
+		if(user.length === 0){
+			setIsEndUsers(true);
+    		console.log(isEndUsers);
+    		setIsLoading(false);
+		}
 		if(user) {
 			setIsLoading(false)
-		} else {
-			Alert.alert("Not found","No user is founded. Please try again!");
-			router.back();
 		}
 	};
 
@@ -61,7 +62,6 @@ const Result_Screen = ({topic, handleBackButton}) => {
 
 	const swipe = useAction((state) => state.swipe);
 	
-
 	const swiperRef = useRef(null);
 
 	useEffect(() => {
@@ -71,15 +71,6 @@ const Result_Screen = ({topic, handleBackButton}) => {
 			swiperRef.current.swipeRight();
 		}
 	}, [swipe]);
-
-	// const getTopicUrl = () => {
-	// 	let topicUrl = `${baseUrl}/api/v1/user/find/topic?topics=`;
-	// 	user?.learnTopicSkill.map((topic, index) => {
-	// 		if (index !== user.length - 1) topicUrl = `${topicUrl}${topic.name}`;
-	// 		else topicUrl = `${topicUrl}${topic.name},`;
-	// 	});
-	// 	return topicUrl;
-	// };
 
 	
 	
@@ -118,7 +109,9 @@ const Result_Screen = ({topic, handleBackButton}) => {
 			</View>
 
 			<View style={{ height: "100%", width: "100%" }}>
-				<View style={{ marginTop: 10, height: "80%" }}>
+			{!isEndUsers ? (
+				<>
+					<View style={{ marginTop: 10, height: "80%" }}>
 					<SwiperList
 						users={user}
 						swiperRef={swiperRef}
@@ -126,34 +119,60 @@ const Result_Screen = ({topic, handleBackButton}) => {
 							getuser();
 						}}
 					/>
-				</View>
+					</View>
 
+					<View
+						style={{
+							flex: 1,
+							flexDirection: "row",
+							justifyContent: "center",
+							alignItems: "center",
+							gap: (screenWidth / 100) * 7,
+						}}
+					>
+						<CircleButton
+							iconUrl={icons.cancel}
+							width={backButtonSize}
+							height={backButtonSize}
+							handlePress={() => swiperRef.current.swipeLeft()}
+							style={{ flex: 1 }}
+						/>
+
+						<CircleButton
+							iconUrl={icons.tickCircle}
+							width={backButtonSize}
+							height={backButtonSize}
+							handlePress={() => {
+								swiperRef.current.swipeRight();
+							}}
+						/>
+					</View>
+				</>
+			):(
 				<View
 					style={{
-						flex: 1,
-						flexDirection: "row",
-						justifyContent: "center",
-						alignItems: "center",
-						gap: (screenWidth / 100) * 7,
+							width: "100%",
+							height: "100%",
+							alignItems: "center",
+							justifyContent: "center",
+							paddingHorizontal: 20,
 					}}
 				>
-					<CircleButton
-						iconUrl={icons.cancel}
-						width={backButtonSize}
-						height={backButtonSize}
-						handlePress={() => swiperRef.current.swipeLeft()}
-						style={{ flex: 1 }}
-					/>
-
-					<CircleButton
-						iconUrl={icons.tickCircle}
-						width={backButtonSize}
-						height={backButtonSize}
-						handlePress={() => {
-							swiperRef.current.swipeRight();
-						}}
-					/>
-				</View>
+						<Text
+							style={{
+								fontSize: 15,
+								color: COLORS.lightOrange,
+								fontWeight: "500",
+								lineHeight: 23,
+								textAlign: "center",
+							}}
+						>
+							You have browsed through all the users in the topic you want to
+							learn, go to the search tab or change to new skills to find more
+						</Text>
+					</View>
+			)}
+				
 			</View>
 		</SafeAreaView>
 	);
