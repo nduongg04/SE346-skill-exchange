@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { SafeAreaView, SectionList, Text, Dimensions, View } from "react-native";
+import { SafeAreaView, SectionList, Text, Dimensions, View, StatusBar, Platform } from "react-native";
 import { Stack } from "expo-router";
 import { ScreenHeaderBtn } from "../../components";
 import favicon from "@assets/favicon.svg";
@@ -34,7 +34,7 @@ const Search = () => {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite, position: 'relative' }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite, paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}>
             <Stack.Screen
 				options={{
 					title: "Search",
