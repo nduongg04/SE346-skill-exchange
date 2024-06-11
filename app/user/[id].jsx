@@ -13,6 +13,7 @@ const User = () => {
 	const [user, setUser] = useState(null);
 
 	useEffect(() => {
+		console.log("hello")
 		const getUserById = async () => {
 			const url = `${baseUrl}/api/v1/user/findbyid/${id}`;
 			const data = await GetData(url);
