@@ -382,6 +382,7 @@ const ScreenChatRoom = ({ router }) => {
     const formData = new FormData();
     const extension = recordUri.split('.').pop();
     const type = mime.lookup(extension);
+    console.log(recordUri)
     formData.append('file', {
       name: `${name}`,
       type: type,
@@ -637,21 +638,31 @@ const ScreenChatRoom = ({ router }) => {
                 colors={["#C0BDBD", "#ffffff"]}>
         </LinearGradient>
 
-        <ScrollView style={styles.Scroll}
-          keyboardShouldPersistTaps="handled"
-          showsVerticalScrollIndicator={false}
-          onKeyboardDidShow={handleKeyboardDidShow}
-          contentContainerStyle={styles.scrollViewContainer}
-          onContentSizeChange={(contentWidth, contentHeight) => {
-            scrollViewRef.current.scrollToEnd({ animated: true });
-          }}
-          ref={scrollViewRef} >
-          {isLoading ? (
-            <ActivityIndicator />) :
-            (renderMessage())
+       
+        {isLoading ? (
+            <View style={{flex: 1,
+              justifyContent: 'center',
+              alignItems: 'center',}}>
+              <ActivityIndicator size="large" color="#FF9557" animating={true} />
+            </View>
+            ) :
+            (
+                 <ScrollView style={styles.Scroll}
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator={false}
+              onKeyboardDidShow={handleKeyboardDidShow}
+              contentContainerStyle={styles.scrollViewContainer}
+              onContentSizeChange={(contentWidth, contentHeight) => {
+                scrollViewRef.current.scrollToEnd({ animated: true });
+              }}
+              ref={scrollViewRef} >
+              {renderMessage()}
+              </ScrollView>
+
+            )
           }
           {/* <Message User="My message" Content={"https://firebasestorage.googleapis.com/v0/b/skillexchange-62da0.appspot.com/o/files%2F661aceb50b954258a9b6dc70?alt=media&token=57eed036-d8da-41e8-b97a-bc752a553243"} Time={""} Avatar={""} Type="record" />      */}
-        </ScrollView>
+       
 
         {/* bottom */}
         <View style={styles.Bottom}>
