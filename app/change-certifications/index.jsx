@@ -15,7 +15,6 @@ import PatchData from "../../utils/patchdata";
 import { Alert } from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 const ChangeCertifications = () => {
 	const [isLoading, setIsLoading] = useState(false);
