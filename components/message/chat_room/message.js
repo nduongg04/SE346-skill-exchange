@@ -53,10 +53,7 @@ export const Message = (props) => {
             sound.stopAsync();
             setSound(null);
         }
-        // if(setSoundCheck=='end')
-        //     {
-        //         console.log("đã test")
-        //     }
+ 
 }, [soundcheck]);
    
      useEffect(() => {
@@ -87,15 +84,12 @@ export const Message = (props) => {
             setSoundCheck(newSound);
             await newSound.playAsync();
             const status = await newSound.getStatusAsync();
-            console.log(status);
                 const time = (status.durationMillis / 1000);
                 setSeconds(time);
                 setIsPlay(true);
                 setIdCount(setInterval(() => {
-                   
                     checksound(newSound,time);
                 }, 500))
-                console.log(idCount)
            
         }
     };
@@ -104,7 +98,6 @@ export const Message = (props) => {
             {
                 const status2 = await sound2.getStatusAsync();
                 const timeRemaining=(time-(status2.positionMillis / 1000))
-                console.log(timeRemaining)
                 setSeconds(timeRemaining);
             }
         
