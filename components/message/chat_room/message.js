@@ -87,7 +87,13 @@ export const  Message=  (props) =>{
             const filePath = parsedUrl.pathname;       
             // Tách tên tệp từ phần path
             const fileName = filePath.split('/').pop();
-            return decodeURIComponent(decodeURIComponent(fileName.replace('files%2F', '')));
+            try{
+                return decodeURIComponent(decodeURIComponent(fileName.replace('files%2F', '')));
+            }
+            catch (e){
+                return decodeURIComponent(fileName.replace('files%2F', ''))
+            }
+            
         } else {
             console.log('Đường dẫn không trỏ đến nội dung truyền thông.');
         }

@@ -378,13 +378,17 @@ const ScreenChatRoom = ({ router }) => {
     }
   }
   const uploadFile = async (recordUri, name) => {
+   //Loai bo ki tu dac biet
+    name = name.replace(/[()"',;:\\/?]/g, "")
+    console.log(name)
     const access= await AsyncStorage.getItem("accessToken");
     const formData = new FormData();
     const extension = recordUri.split('.').pop();
     const type = mime.lookup(extension);
+    console.log(type)
     console.log(recordUri)
     formData.append('file', {
-      name: `${name}`,
+      name: name,
       type: type,
       uri: recordUri,
     });
@@ -574,10 +578,10 @@ const ScreenChatRoom = ({ router }) => {
         type: 'application/*',
       });
       const name = result.assets[0].name
-      const formatName= encodeURIComponent(name);
+      //const formatName= encodeURIComponent(name);
       const uri = result.assets[0].uri
       setUploading(true);
-      const response = await uploadFile(uri, formatName);
+      const response = await uploadFile(uri, name);
       if (response) {
         sendMessage('file', response)
       }
