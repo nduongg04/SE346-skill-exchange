@@ -5,7 +5,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import HandleSessionExpired from "../handlesession";
 
 const GetData = async (url) => {
-	console.log(url);
 	const getUsingAccessToken = async () => {
 		const accessToken = await AsyncStorage.getItem("accessToken");
 		try {

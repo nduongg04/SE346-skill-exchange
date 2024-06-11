@@ -9,7 +9,7 @@ class GradienLayout extends React.Component {
     render(){
         return (
             <LinearGradient
-                style={styles.container}
+                style={{...styles.container, ...this.props.style}}
                 colors={["#FFBE98", "#7751C7"]}
                 >
                 <View style={[styles.floating, this.props.innerStyle]}>      

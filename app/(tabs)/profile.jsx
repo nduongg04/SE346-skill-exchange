@@ -28,16 +28,24 @@ const Profile = () => {
 	}
 
 	const handleYourSkillsPress = () => {
-        router.push("/change-your-skills");
-    };
+		router.push("/change-your-skills");
+	};
 
 	const handleNewSkillsPress = () => {
-        router.navigate("/change-new-skills");
-    };
+		router.navigate("/change-new-skills");
+	};
 
 	const handleCertificationsPress = () => {
-        router.navigate("/change-certifications");
-    };
+		router.navigate("/change-certifications");
+	};
+
+	const handleSkillDescription = () => {
+		router.navigate("/change-skill-description");
+	};
+
+	const handleAboutYou = () => {
+		router.navigate("/change-about-you");
+	};
 
 	return (
 		<SafeAreaView
@@ -143,9 +151,7 @@ const Profile = () => {
 									Your skills
 								</Text>
 
-								<Text style={{ fontSize: 15, color: "#0386D0" }}>
-									Change your skills
-								</Text>
+								<Text style={{ fontSize: 15, color: "#0386D0" }}>Change</Text>
 							</TouchableOpacity>
 
 							<TouchableOpacity
@@ -165,9 +171,7 @@ const Profile = () => {
 									New skills
 								</Text>
 
-								<Text style={{ fontSize: 15, color: "#0386D0" }}>
-									Change new skills
-								</Text>
+								<Text style={{ fontSize: 15, color: "#0386D0" }}>Change</Text>
 							</TouchableOpacity>
 
 							<TouchableOpacity
@@ -187,9 +191,47 @@ const Profile = () => {
 									Certifications
 								</Text>
 
-								<Text style={{ fontSize: 15, color: "#0386D0" }}>
-									Change certifications
+								<Text style={{ fontSize: 15, color: "#0386D0" }}>Change</Text>
+							</TouchableOpacity>
+
+							<TouchableOpacity
+								style={{
+									paddingHorizontal: 10,
+									paddingVertical: 20,
+									paddingTop: 20,
+									borderBottomWidth: 1,
+									borderColor: "#D1D1D1",
+									display: "flex",
+									flexDirection: "row",
+									justifyContent: "space-between",
+								}}
+								onPress={handleSkillDescription}
+							>
+								<Text style={{ fontSize: 15, color: "#222222" }}>
+									Skill description
 								</Text>
+
+								<Text style={{ fontSize: 15, color: "#0386D0" }}>Change</Text>
+							</TouchableOpacity>
+
+							<TouchableOpacity
+								style={{
+									paddingHorizontal: 10,
+									paddingVertical: 20,
+									paddingTop: 20,
+									borderBottomWidth: 1,
+									borderColor: "#D1D1D1",
+									display: "flex",
+									flexDirection: "row",
+									justifyContent: "space-between",
+								}}
+								onPress={handleAboutYou}
+							>
+								<Text style={{ fontSize: 15, color: "#222222" }}>
+									About you
+								</Text>
+
+								<Text style={{ fontSize: 15, color: "#0386D0" }}>Change</Text>
 							</TouchableOpacity>
 						</View>
 
