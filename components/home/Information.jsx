@@ -84,8 +84,12 @@ const Information = ({
 					</View>
 
 					<View style={styles.boxContainer}>
-						<Text style={styles.headerText}>Description</Text>
-						<Text style={styles.detailText}>{description}</Text>
+						{description && (
+							<>
+								<Text style={styles.headerText}>Description</Text>
+								<Text style={styles.detailText}>{description}</Text>
+							</>
+						)}
 
 						<Text style={styles.headerText}>Birthday</Text>
 						<Text style={styles.detailText}>{convertDate(birthDay)}</Text>

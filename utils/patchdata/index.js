@@ -2,14 +2,12 @@ import HandleSessionExpired from "../handlesession";
 import axios from "axios";
 import CheckRefreshToken from "../checkrefreshtoken";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Alert } from "react-native";
 
-const PostData = (url, data) => {
-	const postUsingAccessToken = async () => {
-		console.log("PostData");
+const PatchData = (url, data) => {
+	const patchUsingAccessToken = async () => {
 		const accessToken = await AsyncStorage.getItem("accessToken");
 		try {
-			const response = await axios.post(url, data, {
+			const response = await axios.patch(url, data, {
 				headers: {
 					Authorization: `Bearer ${accessToken}`,
 				},
@@ -27,12 +25,12 @@ const PostData = (url, data) => {
 					HandleSessionExpired();
 				} else {
 					await AsyncStorage.setItem("accessToken", newAccessToken);
-					postUsingAccessToken();
+					patchUsingAccessToken();
 				}
 			}
 		}
 	};
-	return postUsingAccessToken();
+	return patchUsingAccessToken();
 };
 
-export default PostData;
+export default PatchData;
