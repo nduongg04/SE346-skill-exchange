@@ -1,149 +1,93 @@
-import GradienLayout from "../../components/register/TemplateLayout/GradientLayout";
-import { Text, View, FlatList, TouchableOpacity } from "react-native";
+import { Text, View, FlatList, TouchableOpacity, Alert } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
-import styles from "../../components/register/style";
-
 import { COLORS } from "../../constants";
-import { scale } from "react-native-size-matters";
-import React, { useEffect, useState } from "react";
-import CustomButton from "../../components/register/Button/CustomButton";
+import { useEffect, useState, useRef } from "react";
 import { Stack, router } from "expo-router";
 import { SafeAreaView } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { LinearGradient } from "expo-linear-gradient";
+import { ImageBackground } from "react-native";
+import * as ImagePicker from "expo-image-picker";
+import UploadImages from "../../utils/upload-images";
 import { useSession } from "../../context/AuthContext";
 import PatchData from "../../utils/patchdata";
-import { Alert } from "react-native";
-import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
 
 const ChangeCertifications = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [isUpdating, setIsUpdating] = useState(false);
-	// const { user, login } = useSession();
-	const user = {
-		_id: "66370dad92bdb2d7e5c22fe6",
-		username: "Nguyen Du",
-		email: "123@gmail.com",
-		phoneNumber: "0987654321",
-		avatar:
-			"https://firebasestorage.googleapis.com/v0/b/skillexchange-62da0.appspot.com/o/files%2Fchinese-chess.jpg?alt=media&token=df5b1f35-f66f-4e65-a832-c06ac6025722",
-		imageCerti: [
-			"https://firebasestorage.googleapis.com/v0/b/skillexchange-62da0.appspot.com/o/files%2Fchinese-chess.jpg?alt=media&token=df5b1f35-f66f-4e65-a832-c06ac6025722",
-		],
-		description: ["I'm an bilingual"],
-		userTopicSkill: [
-			{
-				_id: "66168dbd7c0f4757e77258dc",
-				name: "Management Skills",
-				imageUrl:
-					"https://firebasestorage.googleapis.com/v0/b/skillexchange-62da0.appspot.com/o/files%2FManagement%20Skills.png?alt=media&token=b52e7a57-3f02-4045-927b-71d44ae3e249",
-				__v: 0,
-				id: "66168dbd7c0f4757e77258dc",
-			},
-			{
-				_id: "66168dbd7c0f4757e77258da",
-				name: "Writing",
-				imageUrl:
-					"https://firebasestorage.googleapis.com/v0/b/skillexchange-62da0.appspot.com/o/files%2FWriting.png?alt=media&token=fba6b09a-871e-4c76-acc7-a7f1b1123ae4",
-				__v: 0,
-				id: "66168dbd7c0f4757e77258da",
-			},
-		],
-		learnTopicSkill: [
-			{
-				_id: "66168dbd7c0f4757e77258d4",
-				name: "Coding",
-				imageUrl:
-					"https://firebasestorage.googleapis.com/v0/b/skillexchange-62da0.appspot.com/o/files%2FCoding.png?alt=media&token=2b9d5877-6edf-4bc6-b0ba-a35f6e5eb2e8",
-				__v: 0,
-				id: "66168dbd7c0f4757e77258d4",
-			},
-			{
-				_id: "66168dbd7c0f4757e77258ce",
-				name: "Leadership Skills",
-				imageUrl:
-					"https://firebasestorage.googleapis.com/v0/b/skillexchange-62da0.appspot.com/o/files%2FLeadership%20Skills.png?alt=media&token=c9141fb4-756b-4a2d-96e4-3a9d736392d7",
-				__v: 0,
-				id: "66168dbd7c0f4757e77258ce",
-			},
-			{
-				_id: "66168dbd7c0f4757e77258cc",
-				name: "Electronics",
-				imageUrl:
-					"https://firebasestorage.googleapis.com/v0/b/skillexchange-62da0.appspot.com/o/files%2FElectronics.png?alt=media&token=249f9898-c5d1-4d62-8b5d-320dbc7e6e4a",
-				__v: 0,
-				id: "66168dbd7c0f4757e77258cc",
-			},
-			{
-				_id: "66168aa3f909b4d3937cd57a",
-				name: "Artificial Intelligence Programming",
-				imageUrl:
-					"https://firebasestorage.googleapis.com/v0/b/skillexchange-62da0.appspot.com/o/files%2FArtificial%20Intelligence%20Programming.png?alt=media&token=3accd6fe-5296-4e68-94e4-eefe98660110",
-				__v: 0,
-				id: "66168aa3f909b4d3937cd57a",
-			},
-			{
-				_id: "66168ac2f909b4d3937cd57e",
-				name: "Artistic Photography Techniques",
-				imageUrl:
-					"https://firebasestorage.googleapis.com/v0/b/skillexchange-62da0.appspot.com/o/files%2FArtistic%20Photography%20Techniques.png?alt=media&token=77fbaf45-5bbc-48d8-b65c-7dbaaab52e24",
-				__v: 0,
-				id: "66168ac2f909b4d3937cd57e",
-			},
-			{
-				_id: "66168ad3f909b4d3937cd581",
-				name: "Assessment Techniques",
-				imageUrl:
-					"https://firebasestorage.googleapis.com/v0/b/skillexchange-62da0.appspot.com/o/files%2FAssessment%20Techniques.png?alt=media&token=4e5db0b9-9ef7-47bf-9fa9-c9dc3d851d9a",
-				__v: 0,
-				id: "66168ad3f909b4d3937cd581",
-			},
-			{
-				_id: "66168ae5f909b4d3937cd584",
-				name: "Automotive Techniques",
-				imageUrl:
-					"https://firebasestorage.googleapis.com/v0/b/skillexchange-62da0.appspot.com/o/files%2FAutomotive%20Techniques.png?alt=media&token=4d26cebd-28d6-4990-bd05-664df548ebf8",
-				__v: 0,
-				id: "66168ae5f909b4d3937cd584",
-			},
-			{
-				_id: "66168b49f909b4d3937cd58a",
-				name: "Blogging",
-				imageUrl:
-					"https://firebasestorage.googleapis.com/v0/b/skillexchange-62da0.appspot.com/o/files%2FBlogging.png?alt=media&token=357ee27e-f997-49e2-9aba-7b24e33ac93c",
-				__v: 0,
-				id: "66168b49f909b4d3937cd58a",
-			},
-			{
-				_id: "66168b5bf909b4d3937cd58d",
-				name: "Broadcasting and Television Techniques",
-				imageUrl:
-					"https://firebasestorage.googleapis.com/v0/b/skillexchange-62da0.appspot.com/o/files%2FBroadcasting%20and%20Television%20Techniques.png?alt=media&token=26194509-cb3b-46ef-8b1c-1c66cc4451b7",
-				__v: 0,
-				id: "66168b5bf909b4d3937cd58d",
-			},
-			{
-				_id: "66168b3af909b4d3937cd587",
-				name: "Bicycle Repair Techniques",
-				imageUrl:
-					"https://firebasestorage.googleapis.com/v0/b/skillexchange-62da0.appspot.com/o/files%2FBicycle%20Repair%20Techniques.png?alt=media&token=5ae9aed7-5e08-48ee-89f9-d9f3f1afc802",
-				__v: 0,
-				id: "66168b3af909b4d3937cd587",
-			},
-			{
-				_id: "66168bc5f909b4d3937cd590",
-				name: "Business",
-				imageUrl:
-					"https://firebasestorage.googleapis.com/v0/b/skillexchange-62da0.appspot.com/o/files%2FBusiness.png?alt=media&token=51a607a9-0056-4fb3-98cf-e0910f575f59",
-				__v: 0,
-				id: "66168bc5f909b4d3937cd590",
-			},
-		],
-		skill: ["English"],
-		birthDay: "2004-08-11T00:00:00.000Z",
+	const { user, login } = useSession();
+
+	const [certificationImages, setCertificationImages] = useState([
+		...user.imageCerti,
+	]);
+
+	const [uploadedImages, setUploadedImages] = useState([]);
+	const updatedCertificationImages = useRef([]);
+
+	const handleChangeCertifications = async () => {
+		setIsUpdating(true);
+		const baseUrl = "https://se346-skillexchangebe.onrender.com";
+		if (uploadedImages.length !== 0) {
+			const uploadImagesResponse = await UploadImages(
+				`${baseUrl}/api/v1/upload/files`,
+				uploadedImages
+			);
+			if (
+				!uploadImagesResponse ||
+				uploadImagesResponse === "Something went wrong"
+			) {
+				alert("Something went wrong when uploading images");
+				setIsUpdating(false);
+				return;
+			}
+			uploadImagesResponse.forEach((image) => {
+				updatedCertificationImages.current.push(image.url);
+			});
+		}
+
+		certificationImages.forEach((imageUri) => {
+			if (imageUri.startsWith("http")) {
+				updatedCertificationImages.current.push(imageUri);
+			}
+		});
+
+		const data = await PatchData(`${baseUrl}/api/v1/user/update/${user.id}`, {
+			imageCerti: updatedCertificationImages.current,
+		});
+		if (!data || data === "404" || data === "Something went wrong") {
+			alert("Something went wrong when updating user's certifications");
+			setIsUpdating(false);
+			return;
+		}
+
+		login({
+			...user,
+			imageCerti: updatedCertificationImages.current,
+		});
+		Alert.alert("Successfully", "Update successfully", [
+            {
+                text: "OK",
+                onPress: () => {
+                    router.replace("/profile");
+                },
+            },
+        ]);
+		setIsUpdating(false);
 	};
 
-	const handleChangeCertifications = () => {};
+	const handleUploadImage = async () => {
+		let result = await ImagePicker.launchImageLibraryAsync({
+			mediaTypes: ImagePicker.MediaTypeOptions.Images,
+			quality: 1,
+			allowsMultipleSelection: true,
+		});
+		if (!result.canceled) {
+			result.assets.forEach((asset) => {
+				setCertificationImages((prev) => [...prev, asset.uri]);
+				setUploadedImages((prev) => [...prev, asset.uri]);
+			});
+		}
+	};
 	return (
 		<SafeAreaView
 			style={{
@@ -154,11 +98,6 @@ const ChangeCertifications = () => {
 			}}
 		>
 			<Stack.Screen options={{ headerShown: false }} />
-			<Spinner
-				visible={isLoading}
-				textContent={"Loading certifications..."}
-				textStyle={{ color: "#FFF" }}
-			/>
 			<Spinner
 				visible={isUpdating}
 				textContent={"Updating..."}
@@ -177,91 +116,146 @@ const ChangeCertifications = () => {
 					style={{
 						backgroundColor: "#fff",
 						borderRadius: 30,
-						height: scale(565), //554/896
-						width: scale(320), //372/410,
-						paddingTop: 25,
+						height: "auto",
+						width: "95%", //372/410,
+						paddingVertical: 25,
+						paddingHorizontal: 20,
 					}}
 				>
-					<View
+					<TouchableOpacity
+						onPress={() => {
+							router.back();
+						}}
 						style={{
-							flex: 1,
-							height: "100%",
+							flexDirection: "row",
+							alignItems: "center",
 						}}
 					>
-						<TouchableOpacity
-							onPress={() => {
-								router.back();
-							}}
+						<AntDesign
+							name="arrowleft"
+							size={16}
+							color={COLORS.orange}
+							style={{ marginRight: 5 }}
+						/>
+						<Text
 							style={{
-								flexDirection: "row",
-								marginLeft: scale(20),
-								alignItems: "center",
+								fontSize: 14,
+								fontFamily: "CodaRegular",
+								color: COLORS.orange,
 							}}
 						>
-							<AntDesign
-								name="arrowleft"
-								size={16}
-								color={COLORS.orange}
-								style={{ marginRight: 5 }}
-							/>
-							<Text
-								style={{
-									fontSize: 14,
-									fontFamily: "CodaRegular",
-									color: COLORS.orange,
-								}}
-							>
-								Back
-							</Text>
-						</TouchableOpacity>
+							Back
+						</Text>
+					</TouchableOpacity>
 
-						<TouchableOpacity
+					<TouchableOpacity
+						style={{
+							backgroundColor: COLORS.orange,
+							borderRadius: 27,
+							alignSelf: "center",
+							paddingHorizontal: 30,
+							paddingVertical: 10,
+						}}
+						onPress={handleUploadImage}
+					>
+						<Text
 							style={{
-								backgroundColor: COLORS.orange,
-								borderRadius: 27,
-								alignSelf: "center",
-								paddingHorizontal: 30,
-								paddingVertical: 10,
+								textAlign: "center",
+								fontSize: 16,
+								color: COLORS.white,
 							}}
 						>
-							<Text
+							Upload image
+						</Text>
+					</TouchableOpacity>
+
+					<View
+						style={{
+							height: 4,
+							backgroundColor: COLORS.purple,
+							borderRadius: 50,
+							width: 120,
+							alignSelf: "center",
+							margin: 15,
+						}}
+					/>
+
+					<FlatList
+						style={{
+							width: "100%",
+							minHeight: 200,
+							maxHeight: 410,
+							overflow: "scroll",
+						}}
+						data={certificationImages}
+						keyExtractor={(item) => item}
+						renderItem={({ item }) => (
+							<ImageBackground
+								source={{ uri: item }}
 								style={{
-									textAlign: "center",
-									fontSize: 16,
-									color: COLORS.white,
+									width: "100%",
+									height: 200,
 								}}
+								borderRadius={10}
 							>
-								Upload image
-							</Text>
-						</TouchableOpacity>
+								{console.log(item)}
+								<View
+									style={{
+										backgroundColor: "rgba(0,0,0,0.3)",
+										flex: 1,
+										borderRadius: 10,
+									}}
+								>
+									<TouchableOpacity
+										style={{
+											position: "absolute",
+											top: 10,
+											right: 10,
+										}}
+										onPress={() => {
+											setCertificationImages((prev) =>
+												prev.filter((image) => image !== item)
+											);
+											setUploadedImages((prev) =>
+												prev.filter((image) => image !== item)
+											);
+										}}
+									>
+										<AntDesign
+											name="closecircle"
+											size={30}
+											color={COLORS.white}
+											style={{}}
+										/>
+									</TouchableOpacity>
+								</View>
+							</ImageBackground>
+						)}
+						numColumns={1}
+						ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+					/>
 
-						<View
+					<TouchableOpacity
+						style={{
+							backgroundColor: COLORS.orange,
+							borderRadius: 27,
+							alignSelf: "flex-end",
+							paddingHorizontal: 20,
+							paddingVertical: 7,
+							marginTop: 16,
+						}}
+						onPress={handleChangeCertifications}
+					>
+						<Text
 							style={{
-								height: 4,
-								backgroundColor: COLORS.purple,
-								borderRadius: 50,
-								width: 120,
-								alignSelf: "center",
-								margin: 15,
+								textAlign: "center",
+								fontSize: 16,
+								color: COLORS.white,
 							}}
-						/>
-
-						<View
-							style={{
-								height: scale(280),
-								alignSelf: "center",
-								width: scale(300),
-								flexDirection: "column",
-								backgroundColor: "red",
-							}}
-						></View>
-						<CustomButton
-							text="Done"
-							margin={false}
-							style={{ alignSelf: "flex-end", marginTop: 20, marginRight: 20 }}
-							onPress={handleChangeCertifications}
-						/>
-					</View>
+						>
+							Done
+						</Text>
+					</TouchableOpacity>
 				</View>
 			</LinearGradient>
 		</SafeAreaView>
