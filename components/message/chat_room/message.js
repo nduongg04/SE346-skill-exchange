@@ -42,28 +42,39 @@ export const  Message=  (props) =>{
             )
       }
     //Record
-    const handlePressPlay= async ()=>{
-        if(!isPlay)
-        {
-            setSound(null)
-            const { sound } = await Audio.Sound.createAsync({uri: props.Content});
-            setSound(sound);
-            setIsPlay(!isPlay);
-            await sound.playAsync();
-            sound.setOnPlaybackStatusUpdate((status) => {
-                if (!status.isPlaying && status.didJustFinish) {
-                  setIsPlay(false);
-                }})
+    useEffect(() => {
+        return () => {
+          // Cleanup sound object on component unmount
+          if (sound) {
+            sound.unloadAsync();
+          }
+        };
+      }, [sound]);
+      
+    
+      const handlePressPlay = async () => {
+        if (sound) {
+          // If there is an existing sound object, unload it first
+          await sound.unloadAsync();
+          setSound(null);
+          setIsPlay(false);
+        } else {
+            console.log( props.Content)
+          // Create a new sound object and play it
+          const { sound: newSound } = await Audio.Sound.createAsync({ uri: props.Content });
+          setSound(newSound);
+          setIsPlay(true);
+          await newSound.playAsync();
+          newSound.setOnPlaybackStatusUpdate((playbackStatus) => {
+            if (playbackStatus.didJustFinish && !playbackStatus.isLooping) {
+            console.log("đã xong")
+              setIsPlay(false);
+              setSound(null);
+            }
+          });
         }
-        else
-        {
-            if(sound)
-            await sound.stopAsync();
-            setSound(null)
-            setIsPlay(!isPlay);
-        }
-        
-    }
+      };
+    
     const getFileName= (url)=>{
         const parsedUrl = new URL(url);
         // Lấy phần query params từ URL
@@ -76,7 +87,13 @@ export const  Message=  (props) =>{
             const filePath = parsedUrl.pathname;       
             // Tách tên tệp từ phần path
             const fileName = filePath.split('/').pop();
-            return decodeURIComponent(decodeURIComponent(fileName.replace('files%2F', '')));
+            try{
+                return decodeURIComponent(decodeURIComponent(fileName.replace('files%2F', '')));
+            }
+            catch (e){
+                return decodeURIComponent(fileName.replace('files%2F', ''))
+            }
+            
         } else {
             console.log('Đường dẫn không trỏ đến nội dung truyền thông.');
         }

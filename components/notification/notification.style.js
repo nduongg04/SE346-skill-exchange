@@ -49,7 +49,7 @@ export const styles= StyleSheet.create({
     RequestContainer:
     {
 
-        paddingHorizontal:'5%',
+        paddingHorizontal:'3%',
         paddingTop:'2.5%',
         height:100,
         flexDirection:'row',
@@ -65,10 +65,10 @@ export const styles= StyleSheet.create({
     AvatarContainer:
     {
         borderRadius: 20,
-        width:27,
-        height:27,
+        width:35,
+        height:35,
         overflow: 'hidden',
-        marginTop:7
+        marginTop:5
 
     },
     Avatar:{
@@ -115,8 +115,13 @@ export const styles= StyleSheet.create({
         fontSize:12,
         color:'#999999',
     },
+    textContainer: {
+        flexDirection: 'row', // Đặt hướng của các phần tử con là hàng ngang
+        alignItems: 'center', // Căn giữa theo chiều dọc
+      },
     Name:
     {
+        maxWidth:115,
         fontFamily:'Inter-SemiBold',
         fontSize:15
     },
@@ -124,6 +129,11 @@ export const styles= StyleSheet.create({
         fontFamily:'Inter-Regular',
         fontSize:14.5,
         color:'#666666',
+    },
+    System:{
+        marginTop:2,
+        fontFamily:'Inter-SemiBold',
+        fontSize:14
     },
     Scroll:{
         // width:'100%',

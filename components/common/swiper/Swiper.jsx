@@ -12,8 +12,6 @@ const SwiperList = ({
 
 	const { user } = useSession();
 
-    console.log(users);
-
 	return (
 		<Swiper
 			ref={swiperRef}

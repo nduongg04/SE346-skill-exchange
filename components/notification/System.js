@@ -4,20 +4,17 @@ import {loadFonts,styles} from "./notification.style";
 import { icons } from "@constants";
 const System=(props)=>
 {
-    if(props.Type=='Request')
     return(
-        <View style={[styles.RequestContainer,{height:70}]} >
-            <View style={styles.AvatarContainer}>
+        <View style={[styles.RequestContainer,{height:70,marginTop:10}]} >
+            <View style={{width:45, height:45, marginTop:5}}>
                     <Image source={icons.app}
                             style={styles.Avatar}/>
             </View>
             <View style={styles.ContentContainer}>
                 {/* thời gian */}
-                <Text style={styles.Time}>16 Apr 2024 - 22:13</Text>
+                <Text style={styles.Time}>{props.Time}</Text>
                 {/* Tên+ thông báo */}
-                <Text> 
-                    <Text style={styles.Name}>New update version 2.0</Text>
-                </Text>
+                    <Text style={styles.System}>{props.Content}</Text>
           
             </View>
         </View>

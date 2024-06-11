@@ -46,8 +46,9 @@ const ScreenMess = () => {
 		})
 
 		socket.on("getLatestMessage", (res) => {
+			
 			const msg = latestMessage.findIndex((message) => message.chatID === res.chatID)
-			if (msg) {
+			if (msg !== -1) {
 				const newLatestMessage = [...latestMessage]
 				newLatestMessage[msg] = res
 				setLatestMessage(newLatestMessage)
@@ -130,56 +131,7 @@ const ScreenMess = () => {
 			await logout();
 		}
 	}
-	// const loadChat=  async ()=>{
-	// 	if(accessToken!='')
-	// 	{
-	// 		try{
-	// 			const response = await axios.get(`https://se346-skillexchangebe.onrender.com/api/v1/chat/find/${user.id}`, {
-	// 			  method: 'GET',
-	// 			  headers: {
-	// 				'Content-Type': 'application/json',
-	// 				Authorization: `Bearer ${accessToken}`
-	// 			  },});
-	// 			  console.log(response.status)
-	// 			  if(response.status == 200){
-	// 				if (response.data && Array.isArray(response.data.data)) {
-	// 					let list= [];
-	// 					list =response.data.data;
-	// 					setChatRooms(list);
-	// 					setChatAppear(list);
-	// 				  } else {
-	// 					console.error("Invalid data format in response:", response.data);
-	// 				  }
-	// 				;
-	// 			  }
-	// 			  else
-	// 			  {
-	// 				if(response.status==401)
-	// 					{
-	// 						setCheckToken(true);
-	// 					}
-	// 					  else
-	// 					  {
-	// 						Alert.alert(
-	// 							'Thông báo', 
-	// 							'Lỗi kết nối với sever', 
-	// 						)
-	// 					  }
-	// 			  }
-	// 			}
-	// 			catch{
-	// 				Alert.alert(
-	// 					'Thông báo', 
-	// 					'Ứng dụng đang gặp lỗi', 
-	// 				)
-	// 			}
-	// 			finally{
-	// 				setLoading(false)
-	// 			}
-	// 	}
 
-
-	// }
 	const loadChat = async () => {
 		const url = `https://se346-skillexchangebe.onrender.com/api/v1/chat/find/${user.id}`
 		const data = await GetData(url);
@@ -212,19 +164,7 @@ const ScreenMess = () => {
 			setSearchText('')
 		}
 	}, [searchText]);
-	//   useEffect(()=>{
 
-	// 	const load = async()=>{
-
-	// 		await loadToken();
-	// 		await loadChat();
-	// 		setCheckToken(false);
-	// 	}
-	// 	if(checkToken)
-	// 	{		
-	// 		load();
-	// 	}
-	//  }, [checkToken])
 	useEffect(() => {
 		loadChat();
 	}, [isFocused])
@@ -307,13 +247,15 @@ const ScreenMess = () => {
 			<View style={styles.Scroll} >
 
 				{isLoading ? (
-					<ActivityIndicator />
+					<ActivityIndicator size="large" color="#FF9557" animating={true} style={{flex:1}}/>
 				) :
-					(<FlatList
+					(
+						<FlatList
 						data={chatAppear}
 						renderItem={renderItem}
 						keyExtractor={(item) => item.chatInfo._id}
-					/>)
+					/>
+					)
 				}
 
 

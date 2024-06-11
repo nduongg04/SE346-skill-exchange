@@ -1,28 +1,31 @@
 import { useEffect, useState } from "react";
-import Information from "../../components/home/Information";
 import { useLocalSearchParams } from "expo-router";
 import GetData from "../../utils/getdata";
 import { router } from "expo-router";
+import InformationRequest from "../../components/notification/informationRequest";
+import { useIsFocused } from "@react-navigation/native";
 
-const User = () => {
+const Redirect = () => {
 	const baseUrl = "https://se346-skillexchangebe.onrender.com";
 
 	const { id } = useLocalSearchParams();
-	console.log(id);
-
+	const {idRequest}= useLocalSearchParams();
+	console.log(id)
+	console.log(idRequest);
 	const [user, setUser] = useState(null);
-
 	useEffect(() => {
-		console.log("hello")
+		console.log("Hello")
 		const getUserById = async () => {
 			const url = `${baseUrl}/api/v1/user/findbyid/${id}`;
 			const data = await GetData(url);
+			console.log(data);
 			setUser(data);
 		};
 
 		getUserById();
+		
 	}, []);
 
-	return <Information {...user} />;
+	return <InformationRequest {...user} idRequest={idRequest}  />;
 };
-export default User;
+export default Redirect;

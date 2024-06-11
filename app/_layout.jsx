@@ -15,6 +15,7 @@ const Layout = () => {
 		PolyRegular: require("../assets/fonts/Poly-Regular.ttf"),
 		SegoeUI: require("../assets/fonts/Segoe-UI.ttf"),
 		SegoeUISemiBold: require("../assets/fonts/Segoe-UI-SemiBold.ttf"),
+        CodaRegular: require("../assets/fonts/Coda-Regular.ttf"),
 	});
 
 	if (!fontsLoaded) {
@@ -29,6 +30,7 @@ const Layout = () => {
 						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 						<Stack.Screen name="signing/Signing" options={{ headerShown: false }} />
 						<Stack.Screen name="chatRoom/room" options={{headerShown:false}} />
+						<Stack.Screen name="informationRequest/redirect" options={{headerShown:false}}/>
 					</Stack>
 				</SocketProvider>
 			</AuthProvider>

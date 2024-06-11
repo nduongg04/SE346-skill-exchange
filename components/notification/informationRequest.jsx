@@ -3,14 +3,18 @@ import { Stack } from "expo-router";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { COLORS } from "@constants";
 import { Image } from "expo-image";
-import { BackHeader } from "../../components";
-import { Topic } from "../../components";
-import { CircleButton } from "../../components";
+import { BackHeader } from "..";
+import { Topic } from "..";
+import { CircleButton } from "..";
 import { router } from "expo-router";
 import avatarDefault from "@assets/images/avatarDefault.jpg";
 import { useAction } from "../../utils/useAction";
+import { useSession } from "../../context/AuthContext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from '@react-navigation/native';
+import { Alert } from "react-native";
 
-const Information = ({
+const InformationRequest = ({ 
 	username,
 	skill,
 	birthDay,
@@ -18,9 +22,93 @@ const Information = ({
 	avatar,
 	imageCerti,
 	description,
+	_id,
+	idRequest 
 }) => {
+	
+	const { user } = useSession();
+	const navigation = useNavigation();
 	const swipeLeft = useAction((state) => state.swipeLeft);
 	const swipeRight = useAction((state) => state.swipeRight);
+	const createChat= async (id1,id2)=>{
+        const token= await AsyncStorage.getItem('accessToken');
+		console.log(id1+", "+id2);
+        try{
+            const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/chat/create',{
+			method:'POST',
+			headers:{
+			  'Content-Type': 'application/json',
+			  Authorization:`Bearer ${token}`
+			},
+			body: JSON.stringify({
+				"firstID": id1,
+				"secondID": id2
+			})
+		  })
+		  if(response.status==200)
+		  {
+			return true
+		  }
+		  else{
+            Alert.alert(
+                'Thông báo', 
+                'Kết bạn không thành công', 
+            )
+			return false
+		  }
+        }
+        catch{
+            Alert.alert(
+                'Thông báo', 
+                'Kết bạn không thành công', 
+            )
+            return false
+         }
+		 
+    }
+	const deleteRequest=async ()=>{
+		console.log(idRequest);
+        try {
+            const token= await AsyncStorage.getItem('accessToken');
+            const response = await fetch(`https://se346-skillexchangebe.onrender.com/api/v1/request/delete/${idRequest}`,
+            {
+              method: 'DELETE',
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization:`Bearer ${token}`,
+              }
+            });
+            console.log(response.status)
+      
+            if(response.status==200)
+            {
+                const json = await response.json();
+                if(json.message=="Deleted request successfully")
+                {
+                  console.log("delete success");
+                }
+             
+            }
+            else
+            {
+                console.log("error"+response.statusText);
+              
+            }
+          } catch (error) {
+            console.error(error);
+          } finally {
+            navigation.goBack('(tabs)');
+          }
+    }
+	const handlePressAccept= async ()=>{
+		if( await createChat(_id,user.id))
+		{
+			await deleteRequest();
+			navigation.goBack('(tabs)');
+		}
+			
+		
+	 }
 
 	function convertDate(isoDate) {
 		const date = new Date(isoDate);
@@ -58,15 +146,13 @@ const Information = ({
 				<CircleButton
 					iconUrl={require("@assets/icons/cancel.svg")}
 					handlePress={() => {
-						router.back();
-						swipeLeft();
+						deleteRequest();
 					}}
 				/>
 				<CircleButton
 					iconUrl={require("@assets/icons/tickCircle.svg")}
 					handlePress={() => {
-						router.back();
-						swipeRight();
+						handlePressAccept();
 					}}
 				/>
 			</View>
@@ -84,12 +170,8 @@ const Information = ({
 					</View>
 
 					<View style={styles.boxContainer}>
-						{description && (
-							<>
-								<Text style={styles.headerText}>Description</Text>
-								<Text style={styles.detailText}>{description}</Text>
-							</>
-						)}
+						<Text style={styles.headerText}>Description</Text>
+						<Text style={styles.detailText}>{description}</Text>
 
 						<Text style={styles.headerText}>Birthday</Text>
 						<Text style={styles.detailText}>{convertDate(birthDay)}</Text>
@@ -209,4 +291,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default Information;
+export default InformationRequest;
