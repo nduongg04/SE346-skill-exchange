@@ -12,7 +12,7 @@ const CardMessage=(props)=>{
 return(
     <View style={styles.CardContainer}>
         <View style={styles.AvatarContainer}>
-            <Image source={{uri: ''+props.Avatar}}
+            <Image source={(props.Avatar==""||!props.Avatar)?require('assets/images/avatarDefault.jpg'):{uri: ''+props.Avatar}}
             style={styles.Avatar}/>
         </View>
         <View style={styles.MessageContainer}>

@@ -14,17 +14,18 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from '@react-navigation/native';
 import { Alert } from "react-native";
 
-const InformationRequest = ({ userRequest, idRequest }) => {
-	const {
-		username,
-		skill,
-		birthDay,
-		userTopicSkill,
-		avatar,
-		imageCerti,
-		description,
-		_id
-	  } = userRequest;
+const InformationRequest = ({ 
+	username,
+	skill,
+	birthDay,
+	userTopicSkill,
+	avatar,
+	imageCerti,
+	description,
+	_id,
+	idRequest 
+}) => {
+	
 	const { user } = useSession();
 	const navigation = useNavigation();
 	const swipeLeft = useAction((state) => state.swipeLeft);

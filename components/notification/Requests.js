@@ -3,6 +3,7 @@ import { View,Text,Image,TouchableOpacity,Button ,Alert} from 'react-native'
 import {loadFonts,styles} from "./notification.style";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
+import { router } from 'expo-router';
 const Request=(props)=>
 {
     const navigation = useNavigation();
@@ -115,9 +116,12 @@ const Request=(props)=>
     else
     return(
         <View style={styles.RequestContainer} >
-            <TouchableOpacity onPress={() => navigation.navigate('informationRequest/redirect', { id:props.SenderId, idRequest: props.Id })}>
+            <TouchableOpacity onPress={() => router.push({
+                pathname: "/informationRequest/redirect",
+                params: { id:props.SenderId, idRequest: props.Id }
+            })}>
                 <View style={styles.AvatarContainer}>
-                    <Image source={{uri: props.Avatar}}
+                    <Image source={(props.Avatar==""||!props.Avatar)?require('assets/images/avatarDefault.jpg'):{uri:props.Avatar}}
                             style={styles.Avatar}/>
                 </View>
             </TouchableOpacity>
@@ -132,10 +136,10 @@ const Request=(props)=>
                 </View>
                 {/* xem profile */}
                 <View style={styles.Response}>
-                    <TouchableOpacity style={styles.ButtonContainer2}>
+                    <TouchableOpacity style={styles.ButtonContainer2} onPress={()=>{handlePressAccept()}}>
                         <Text  style={[styles.Button,{color:'#27D785'}]}>Accept</Text>                   
                     </TouchableOpacity>
-                    <TouchableOpacity  style={[styles.ButtonContainer2,{marginLeft:10}]}>
+                    <TouchableOpacity  style={[styles.ButtonContainer2,{marginLeft:10}]} onPress={()=>{handlePressDecline()}}>
                         <Text style={[styles.Button,{color:'#F55247'}]}>Decline</Text>                   
                     </TouchableOpacity>
                 </View>
