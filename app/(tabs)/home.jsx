@@ -26,10 +26,10 @@ const Home = () => {
 	const { user } = useSession();
 
 	const [users, setUsers] = useState([]);
-	// const [isEndUsers, setIsEndUsers] = useState(false);
 
 	const isLoading = useLoadingHome((state) => state.loading);
 	const setIsLoading = useLoadingHome((state) => state.setLoading);
+	const [isEndUsers, setIsEndUsers] = useState(false);
 
 	const swipe = useAction((state) => state.swipe);
 
@@ -45,9 +45,8 @@ const Home = () => {
 
 	const getTopicUrl = () => {
 		let topicUrl = `${baseUrl}/api/v1/user/find/topic?topics=`;
-		user?.learnTopicSkill.map((topic, index) => {
-			if (index !== user.length - 1) topicUrl = `${topicUrl}${topic.name}`;
-			else topicUrl = `${topicUrl}${topic.name},`;
+		user?.learnTopicSkill.forEach((topic, index) => {
+			topicUrl = `${topicUrl}${topic.name},`;
 		});
 		return topicUrl;
 	};
@@ -59,33 +58,46 @@ const Home = () => {
 		}
 		return array;
 	};
-	const getUsers = async () => {
-		setIsLoading(true);
-		const url = getTopicUrl();
-		const data = await GetData(url);
-		if (data?.length === 0) {
-			return;
-		}
-		setUsers(shuffleArray(data));
-		setIsLoading(false);
-	};
 
-	const getAllUsers = async () => {
-		setIsLoading(true);
-		const data = await GetData(`${baseUrl}/api/v1/user/find`);
-		if (data?.length === 0) return;
-		setUsers(shuffleArray(data));
-		if (users) {
-			setIsLoading(false);
-		}
+	const getUsers = async () => {
+        
+		const getUsersByTopic = async () => {
+			console.log("Getting users by topic");
+			const url = getTopicUrl();
+			const data = await GetData(url);
+			return data;
+		};
+
+		const getAllUsers = async () => {
+			console.log("Getting all users");
+			const data = await GetData(`${baseUrl}/api/v1/user/find`);
+            return data;
+		};
+
+        setIsLoading(true);
+        const usersByTopic = await getUsersByTopic();
+        console.log(usersByTopic)
+        if (usersByTopic.length === 0) {
+            const allUsers = await getAllUsers();
+            if (allUsers.length === 0) {
+                setIsEndUsers(true);
+                setIsLoading(false);
+                return;
+            }
+            setUsers(shuffleArray(allUsers));
+        } else {
+            setUsers(shuffleArray(usersByTopic));
+        }
+        setIsLoading(false);
 	};
 
 	useEffect(() => {
 		getUsers();
-		if (users.length === 0) {
-			getAllUsers();
-		}
 	}, []);
+
+    useEffect(() => {
+        getUsers();
+      }, [user.learnTopicSkill])
 
 	if (isLoading) {
 		return (
@@ -120,17 +132,14 @@ const Home = () => {
 			</View>
 
 			<View style={{ height: "95%", width: "100%" }}>
-				{users.length > 0 ? (
-					<View style={{height: "100%", width: "100%"}}>
+				{!isEndUsers ? (
+					<>
 						<View style={{ marginTop: 10, height: "80%" }}>
 							<SwiperList
 								users={users}
 								swiperRef={swiperRef}
 								onSwipedAll={() => {
 									getUsers();
-									if (users.length === 0) {
-										setIsEndUsers(true);
-									}
 								}}
 							/>
 						</View>
@@ -161,7 +170,7 @@ const Home = () => {
 								}}
 							/>
 						</View>
-					</View>
+					</>
 				) : (
 					<View
 						style={{
@@ -169,6 +178,7 @@ const Home = () => {
 							height: "100%",
 							alignItems: "center",
 							justifyContent: "center",
+							paddingHorizontal: 20,
 						}}
 					>
 						<Text
@@ -181,7 +191,7 @@ const Home = () => {
 							}}
 						>
 							You have browsed through all the users in the topic you want to
-							learn, go to the search tab to find more
+							learn, go to the search tab or change to new skills to find more
 						</Text>
 					</View>
 				)}
