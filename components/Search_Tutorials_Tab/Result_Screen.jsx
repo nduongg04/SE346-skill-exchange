@@ -23,7 +23,6 @@ const Result_Screen = ({topic, handleBackButton}) => {
 	const [user, setUser] = useState([])
 	const baseUrl = "https://se346-skillexchangebe.onrender.com";
 	const [isEndUsers, setIsEndUsers] = useState(false);
-	const [noMoreUsers, setNoMoreUsers] = useState(false);
 
 	const shuffleArray = (array) => {
 		for (let i = array.length - 1; i > 0; i--) {
@@ -39,11 +38,9 @@ const Result_Screen = ({topic, handleBackButton}) => {
 		const data = await GetData(url);
 		if(data.length === 0){
 			setIsEndUsers(true);
-			setNoMoreUsers(true);
 			setIsLoading(false)
 		} else {
 			setUser(shuffleArray(data));
-			setNoMoreUsers(false);
 		}
 
 		if(user) {
@@ -114,7 +111,7 @@ const Result_Screen = ({topic, handleBackButton}) => {
 			</View>
 
 			<View style={{ height: "100%", width: "100%" }}>
-			{!isEndUsers && !noMoreUsers ? (
+			{!isEndUsers ? (
 				<>
 					<View style={{ marginTop: 10, height: "80%" }}>
 					<SwiperList
