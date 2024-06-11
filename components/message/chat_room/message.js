@@ -69,15 +69,21 @@ export const Message = (props) => {
 
 
     const handlePressPlay = async () => {
+        
         if (isPlay) {
             // If there is an existing sound object, unload it first
             clearInterval(idCount);
             setIdCount(null);
-            await sound.stopAsync();
-            setSound(null);
             setIsPlay(false);
+            if(sound)
+                {
+                    await sound.stopAsync();
+                    setSound(null);
+                }
         } else {
             setSound(null);
+            clearInterval(idCount);
+            setIdCount(null);
             // Create a new sound object and play it
             const { sound: newSound } = await Audio.Sound.createAsync({ uri: props.Content });
             setSound(newSound);
