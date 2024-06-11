@@ -23,6 +23,8 @@ const Result_Screen = ({topic, handleBackButton}) => {
 	const [user, setUser] = useState([])
 	const baseUrl = "https://se346-skillexchangebe.onrender.com";
 	const [isEndUsers, setIsEndUsers] = useState(false);
+	const [noMoreUsers, setNoMoreUsers] = useState(false);
+
 	const shuffleArray = (array) => {
 		for (let i = array.length - 1; i > 0; i--) {
 			const j = Math.floor(Math.random() * (i + 1));
@@ -35,15 +37,18 @@ const Result_Screen = ({topic, handleBackButton}) => {
 		setIsLoading(true);
 		const url = `${baseUrl}/api/v1/user/find/topic?topics=${topic}`;
 		const data = await GetData(url);
-		setUser(shuffleArray(data));
-		if(user.length === 0){
+		if(data.length === 0){
 			setIsEndUsers(true);
-    		console.log(isEndUsers);
-    		setIsLoading(false);
+			setNoMoreUsers(true);
+			setIsLoading(false)
+		} else {
+			setUser(shuffleArray(data));
+			setNoMoreUsers(false);
 		}
+
 		if(user) {
 			setIsLoading(false)
-		}
+		} 
 	};
 
 	useEffect(() => {
@@ -109,14 +114,14 @@ const Result_Screen = ({topic, handleBackButton}) => {
 			</View>
 
 			<View style={{ height: "100%", width: "100%" }}>
-			{!isEndUsers ? (
+			{!isEndUsers && !noMoreUsers ? (
 				<>
 					<View style={{ marginTop: 10, height: "80%" }}>
 					<SwiperList
 						users={user}
 						swiperRef={swiperRef}
 						onSwipedAll={() => {
-							getuser();
+							setTimeout(getuser, 1000);
 						}}
 					/>
 					</View>
