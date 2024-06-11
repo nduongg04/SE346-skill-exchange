@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { SafeAreaView, SectionList, Text, Dimensions, View } from "react-native";
+import { SafeAreaView, SectionList, Text, Dimensions, View, StatusBar, Platform } from "react-native";
 import { Stack } from "expo-router";
 import { ScreenHeaderBtn } from "../../components";
 import favicon from "@assets/favicon.svg";
@@ -34,7 +34,7 @@ const Search = () => {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite, position: 'relative' }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.lightWhite, paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0 }}>
             <Stack.Screen
 				options={{
 					title: "Search",
@@ -42,12 +42,14 @@ const Search = () => {
 					headerTitle: "",
 				}}
 			/>
+            <View style={{ marginLeft: 15, zIndex: -1 }}>
 				<ScreenHeaderBtn
 					iconUrl={favicon}
 					dimension={40}
 					string="SkillExchange"
 					style={{ marginLeft: 10 }}
 				/>
+			</View>
             <View style={{zIndex: 2}}>
                 <InputTextBox style={{zIndex: 2}}/>
             </View>

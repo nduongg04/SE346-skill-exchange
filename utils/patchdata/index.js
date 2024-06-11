@@ -14,6 +14,7 @@ const PatchData = (url, data) => {
 			});
 			return response.data;
 		} catch (error) {
+            console.log(error.response.status)
 			if (error.response.status === 404) {
 				return "404";
 			} else if (error.response.status !== 401) {
