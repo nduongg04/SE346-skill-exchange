@@ -3,10 +3,10 @@ import React, { createContext, useState } from 'react';
 const MessageContext = createContext();
 
 const MessageProvider = ({ children }) => {
-  const [sound, setSound] = useState(null);
+  const [soundcheck, setSoundCheck] = useState(null);
 
   return (
-    <MessageContext.Provider value={{ sound, setSound }}>
+    <MessageContext.Provider value={{ soundcheck, setSoundCheck }}>
       {children}
     </MessageContext.Provider>
   );

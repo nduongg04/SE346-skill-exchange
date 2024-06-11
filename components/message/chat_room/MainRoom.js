@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef,useContext } from 'react';
 import { View, Text, ScrollView, TouchableOpacity, Image, KeyboardAvoidingView, TextInput, Modal, Linking, ActivityIndicator, Alert } from 'react-native';
 import { registerRootComponent } from 'expo';
 import { icons } from "@constants";
@@ -22,7 +22,7 @@ import GetData from '../../../utils/getdata';
 import PostData from '../../../utils/postdata';
 import HandleSessionExpired from '../../../utils/handlesession';
 import { LinearGradient } from 'expo-linear-gradient';
-import { MessageProvider } from './messageContext';
+import { MessageProvider, MessageContext } from './messageContext';
 const ScreenChatRoom = ({ router }) => {
   const route = useRoute();
   const { user, login, logout } = useSession();
@@ -43,6 +43,7 @@ const ScreenChatRoom = ({ router }) => {
   const { socket, setSocket, onlineUsers, setOnlineUsers } = useSocketContext()
   const [isLoading, setLoading] = useState(true);
   const [isUploading, setUploading] = useState(false);
+  // const {soundcheck, setSoundCheck} = useContext(MessageContext);
 
 
   const name = route.params.name
@@ -116,14 +117,13 @@ const ScreenChatRoom = ({ router }) => {
     if (messageList.length != 0) {
       for (let i = 0; i < messageList.length; i++) {
         let sender = ''
-
         // console.log((messageList));
         if (messageList[i].senderID.id === user.id) {
           sender = "My message"
         }
         if ((i + 1) < messageList.length) {
           if (messageList[i].senderID.id == messageList[i + 1].senderID.id) {
-            list.push(<Message key={i} User={sender} Content={messageList[i].content} Time='' Avartar='' Type={messageList[i].type} Function={getFile} />);
+            list.push(<Message key={i} User={sender} Content={messageList[i].content} Time='' Avatar='no' Type={messageList[i].type} Function={getFile} />);
           }
           else {
             let time = new Date(messageList[i].dateTime);
@@ -455,7 +455,7 @@ const ScreenChatRoom = ({ router }) => {
       setUploading(true);
       const currentTime = new Date();
       const timestamp = currentTime.getTime();
-      const response = await uploadFile(record.getURI(), timestamp);
+      const response = await uploadFile(record.getURI(), ""+timestamp);
       console.log(response)
       if (response) {
         await sendMessage('record', response);
