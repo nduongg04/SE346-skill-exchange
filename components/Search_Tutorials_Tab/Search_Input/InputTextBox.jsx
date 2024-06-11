@@ -2,7 +2,6 @@ import React, { useState, useEffect,useRef } from 'react';
 import { SafeAreaView, Alert, StyleSheet, TouchableOpacity, FlatList, Text, View,TouchableHighlight  } from "react-native";
 import { scale } from "react-native-size-matters";
 import axios from "axios";
-import Autocomplete from 'react-native-autocomplete-input';
 import { COLORS } from "../../../constants";
 import { router } from "expo-router";
 import InputText from "../../register/Button/InputText";
@@ -76,8 +75,6 @@ const InputTextBox = () => {
               data: query,
             },
           });
-          setQuery("");
-          setTopicData([]);
         } else {
           // If query is not in data, show an alert
           Alert.alert("Error", "Topic not found. Please try again.");
@@ -97,7 +94,6 @@ const InputTextBox = () => {
         data: topic.name,
       },
     });
-    setQuery("");
   };
 
   return (
@@ -125,7 +121,7 @@ const InputTextBox = () => {
               onPress={(item) => {handleSelectTopic(item)}
               }
               >
-                <Text style ={styles.TopicText}>{item.name}</Text>
+                <Text style ={styles.TopicText}>{"    "+item.name}</Text>
             </TouchableHighlight >
           )}
           style = {[styles.ItemList, {borderColor: filteredData.length === 0 ? 'white' : 'black'}]}
@@ -136,7 +132,8 @@ const InputTextBox = () => {
 };
 const styles = StyleSheet.create({
   TopicText: {
-    marginLeft: 20,
+    flex: 1,
+    justifyContent: 'center',
     fontSize: 14,
     textAlign: 'left',
     fontFamily: 'Coda-Regular',

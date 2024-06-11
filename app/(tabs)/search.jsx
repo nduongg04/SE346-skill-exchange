@@ -42,14 +42,14 @@ const Search = () => {
 					headerTitle: "",
 				}}
 			/>
-            <View style={{ marginLeft: 15, zIndex: -1 }}>
+            <SafeAreaView style={{ marginLeft: 15, zIndex: -1 }}>
 				<ScreenHeaderBtn
 					iconUrl={favicon}
 					dimension={40}
 					string="SkillExchange"
 					style={{ marginLeft: 10 }}
 				/>
-			</View>
+			</SafeAreaView>
             <View style={{zIndex: 2}}>
                 <InputTextBox style={{zIndex: 2}}/>
             </View>

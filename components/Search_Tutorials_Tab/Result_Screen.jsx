@@ -1,4 +1,4 @@
-import { View, Text, ActivityIndicator } from "react-native";
+import { View, Text, ActivityIndicator, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 import favicon from "@assets/favicon.svg";
@@ -35,17 +35,20 @@ const Result_Screen = ({topic, handleBackButton}) => {
 		setIsLoading(true);
 		const url = `${baseUrl}/api/v1/user/find/topic?topics=${topic}`;
 		const data = await GetData(url);
+		console.log("data", data);
 		setUser(shuffleArray(data));
 		if(user) {
 			setIsLoading(false)
+		} else {
+			Alert.alert("Not found","No user is founded. Please try again!");
+			router.back();
 		}
 	};
 
 	useEffect(() => {
 		getuser();
 	}, [])
-
-	console.log(user);
+	console.log("user",user);
 	
 	const screenWidth = Dimensions.get("window").width;
 	const screenHeight = Dimensions.get("window").height;
