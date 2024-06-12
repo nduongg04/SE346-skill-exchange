@@ -45,14 +45,6 @@ const Profile = () => {
 		);
 	}
 
-	const handleEditProfilePress = () => {
-		router.push("/edit-profile");
-	};
-
-	const handleChangeInformationPress = () => {
-		router.push("/change-information");
-	};
-
 	const handleYourSkillsPress = () => {
 		router.push("/change-your-skills");
 	};
@@ -71,6 +63,14 @@ const Profile = () => {
 
 	const handleAboutYou = () => {
 		router.navigate("/change-about-you");
+	};
+
+	const handleEditProfilePress = () => {
+		router.navigate("/edit-profile");
+	};
+
+	const handleChangeInformationPress = () => {
+		router.navigate("/change-information");
 	};
 
 	return (
@@ -339,44 +339,6 @@ const styles = StyleSheet.create({
 		backgroundColor: "#FFFFFF",
 		marginTop: 10,
 		borderRadius: 10,
-	},
-	logoutModalContainer: {
-		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: 'rgba(0, 0, 0, 0.5)',
-	},
-	logoutModalContent: {
-		backgroundColor: 'white',
-		padding: 20,
-		borderRadius: 10,
-		alignItems: 'center',
-	},
-	logoutModalText: {
-		fontSize: 18,
-		marginBottom: 20,
-	},
-	logoutModalButtons: {
-		flexDirection: 'row',
-	},
-	logoutButton: {
-		backgroundColor: 'red',
-		padding: 10,
-		borderRadius: 5,
-		marginRight: 10,
-	},
-	logoutButtonText: {
-		color: 'white',
-		fontWeight: 'bold',
-	},
-	cancelButton: {
-		backgroundColor: 'gray',
-		padding: 10,
-		borderRadius: 5,
-	},
-	cancelButtonText: {
-		color: 'white',
-		fontWeight: 'bold',
 	},
 });
 
