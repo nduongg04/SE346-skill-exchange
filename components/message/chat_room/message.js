@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, TouchableHighligh, TextInput, Modal } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Image, TouchableHighligh, TextInput, Modal, Alert } from 'react-native';
 import { registerRootComponent } from 'expo';
 import { icons } from "@constants";
 import { Audio } from 'expo-av';
 import { loadFonts, styles } from "./mainRoom.style";
 import { MessageContext } from './messageContext';
+import * as FileSystem from 'expo-file-system';
+import * as MediaLibrary from 'expo-media-library';
+import * as Permissions from 'expo-permissions';
+
 
 export const Message = (props) => {
     const { soundcheck, setSoundCheck } = useContext(MessageContext);
@@ -32,8 +36,8 @@ export const Message = (props) => {
             >
                 <View style={{ width: '100%', height: '100%', backgroundColor: 'rgba(217, 217, 217, 0.95)' }}>
                     <View style={{flexDirection:'row', marginLeft: 'auto',marginRight:"2%",marginTop:"1%"}}>
-                    <TouchableOpacity style={styles.closeButton} onPress={getFile}>
-                        <Image source={icons.close} style={{ width: 35, height: 35, marginLeft: 'auto' }} />
+                    <TouchableOpacity style={styles.closeButton} onPress={downloadImage}>
+                        <Image source={icons.download} style={{ width: 28, height: 28, marginLeft: 'auto', marginRight:5,marginTop:"12%" }} />
                     </TouchableOpacity>
                         <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
                         <Image source={icons.close} style={{ width: 35, height: 35, marginLeft: 'auto' }} />
@@ -172,6 +176,63 @@ export const Message = (props) => {
     const getFile = () => {
         props.Function(props.Content);
     }
+    const getFileExtensionFromMimeType = (mimeType) => {
+        switch (mimeType) {
+          case 'image/jpeg':
+            return 'jpg';
+          case 'image/png':
+            return 'png';
+          case 'image/gif':
+            return 'gif';
+          default:
+            return '';
+        }
+      };
+    const downloadImage = async () => {
+        const { status } = await MediaLibrary.requestPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert('Quyền bị từ chối', 'Không thể truy cập thư viện phương tiện');
+          return;
+        }
+        imageUrl=props.Content;
+        const currentTime = new Date();
+        const timestamp = currentTime.getTime();
+        const fileName=''+timestamp;
+        try {
+            // Yêu cầu quyền truy cập thư viện phương tiện
+            const { status } = await MediaLibrary.requestPermissionsAsync();
+            if (status !== 'granted') {
+              Alert.alert('Quyền bị từ chối', 'Không thể truy cập thư viện phương tiện');
+              return;
+            }
+        
+            // Tải xuống tệp tạm thời để lấy loại MIME
+            const downloadResumable = FileSystem.createDownloadResumable(imageUrl, `${FileSystem.documentDirectory}${fileName}`);
+        
+            const { uri, headers } = await downloadResumable.downloadAsync();
+            const mimeType = headers['content-type'];
+            const extension = getFileExtensionFromMimeType(mimeType);
+        
+            if (!extension) {
+                Alert.alert('Lỗi', 'Không thể tải xuống hình ảnh');
+                return;
+            }
+        
+            const finalUri = `${FileSystem.documentDirectory}${fileName}.${extension}`;
+            await FileSystem.moveAsync({
+              from: uri,
+              to: finalUri,
+            });
+        
+            // Lưu hình ảnh vào thư viện phương tiện
+            const asset = await MediaLibrary.createAssetAsync(finalUri);
+            await MediaLibrary.createAlbumAsync('Download', asset, false);
+            Alert.alert('Tải xuống thành công', 'Hình ảnh đã được lưu vào thư viện phương tiện');
+          } catch (error) {
+            console.error('Lỗi khi tải xuống hình ảnh:', error);
+            Alert.alert('Lỗi', 'Không thể tải xuống hình ảnh');
+          }
+      };
 
 
     //Self-messages

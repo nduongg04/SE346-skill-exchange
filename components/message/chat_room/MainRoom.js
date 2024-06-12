@@ -150,7 +150,7 @@ const ContentScreen = () => {
               {
                 if(timeBefore.getDate()!=time.getDate())
                   {
-                    list.push(<Text style={styles.DateMessage}>{formatDateTime(messageList[i].dateTime)}</Text>)
+                    list.push(<Text key={formatDateTime(messageList[i].dateTime)} style={styles.DateMessage}>{formatDateTime(messageList[i].dateTime)}</Text>)
                   }
               }
           }
@@ -515,7 +515,7 @@ const ContentScreen = () => {
 
   return (
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-       
+    
           <View style={styles.Container}>
 
           <View style={styles.Header}>
