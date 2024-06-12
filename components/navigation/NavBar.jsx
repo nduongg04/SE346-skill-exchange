@@ -3,6 +3,8 @@ import { View, TouchableOpacity } from "react-native";
 import { Image } from "expo-image";
 import { icons } from "@constants";
 import styles from "./navbar.style";
+import useKeyboardShow from "../../utils/useKeyboardShow";
+import { COLORS } from "@constants";
 
 const NavBar = ({ state, descriptors, navigation }) => {
 	const buttons = [
@@ -35,15 +37,27 @@ const NavBar = ({ state, descriptors, navigation }) => {
 
 	const [focusedButton, setFocusedButton] = useState(null);
 	const order = ["home", "chat", "search", "notification", "profile"];
+	const keyboardShow = useKeyboardShow((state) => state.keyboardShow);
 	const routesFiltered = state.routes.filter((route) =>
 		order.includes(route.name)
 	);
-    
+
 	const routes = routesFiltered.sort(
 		(a, b) => order.indexOf(a.name) - order.indexOf(b.name)
 	);
+
 	return (
-		<View style={styles.container}>
+		<View
+			style={{
+				borderRadius: 20,
+				height: "8%",
+				backgroundColor: COLORS.lightWhite,
+				flexDirection: "row",
+				justifyContent: "space-around",
+				alignItems: "center",
+				marginBottom: keyboardShow ? -100 : 0,
+			}}
+		>
 			{routes.map((route, index) => {
 				if (route.name === "index") return null;
 

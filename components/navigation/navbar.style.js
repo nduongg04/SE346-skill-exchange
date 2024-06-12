@@ -1,14 +1,16 @@
 import { StyleSheet } from "react-native-web";
-import {COLORS} from "@constants";
+import { COLORS } from "@constants";
+
 const styles = StyleSheet.create({
-	container: {
+	container: (keyboardShow) => ({
 		borderRadius: 20,
 		height: "8%",
 		backgroundColor: COLORS.lightWhite,
 		flexDirection: "row",
 		justifyContent: "space-around",
 		alignItems: "center",
-	},
+		marginBottom: keyboardShow ? 100 : 0,
+	}),
 	focusedButton: {
 		flex: 1,
 		height: "100%",
@@ -44,19 +46,19 @@ const styles = StyleSheet.create({
 		borderRadius: 99,
 		justifyContent: "center",
 		alignItems: "center",
-        height: "100%",
-        width: "100%",
+		height: "100%",
+		width: "100%",
 		backgroundColor: COLORS.lightWhite,
 
 		shadowColor: COLORS.shadowBlue,
 		shadowOffset: {
-            width: 0,
-            height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        
-        elevation: 3,
+			width: 0,
+			height: 2,
+		},
+		shadowOpacity: 0.25,
+		shadowRadius: 3.84,
+
+		elevation: 3,
 	},
 });
 

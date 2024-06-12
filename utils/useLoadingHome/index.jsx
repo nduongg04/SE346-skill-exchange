@@ -1,8 +1,8 @@
 import { create } from "zustand";
 
 const useLoadingHome = create((set) => ({
-    loading: false,
-    setLoading: (loading) => set({ loading }),
+	loading: false,
+	setLoading: (value) => set({ loading: value }),
 }));
 
 export default useLoadingHome;
