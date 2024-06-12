@@ -29,13 +29,18 @@ export const Message = (props) => {
                 visible={modalVisible}
                 transparent={true}
                 onRequestClose={closeModal}
-
             >
                 <View style={{ width: '100%', height: '100%', backgroundColor: 'rgba(217, 217, 217, 0.95)' }}>
-                    <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+                    <View style={{flexDirection:'row', marginLeft: 'auto',marginRight:"2%",marginTop:"1%"}}>
+                    <TouchableOpacity style={styles.closeButton} onPress={getFile}>
                         <Image source={icons.close} style={{ width: 35, height: 35, marginLeft: 'auto' }} />
                     </TouchableOpacity>
-                    <View style={{ width: '85%', height: '85%', marginLeft: '7.5%', marginTop: '7.5%' }}>
+                        <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+                        <Image source={icons.close} style={{ width: 35, height: 35, marginLeft: 'auto' }} />
+                    </TouchableOpacity>
+                    </View>
+                    
+                    <View style={{ width: '90%', height: '90%', marginLeft: '5%', marginTop: '5%' }}>
 
                         <Image source={{ uri: props.Content }} style={{ width: '100%', height: '100%', resizeMode: 'contain' }} />
                     </View>
@@ -50,6 +55,7 @@ export const Message = (props) => {
             setIdCount(null);
             setIsPlay(false);
             sound.stopAsync();
+            setCheck(false)
         }
 
     }, [soundcheck]);
