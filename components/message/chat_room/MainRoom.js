@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef,useContext } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, KeyboardAvoidingView, TextInput, Modal, Linking, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, ScrollView,RefreshControl, TouchableOpacity, Image, KeyboardAvoidingView, TextInput, Modal, Linking, ActivityIndicator, Alert } from 'react-native';
 import { registerRootComponent } from 'expo';
 import { icons } from "@constants";
 import { loadFonts, styles } from "./mainRoom.style";
@@ -46,12 +46,24 @@ const ContentScreen = () => {
   const [isUploading, setUploading] = useState(false);
   const {soundcheck, setSoundCheck} = useContext(MessageContext);
   const isFocused = useIsFocused();
+  //
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [checkScroll, setcheckScroll] = useState(true);
+  const handleLoadMore = async () => { 
+      setPage(page + 1);
+  };
+  const onRefresh = () => {
+    setRefreshing(true);
+    handleLoadMore().then(() => setRefreshing(false));
+  };
+
   const removeSound= async()=>
     {
       
       if(soundcheck)
         {
-          console.log("đã vào 1")
           await soundcheck.stopAsync();
         }
     }
@@ -85,6 +97,7 @@ const ContentScreen = () => {
     console.log("socket ")
     socket.on("getMessage", (res) => {
       if (chatId !== res.chatID) return
+      setcheckScroll(true);
       setMessageList([...messageList, res])
     })
 
@@ -139,8 +152,13 @@ const ContentScreen = () => {
   };
   const renderMessage = () => {
     const list = [];
+    let start=0;
+    if(messageList.length>=(page*5+10))
+      {
+        start=messageList.length-(page*5+10);
+      }
     if (messageList.length != 0) {
-      for (let i = 0; i < messageList.length; i++) {
+      for (let i = start; i < messageList.length; i++) {
         let sender = ''
         let time = new Date(messageList[i].dateTime);
         if(i-1>=0)
@@ -176,6 +194,7 @@ const ContentScreen = () => {
     }
 
   }
+ 
   const handleKeyboardDidShow = () => {
     scrollViewRef.current.scrollToEnd({ animated: true }); // Cuộn xuống cuối của ScrollView
   };
@@ -204,7 +223,6 @@ const ContentScreen = () => {
     if (data !== "Something went wrong") {
       setMessageList(data);
     }
-
     setLoading(false);
   }
 
@@ -489,6 +507,7 @@ const ContentScreen = () => {
   }
   //send
   const handleSendMessage = async () => {
+    setcheckScroll(true);
     //Record
     if (isRecord) {
       await stopRecording();
@@ -510,6 +529,8 @@ const ContentScreen = () => {
       }
     }
   };
+//
+
 
 
 
@@ -552,9 +573,21 @@ const ContentScreen = () => {
                 onKeyboardDidShow={handleKeyboardDidShow}
                 contentContainerStyle={styles.scrollViewContainer}
                 onContentSizeChange={(contentWidth, contentHeight) => {
-                  scrollViewRef.current.scrollToEnd({ animated: true });
+                  if(checkScroll)
+                    {
+                      scrollViewRef.current.scrollToEnd({ animated: true });
+                      setcheckScroll(false);
+                    }
                 }}
-                ref={scrollViewRef} >
+                ref={scrollViewRef} 
+                onScroll={({ nativeEvent }) => {
+                  if (nativeEvent.contentOffset.y <= 0) {
+                    handleLoadMore();
+                  }
+                }}
+                scrollEventThrottle={16}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                >
                 {renderMessage()}
 
               </ScrollView>
