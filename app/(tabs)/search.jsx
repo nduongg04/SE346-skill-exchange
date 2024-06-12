@@ -11,6 +11,7 @@ import Topic_Tags_List from "../../components/Search_Tutorials_Tab/Topic_Tags_Li
 import Topic_Hot_List from "../../components/Search_Tutorials_Tab/Topic_Hot_List";
 // Search.jsx
 const Search = () => {
+    const windowWidth = Dimensions.get('window').width;
     const sections = [
         { title: null, data: ['Topic_Tags_List'] },
         { title: 'Popular Topic', data: ['Topic_List'] },
@@ -60,7 +61,7 @@ const Search = () => {
                     title ? (
                         <View style={{ marginTop: 20, paddingHorizontal: 20 }}>
                             <Text style={{ fontSize: 20, fontWeight: "700" }}>{title}</Text>
-                            <Text> _____________________________________</Text>
+                            <View style={{ borderBottomWidth: 1, width: windowWidth * 0.9, marginBottom: 5 }} />
                         </View>
                     ) : null
                 )}
