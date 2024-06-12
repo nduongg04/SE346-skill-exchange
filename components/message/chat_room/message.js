@@ -7,7 +7,7 @@ import { loadFonts, styles } from "./mainRoom.style";
 import { MessageContext } from './messageContext';
 
 export const Message = (props) => {
-    const {soundcheck, setSoundCheck} = useContext(MessageContext);
+    const { soundcheck, setSoundCheck } = useContext(MessageContext);
     const [sound, setSound] = useState(null);
     const [isPlay, setIsPlay] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
@@ -45,68 +45,79 @@ export const Message = (props) => {
         )
     }
     useEffect(() => {
-        if(sound && isPlay)
-        {
+        if (sound && isPlay) {
             clearInterval(idCount);
             setIdCount(null);
             setIsPlay(false);
             sound.stopAsync();
             setSound(null);
         }
- 
-}, [soundcheck]);
-   
-     useEffect(() => {
-        
-                if (seconds <= 0) {
-                    setSound(null);
-                    setIsPlay(false);
-                    clearInterval(idCount);
-                    setIdCount(null);
-                }
-      }, [seconds]);
-   
+
+    }, [soundcheck]);
+
+    useEffect(() => {
+
+        if (seconds <= 0) {
+            setSound(null);
+            setIsPlay(false);
+            clearInterval(idCount);
+            setIdCount(null);
+        }
+    }, [seconds]);
+    useEffect(() => {
+        if (props.Type == 'record') {
+            loadSound();
+        }
+
+    })
+    const loadSound=async()=>{
+        const { sound: newSound } = await Audio.Sound.createAsync({ uri: props.Content });
+        setSound(newSound);
+    }
+
 
 
     const handlePressPlay = async () => {
-        
+
         if (isPlay) {
             // If there is an existing sound object, unload it first
             clearInterval(idCount);
             setIdCount(null);
             setIsPlay(false);
-            if(sound)
-                {
-                    await sound.stopAsync();
-                    setSound(null);
-                }
+            if (sound) {
+                await sound.stopAsync();
+                setSound(null);
+            }
         } else {
             setSound(null);
             clearInterval(idCount);
             setIdCount(null);
             // Create a new sound object and play it
-            const { sound: newSound } = await Audio.Sound.createAsync({ uri: props.Content });
-            setSound(newSound);
+            if(!sound)
+                {
+                    const { sound: newSound } = await Audio.Sound.createAsync({ uri: props.Content });
+                    setSound(newSound);
+                }
+            
             setSoundCheck(newSound);
             await newSound.playAsync();
             const status = await newSound.getStatusAsync();
-                const time = (status.durationMillis / 1000);
-                setSeconds(time);
-                setIsPlay(true);
-                setIdCount(setInterval(() => {
-                    checksound(newSound,time);
-                }, 500))
-           
+            const time = (status.durationMillis / 1000);
+            setSeconds(time);
+            setIsPlay(true);
+            setIdCount(setInterval(() => {
+                checksound(newSound, time);
+            }, 500))
+
         }
     };
-    const checksound=async(sound2,time)=>{
-        if(sound2)
-            {
-                const status2 = await sound2.getStatusAsync();
-                const timeRemaining=(time-(status2.positionMillis / 1000))
-                setSeconds(timeRemaining);
-            }
-        
+    const checksound = async (sound2, time) => {
+        if (sound2) {
+            const status2 = await sound2.getStatusAsync();
+            const timeRemaining = (time - (status2.positionMillis / 1000))
+            setSeconds(timeRemaining);
+        }
+
     }
 
     const getFileName = (url) => {
@@ -121,13 +132,13 @@ export const Message = (props) => {
             const filePath = parsedUrl.pathname;
             // Tách tên tệp từ phần path
             const fileName = filePath.split('/').pop();
-            try{
+            try {
                 return decodeURIComponent(decodeURIComponent(fileName.replace('files%2F', '')));
             }
-            catch (e){
+            catch (e) {
                 return decodeURIComponent(fileName.replace('files%2F', ''))
             }
-            
+
         } else {
             console.log('Đường dẫn không trỏ đến nội dung truyền thông.');
         }
@@ -135,7 +146,7 @@ export const Message = (props) => {
     const getFile = () => {
         props.Function(props.Content);
     }
-  
+
 
     //Self-messages
     if (props.User == "My message") {
@@ -223,8 +234,8 @@ export const Message = (props) => {
                 {modalImage()}
                 <View style={styles.MessContainer}>
                     <View style={styles.AvatarContainer}>
-                        
-                        <Image source={(props.Avatar =='no') ? (icons.while_icon) : ((props.Avatar==""||!props.Avatar)?require('assets/images/avatarDefault.jpg'):{ uri: props.Avatar })}
+
+                        <Image source={(props.Avatar == 'no') ? (icons.while_icon) : ((props.Avatar == "" || !props.Avatar) ? require('assets/images/avatarDefault.jpg') : { uri: props.Avatar })}
                             style={styles.Avatar} />
                     </View>
                     {contentType}
