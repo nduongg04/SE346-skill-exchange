@@ -20,7 +20,8 @@ import { Stack, router } from "expo-router";
 import { useSession } from "../../context/AuthContext";
 
 const Profile = () => {
-	const { user } = useSession();
+	const { user, logout } = useSession();
+	const [showLogoutModal, setShowLogoutModal] = useState(false);
 
 	useEffect(() => {
 		if (user) {
@@ -71,6 +72,18 @@ const Profile = () => {
 
 	const handleChangeInformationPress = () => {
 		router.navigate("/change-information");
+	};
+
+	const handleOpenModal = () => {
+		setShowLogoutModal(true);
+	};
+
+	const handleCloseModal = () => {
+		setShowLogoutModal(false);
+	};
+
+	const handleLogout = () => {
+		navigation.navigate("Login");
 	};
 
 	return (
@@ -261,6 +274,54 @@ const Profile = () => {
 							</TouchableOpacity>
 						</View>
 
+						<TouchableOpacity
+							style={{
+								backgroundColor: COLORS.white,
+								borderRadius: 27,
+								alignSelf: "center",
+								paddingHorizontal: 30,
+								paddingVertical: 10,
+							}}
+							onPress={handleOpenModal}
+						>
+							<Text
+								style={{
+									textAlign: "center",
+									fontSize: 16,
+									fontWeight:"bold",
+									color: COLORS.red,
+								}}
+							>
+								Log out
+							</Text>
+						</TouchableOpacity>
+						<Modal
+							transparent={true}
+							visible={showLogoutModal}
+							onRequestClose={handleCloseModal}
+						>
+							<View style={styles.logoutModalContainer}>
+								<View style={styles.logoutModalContent}>
+									<Text style={styles.logoutModalText}>Are you sure you want to log out?</Text>
+									<View style={styles.logoutModalButtons}>
+										<TouchableOpacity
+											style={styles.logoutButton}
+											onPress={handleLogout}
+										>
+											<Text style={styles.logoutButtonText}>Yes</Text>
+										</TouchableOpacity>
+										<TouchableOpacity
+											style={styles.cancelButton}
+											onPress={handleCloseModal}
+										>
+											<Text style={styles.cancelButtonText}>Cancel</Text>
+										</TouchableOpacity>
+									</View>
+								</View>
+							</View>
+						</Modal>
+
+
 						<View></View>
 					</View>
 				</ScrollView>
@@ -339,6 +400,44 @@ const styles = StyleSheet.create({
 		backgroundColor: "#FFFFFF",
 		marginTop: 10,
 		borderRadius: 10,
+	},
+	logoutModalContainer: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		backgroundColor: 'rgba(0, 0, 0, 0.5)',
+	},
+	logoutModalContent: {
+		backgroundColor: 'white',
+		padding: 20,
+		borderRadius: 10,
+		alignItems: 'center',
+	},
+	logoutModalText: {
+		fontSize: 18,
+		marginBottom: 20,
+	},
+	logoutModalButtons: {
+		flexDirection: 'row',
+	},
+	logoutButton: {
+		backgroundColor: 'red',
+		padding: 10,
+		borderRadius: 5,
+		marginRight: 10,
+	},
+	logoutButtonText: {
+		color: 'white',
+		fontWeight: 'bold',
+	},
+	cancelButton: {
+		backgroundColor: 'gray',
+		padding: 10,
+		borderRadius: 5,
+	},
+	cancelButtonText: {
+		color: 'white',
+		fontWeight: 'bold',
 	},
 });
 
