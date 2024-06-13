@@ -38,14 +38,10 @@ const Result_Screen = ({topic, handleBackButton}) => {
 		const data = await GetData(url);
 		if(data.length === 0){
 			setIsEndUsers(true);
-			setIsLoading(false)
 		} else {
 			setUser(shuffleArray(data));
 		}
-
-		if(user) {
-			setIsLoading(false)
-		} 
+		setIsLoading(false)
 	};
 
 	useEffect(() => {
