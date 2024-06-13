@@ -1,9 +1,9 @@
+import { KeyboardAvoidingView, Platform } from "react-native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router/stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { SocketProvider } from "../context/SocketContext";
-import { AuthProvider, useSession } from "../context/AuthContext";
-import ScreenChatRoom from "../components/message/chat_room/MainRoom";
+import { AuthProvider } from "../context/AuthContext";
 
 const Layout = () => {
 	const [fontsLoaded] = useFonts({
@@ -15,7 +15,7 @@ const Layout = () => {
 		PolyRegular: require("../assets/fonts/Poly-Regular.ttf"),
 		SegoeUI: require("../assets/fonts/Segoe-UI.ttf"),
 		SegoeUISemiBold: require("../assets/fonts/Segoe-UI-SemiBold.ttf"),
-        CodaRegular: require("../assets/fonts/Coda-Regular.ttf"),
+		CodaRegular: require("../assets/fonts/Coda-Regular.ttf"),
 	});
 
 	if (!fontsLoaded) {
@@ -30,6 +30,7 @@ const Layout = () => {
 						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 						<Stack.Screen name="signing/Signing" options={{ headerShown: false }} />
 						<Stack.Screen name="chatRoom/room" options={{headerShown:false}} />
+						<Stack.Screen name="chatRoom/redirectInformation" options={{headerShown:false}} />
 						<Stack.Screen name="informationRequest/redirect" options={{headerShown:false}}/>
 					</Stack>
 				</SocketProvider>

@@ -40,6 +40,10 @@ import pause from "../assets/icons/Pause_icon.png";
 import file from "../assets/icons/File_icon.png";
 import backIcon from "../assets/icons/back.svg";
 import close from "../assets/icons/Close_icon.png"
+import download from  "../assets/icons/ic_download.png"
+import info_orange from  "../assets/icons/info_orange.png"
+import back_orange from  "../assets/icons/back_orange.png"
+
 export default {
 	backLoading,
 	cancel,
@@ -80,5 +84,8 @@ export default {
 	play,
 	pause,
 	file,
-	close
+	close,
+	download,
+	info_orange,
+	back_orange
 };

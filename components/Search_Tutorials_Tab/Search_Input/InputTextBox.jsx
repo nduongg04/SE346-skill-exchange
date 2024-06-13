@@ -1,10 +1,10 @@
 import React, { useState, useEffect,useRef } from 'react';
-import { SafeAreaView, Alert, StyleSheet, TouchableOpacity, FlatList, Text, View,TouchableHighlight  } from "react-native";
+import { SafeAreaView, Alert, StyleSheet, TouchableOpacity, FlatList, Text, View,TouchableHighlight, Keyboard  } from "react-native";
 import { scale } from "react-native-size-matters";
 import axios from "axios";
 import { COLORS } from "../../../constants";
 import { router } from "expo-router";
-import InputText from "../../register/Button/InputText";
+import InputText from "../../Search_Tutorials_Tab/Button/InputText";
 
 
 const InputTextBox = () => {
@@ -12,6 +12,7 @@ const InputTextBox = () => {
   const [query, setQuery] = useState("");
   const [topicdata, setTopicData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
+  const inputQuery = useRef(null)
   useEffect(() => {
     if (query) {
       setFilteredData(topicdata.filter(topic => topic.name.includes(query)));
@@ -24,6 +25,17 @@ const InputTextBox = () => {
     getTopicData();
   },[]);
 
+  useEffect(()=>{
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', ()=>{
+      console.log("Unfocus")
+      inputQuery.current.blur();
+    })
+
+    return () => {
+      hideSubscription.remove();
+    };
+
+  }, [])
   const handleOnChangeText = (text) => {
     setQuery(text);
   };
@@ -101,6 +113,7 @@ const InputTextBox = () => {
       
       <View style={styles.TopicList}>
       <InputText
+        ref= {inputQuery}
         style = {{zIndex:3}}
         placeholder="Enter your topic"
         label="Enter your query"
@@ -116,12 +129,12 @@ const InputTextBox = () => {
           keyExtractor={item => item._id}
           renderItem={({ item }) => (
             <TouchableHighlight  
-              style={{ marginBottom: 3, height: 30, zIndex: 4,width: '100%'}} 
-              underlayColor={'#C1C1C1'}
+              style={{ marginBottom: 3, height: 35, zIndex: 4,width: '100%', borderRadius: 10}} 
+              underlayColor={'#D5D5D5'}
               onPress={() => {handleSelectTopic(item)}
               }
               >
-                <Text style ={styles.TopicText}>{"    "+item.name}</Text>
+                <Text style ={styles.TopicText}>{"       "+item.name}</Text>
             </TouchableHighlight >
           )}
           style = {[styles.ItemList, {borderColor: filteredData.length === 0 ? 'white' : 'black'}]}
@@ -134,7 +147,8 @@ const styles = StyleSheet.create({
   TopicText: {
     flex: 1,
     justifyContent: 'center',
-    fontSize: 14,
+    alignItems:'center',
+    fontSize: 15,
     textAlign: 'left',
     fontFamily: 'Coda-Regular',
     color: COLORS.black,

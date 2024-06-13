@@ -1,15 +1,13 @@
 import { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import GetData from "../../utils/getdata";
-import { router } from "expo-router";
-import InformationRequest from "../../components/notification/informationRequest";
-import { useIsFocused } from "@react-navigation/native";
+import InformationFriend from "../../components/message/chat_room/informationFriend";
 
-const Redirect = () => {
+const RedirectInformation = () => {
 	const baseUrl = "https://se346-skillexchangebe.onrender.com";
 
 	const { id } = useLocalSearchParams();
-	const {idRequest}= useLocalSearchParams();
+	const {idChat}= useLocalSearchParams();
 	const [user, setUser] = useState(null);
 	useEffect(() => {
 		console.log("Hello")
@@ -24,6 +22,6 @@ const Redirect = () => {
 		
 	}, []);
 
-	return <InformationRequest {...user} idRequest={idRequest}  />;
+	return <InformationFriend {...user} chatId={idChat}/>;
 };
-export default Redirect;
+export default RedirectInformation ;

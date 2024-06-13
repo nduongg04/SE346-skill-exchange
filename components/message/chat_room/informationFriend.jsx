@@ -1,20 +1,20 @@
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
 import { Stack } from "expo-router";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { COLORS } from "@constants";
 import { Image } from "expo-image";
-import { BackHeader } from "..";
-import { Topic } from "..";
-import { CircleButton } from "..";
+import { BackHeader } from "../../../components";
+import { Topic } from "../../../components";
+import { CircleButton } from "../../../components";
 import { router } from "expo-router";
 import avatarDefault from "@assets/images/avatarDefault.jpg";
-import { useAction } from "../../utils/useAction";
-import { useSession } from "../../context/AuthContext";
+import { useAction } from "../../../utils/useAction";
+import { useNavigation,useIsFocused, useFocusEffect } from '@react-navigation/native';
+import GetData from '../../../utils/getdata';
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useNavigation } from '@react-navigation/native';
-import { Alert } from "react-native";
+import axios from "axios";
 
-const InformationRequest = ({ 
+const InformationFriend = ({
 	username,
 	skill,
 	birthDay,
@@ -22,92 +22,9 @@ const InformationRequest = ({
 	avatar,
 	imageCerti,
 	description,
-	_id,
-	idRequest 
+	chatId
 }) => {
-	
-	const { user } = useSession();
 	const navigation = useNavigation();
-	const swipeLeft = useAction((state) => state.swipeLeft);
-	const swipeRight = useAction((state) => state.swipeRight);
-	const createChat= async (id1,id2)=>{
-        const token= await AsyncStorage.getItem('accessToken');
-        try{
-            const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/chat/create',{
-			method:'POST',
-			headers:{
-			  'Content-Type': 'application/json',
-			  Authorization:`Bearer ${token}`
-			},
-			body: JSON.stringify({
-				"firstID": id1,
-				"secondID": id2
-			})
-		  })
-		  if(response.status==200)
-		  {
-			return true
-		  }
-		  else{
-            Alert.alert(
-                'Thông báo', 
-                'Kết bạn không thành công', 
-            )
-			return false
-		  }
-        }
-        catch{
-            Alert.alert(
-                'Thông báo', 
-                'Kết bạn không thành công', 
-            )
-            return false
-         }
-		 
-    }
-	const deleteRequest=async ()=>{
-		console.log(idRequest);
-        try {
-            const token= await AsyncStorage.getItem('accessToken');
-            const response = await fetch(`https://se346-skillexchangebe.onrender.com/api/v1/request/delete/${idRequest}`,
-            {
-              method: 'DELETE',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization:`Bearer ${token}`,
-              }
-            });
-            console.log(response.status)
-      
-            if(response.status==200)
-            {
-                const json = await response.json();
-                if(json.message=="Deleted request successfully")
-                {
-                  console.log("delete success");
-                }
-             
-            }
-            else
-            {
-                console.log("error"+response.statusText);
-              
-            }
-          } catch (error) {
-            console.error(error);
-          } finally {
-            navigation.goBack('(tabs)');
-          }
-    }
-	const handlePressAccept= async ()=>{
-		if( await createChat(_id,user.id))
-		{
-			await deleteRequest();
-			navigation.goBack('(tabs)');
-		}
-			
-		
-	 }
 
 	function convertDate(isoDate) {
 		const date = new Date(isoDate);
@@ -117,7 +34,55 @@ const InformationRequest = ({
 
 	const handleBackButton = () => {
 		router.back();
+		// navigation.navigate('(tabs)')
 	};
+	const handleDeleteFriend= async()=>
+	{
+
+		const url = `https://se346-skillexchangebe.onrender.com/api/v1/chat/delete/${chatId}`
+		console.log(url);
+		const accessToken = await AsyncStorage.getItem("accessToken");
+		try {
+			const response = await axios.delete(url, {
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
+				},
+			});
+			if(response.data.message=="Deleted chat successfully")
+				{
+					navigation.navigate('(tabs)');
+				}
+				else{
+					Alert.alert(
+						'Thông báo',
+						'Đã xảy ra lỗi khi xóa bạn bè. Vui lòng thử lại sau.',
+					  );
+				}
+		} catch (error) {
+							Alert.alert(
+				'Thông báo',
+				'Đã xảy ra lỗi khi xóa bạn bè. Vui lòng thử lại sau.',
+			  );
+		}
+	}
+	const handleConfirmDelete = async () => {
+		Alert.alert(
+		  'Xác nhận',
+		  'Bạn có chắc chắn muốn xóa kết bạn hay không?',
+		  [
+			{
+			  text: 'Hủy',
+			  onPress: () => console.log('Đã hủy'),
+			  style: 'cancel',
+			},
+			{ 
+			  text: 'Xóa', 
+			  onPress: () => handleDeleteFriend()
+			}
+		  ],
+		  { cancelable: false }
+		);
+	  };
 
 	return (
 		<SafeAreaView
@@ -145,13 +110,7 @@ const InformationRequest = ({
 				<CircleButton
 					iconUrl={require("@assets/icons/cancel.svg")}
 					handlePress={() => {
-						deleteRequest();
-					}}
-				/>
-				<CircleButton
-					iconUrl={require("@assets/icons/tickCircle.svg")}
-					handlePress={() => {
-						handlePressAccept();
+						handleConfirmDelete();
 					}}
 				/>
 			</View>
@@ -169,8 +128,12 @@ const InformationRequest = ({
 					</View>
 
 					<View style={styles.boxContainer}>
-						<Text style={styles.headerText}>Description</Text>
-						<Text style={styles.detailText}>{description}</Text>
+						{description && (
+							<>
+								<Text style={styles.headerText}>Description</Text>
+								<Text style={styles.detailText}>{description}</Text>
+							</>
+						)}
 
 						<Text style={styles.headerText}>Birthday</Text>
 						<Text style={styles.detailText}>{convertDate(birthDay)}</Text>
@@ -290,4 +253,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default InformationRequest;
+export default InformationFriend;
