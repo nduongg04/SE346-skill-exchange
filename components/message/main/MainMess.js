@@ -237,7 +237,7 @@ const ScreenMess = () => {
 				<Text style={styles.Header}>Message</Text>
 				<View style={styles.Search}>
 					<Image source={icons.search_icon} style={styles.IconSearch}></Image>
-					<TextInput placeholder="Tìm kiếm"
+					<TextInput placeholder="Search"
 						style={styles.Input}
 						value={searchText}
 						onChangeText={handleSearch}></TextInput>

@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import GetData from "../../utils/getdata";
-
-import InformationRequest from "../../components/notification/informationRequest";
-import InformationFriend from "../../components/message/chat_room/informationFriend"
+import InformationFriend from "../../components/message/chat_room/informationFriend";
 
 const RedirectInformation = () => {
 	const baseUrl = "https://se346-skillexchangebe.onrender.com";
@@ -24,6 +22,6 @@ const RedirectInformation = () => {
 		
 	}, []);
 
-	// return <InformationFriend {...user}/>;
+	return <InformationFriend {...user}/>;
 };
 export default RedirectInformation ;

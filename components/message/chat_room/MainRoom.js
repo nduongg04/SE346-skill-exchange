@@ -61,6 +61,10 @@ const ContentScreen = () => {
     setRefreshing(true);
     handleLoadMore().then(() => setRefreshing(false));
   };
+  useEffect(()=>
+  {
+      setPage(0);
+  },[isFocused])
 
   const removeSound= async()=>
     {
@@ -154,9 +158,9 @@ const ContentScreen = () => {
   const renderMessage = () => {
     const list = [];
     let start=0;
-    if(messageList.length>=(page*5+10))
+    if(messageList.length>=(page*4+15))
       {
-        start=messageList.length-(page*5+10);
+        start=messageList.length-(page*4+15);
       }
     if (messageList.length != 0) {
       for (let i = start; i < messageList.length; i++) {
@@ -567,14 +571,12 @@ const ContentScreen = () => {
 
           <View style={styles.Header}>
             <TouchableOpacity onPress={() => {navigation.goBack('(tabs)'); }} >
-              <Image source={icons.back} style={[{ height: 25, width: 25.5, marginRight: 40 }]}  ></Image>
+              <Image source={icons.back_orange} style={[{ height: 25, width: 25, marginRight: 20, marginTop:3 }]}  ></Image>
             </TouchableOpacity>
             <Text style={styles.Name} numberOfLines={1} ellipsizeMode="tail">{name}</Text>
-            <TouchableOpacity >
-              <Image source={icons.call} style={{ height: 20.5, width: 20.5 }}></Image>
-            </TouchableOpacity>
+           
             <TouchableOpacity onPress={() => navigation.navigate('chatRoom/redirectInformation', { id:idFriend })}>
-              <Image source={icons.video} style={{ height: 20, width: 23.5, marginLeft: 10 }} />
+              <Image source={icons.info_orange} style={{ height: 32, width: 32, marginLeft: 5 }} />
             </TouchableOpacity>
 
           </View>
@@ -633,7 +635,7 @@ const ContentScreen = () => {
                     <TextInput value={message}
                       onChangeText={handleMessageChange}
                       multiline={true}
-                      placeholder="Nhắn tin" />
+                      placeholder="Message" />
                   </View>
                 ) : (
                   <>
