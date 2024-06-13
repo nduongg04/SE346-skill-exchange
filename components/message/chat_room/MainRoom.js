@@ -226,6 +226,15 @@ const ContentScreen = () => {
     setLoading(false);
   }
 
+  const generateID = ()=>{
+    const codeInit = "qwertyuiopasdfghjklzxcvbnm1234567890"
+    let code = ""
+    for(let i =0; i<10;i++){
+        const index = Math.floor(Math.random()*codeInit.length)
+        code += codeInit.charAt(index)
+    }
+    return code
+  }
   const sendMessage = async (Type, Content) => {
     if (!Content)
       {
@@ -240,7 +249,9 @@ const ContentScreen = () => {
       type: Type,
     }
     
+    const idMsg = generateID()
     const msg = {
+      _id: idMsg,
       chatID: `${chatId}`,
       createAt: `${new Date()}`,
       dateTime: `${new Date()}`,
@@ -260,6 +271,8 @@ const ContentScreen = () => {
       return true
     }
     else {
+      const msgList = messageList.filter((value)=> value._id != idMsg)
+      setMessageList([...msgList])
       Alert.alert(
         'Thông báo',
         'Không gửi được tin nhắn',)
