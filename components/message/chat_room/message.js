@@ -1,20 +1,24 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, TouchableHighligh, TextInput, Modal } from 'react-native';
+import { View, Text, ScrollView, TouchableOpacity, Image, TouchableHighligh, TextInput, Modal, Alert } from 'react-native';
 import { registerRootComponent } from 'expo';
 import { icons } from "@constants";
 import { Audio } from 'expo-av';
 import { loadFonts, styles } from "./mainRoom.style";
 import { MessageContext } from './messageContext';
+import * as FileSystem from 'expo-file-system';
+import * as MediaLibrary from 'expo-media-library';
+import * as Permissions from 'expo-permissions';
+
 
 export const Message = (props) => {
-    const {soundcheck, setSoundCheck} = useContext(MessageContext);
+    const { soundcheck, setSoundCheck } = useContext(MessageContext);
     const [sound, setSound] = useState(null);
     const [isPlay, setIsPlay] = useState(false);
     const [modalVisible, setModalVisible] = useState(false);
     const [urlModal, setUrlModal] = useState()
     const [idCount, setIdCount] = useState(null);
     const [seconds, setSeconds] = useState(0);
-
+    const [check, setCheck] = useState(false);
     let contentType;
     const openModal = () => {
         setModalVisible(true);
@@ -29,13 +33,18 @@ export const Message = (props) => {
                 visible={modalVisible}
                 transparent={true}
                 onRequestClose={closeModal}
-
             >
                 <View style={{ width: '100%', height: '100%', backgroundColor: 'rgba(217, 217, 217, 0.95)' }}>
-                    <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
+                    <View style={{flexDirection:'row', marginLeft: 'auto',marginRight:"2%",marginTop:"1%"}}>
+                    <TouchableOpacity style={styles.closeButton} onPress={downloadImage}>
+                        <Image source={icons.download} style={{ width: 28, height: 28, marginLeft: 'auto', marginRight:5,marginTop:"12%" }} />
+                    </TouchableOpacity>
+                        <TouchableOpacity style={styles.closeButton} onPress={closeModal}>
                         <Image source={icons.close} style={{ width: 35, height: 35, marginLeft: 'auto' }} />
                     </TouchableOpacity>
-                    <View style={{ width: '85%', height: '85%', marginLeft: '7.5%', marginTop: '7.5%' }}>
+                    </View>
+                    
+                    <View style={{ width: '90%', height: '90%', marginLeft: '5%', marginTop: '5%' }}>
 
                         <Image source={{ uri: props.Content }} style={{ width: '100%', height: '100%', resizeMode: 'contain' }} />
                     </View>
@@ -45,68 +54,100 @@ export const Message = (props) => {
         )
     }
     useEffect(() => {
-        if(sound && isPlay)
-        {
+        if (sound && isPlay) {
             clearInterval(idCount);
             setIdCount(null);
             setIsPlay(false);
             sound.stopAsync();
-            setSound(null);
+            setCheck(false)
         }
- 
-}, [soundcheck]);
-   
-     useEffect(() => {
-        
-                if (seconds <= 0) {
-                    setSound(null);
-                    setIsPlay(false);
-                    clearInterval(idCount);
-                    setIdCount(null);
+
+    }, [soundcheck]);
+
+    useEffect(() => {
+
+        if (seconds <= 0) {
+            setCheck(false)
+            setIsPlay(false);
+            clearInterval(idCount);
+            setIdCount(null);
+            if(sound)
+                {
+                      sound.stopAsync();
                 }
-      }, [seconds]);
-   
+          
+        }
+    }, [seconds]);
+    useEffect(() => {
+        if (props.style == 'record') {
+            loadSound();
+        }
+
+    })
+    const loadSound = async () => {
+        const { sound: newSound } = await Audio.Sound.createAsync({ uri: props.Content });
+        setSound(newSound);
+    }
+
 
 
     const handlePressPlay = async () => {
-        
         if (isPlay) {
-            // If there is an existing sound object, unload it first
             clearInterval(idCount);
             setIdCount(null);
             setIsPlay(false);
-            if(sound)
-                {
-                    await sound.stopAsync();
-                    setSound(null);
-                }
+            if (sound) {
+                setCheck(false)
+                await sound.stopAsync();
+            }
         } else {
-            setSound(null);
-            clearInterval(idCount);
-            setIdCount(null);
-            // Create a new sound object and play it
-            const { sound: newSound } = await Audio.Sound.createAsync({ uri: props.Content });
-            setSound(newSound);
-            setSoundCheck(newSound);
-            await newSound.playAsync();
-            const status = await newSound.getStatusAsync();
-                const time = (status.durationMillis / 1000);
-                setSeconds(time);
-                setIsPlay(true);
-                setIdCount(setInterval(() => {
-                    checksound(newSound,time);
-                }, 500))
-           
+            if (!check) {
+                setCheck(true);
+                clearInterval(idCount);
+                setIdCount(null);
+                // Create a new sound object and play it
+                if (!sound) {
+                    const { sound: newSound } = await Audio.Sound.createAsync({ uri: props.Content });
+                    setSound(newSound);
+                    setSoundCheck(newSound);
+                    await newSound.playAsync();
+                    const status = await newSound.getStatusAsync();
+                    const time = (status.durationMillis / 1000);
+                    setSeconds(time);
+                    setIsPlay(true);
+                    if(idCount)
+                        {
+                            clearInterval(idCount);
+                        }
+                    setIdCount(setInterval(() => {
+                        checksound(newSound, time);
+                    }, 500))
+                }
+                else {
+                    setSoundCheck(sound);
+                    await sound.playAsync();
+                    const status = await sound.getStatusAsync();
+                    const time = (status.durationMillis / 1000);
+                    setSeconds(time);
+                    setIsPlay(true);
+                    if(idCount)
+                        {
+                            clearInterval(idCount);
+                        }
+                    setIdCount(setInterval(() => {
+                        checksound(sound, time);
+                    }, 500))
+                }
+            }
         }
     };
-    const checksound=async(sound2,time)=>{
-        if(sound2)
-            {
-                const status2 = await sound2.getStatusAsync();
-                const timeRemaining=(time-(status2.positionMillis / 1000))
-                setSeconds(timeRemaining);
-            }
-        
+    const checksound = async (sound2, time) => {
+        if (sound2) {
+            const status2 = await sound2.getStatusAsync();
+            const timeRemaining = (time - (status2.positionMillis / 1000))
+            setSeconds(timeRemaining);
+        }
+
     }
 
     const getFileName = (url) => {
@@ -121,13 +162,13 @@ export const Message = (props) => {
             const filePath = parsedUrl.pathname;
             // Tách tên tệp từ phần path
             const fileName = filePath.split('/').pop();
-            try{
+            try {
                 return decodeURIComponent(decodeURIComponent(fileName.replace('files%2F', '')));
             }
-            catch (e){
+            catch (e) {
                 return decodeURIComponent(fileName.replace('files%2F', ''))
             }
-            
+
         } else {
             console.log('Đường dẫn không trỏ đến nội dung truyền thông.');
         }
@@ -135,7 +176,64 @@ export const Message = (props) => {
     const getFile = () => {
         props.Function(props.Content);
     }
-  
+    const getFileExtensionFromMimeType = (mimeType) => {
+        switch (mimeType) {
+          case 'image/jpeg':
+            return 'jpg';
+          case 'image/png':
+            return 'png';
+          case 'image/gif':
+            return 'gif';
+          default:
+            return '';
+        }
+      };
+    const downloadImage = async () => {
+        const { status } = await MediaLibrary.requestPermissionsAsync();
+        if (status !== 'granted') {
+          Alert.alert('Quyền bị từ chối', 'Không thể truy cập thư viện phương tiện');
+          return;
+        }
+        imageUrl=props.Content;
+        const currentTime = new Date();
+        const timestamp = currentTime.getTime();
+        const fileName=''+timestamp;
+        try {
+            // Yêu cầu quyền truy cập thư viện phương tiện
+            const { status } = await MediaLibrary.requestPermissionsAsync();
+            if (status !== 'granted') {
+              Alert.alert('Quyền bị từ chối', 'Không thể truy cập thư viện phương tiện');
+              return;
+            }
+        
+            // Tải xuống tệp tạm thời để lấy loại MIME
+            const downloadResumable = FileSystem.createDownloadResumable(imageUrl, `${FileSystem.documentDirectory}${fileName}`);
+        
+            const { uri, headers } = await downloadResumable.downloadAsync();
+            const mimeType = headers['content-type'];
+            const extension = getFileExtensionFromMimeType(mimeType);
+        
+            if (!extension) {
+                Alert.alert('Lỗi', 'Không thể tải xuống hình ảnh');
+                return;
+            }
+        
+            const finalUri = `${FileSystem.documentDirectory}${fileName}.${extension}`;
+            await FileSystem.moveAsync({
+              from: uri,
+              to: finalUri,
+            });
+        
+            // Lưu hình ảnh vào thư viện phương tiện
+            const asset = await MediaLibrary.createAssetAsync(finalUri);
+            await MediaLibrary.createAlbumAsync('Download', asset, false);
+            Alert.alert('Tải xuống thành công', 'Hình ảnh đã được lưu vào thư viện phương tiện');
+          } catch (error) {
+            console.error('Lỗi khi tải xuống hình ảnh:', error);
+            Alert.alert('Lỗi', 'Không thể tải xuống hình ảnh');
+          }
+      };
+
 
     //Self-messages
     if (props.User == "My message") {
@@ -223,8 +321,8 @@ export const Message = (props) => {
                 {modalImage()}
                 <View style={styles.MessContainer}>
                     <View style={styles.AvatarContainer}>
-                        
-                        <Image source={(props.Avatar =='no') ? (icons.while_icon) : ((props.Avatar==""||!props.Avatar)?require('assets/images/avatarDefault.jpg'):{ uri: props.Avatar })}
+
+                        <Image source={(props.Avatar == 'no') ? (icons.while_icon) : ((props.Avatar == "" || !props.Avatar) ? require('assets/images/avatarDefault.jpg') : { uri: props.Avatar })}
                             style={styles.Avatar} />
                     </View>
                     {contentType}

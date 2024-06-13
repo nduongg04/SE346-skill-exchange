@@ -95,6 +95,21 @@ export const styles = StyleSheet.create(
         marginTop:0,
         width:'70%'             
     },
+    DateMessage:{
+        
+        backgroundColor:"#BBB3B3",
+        borderRadius:10,
+        paddingVertical:3,
+       maxWidth:200,
+       fontFamily:'Inter-SemiBold',
+       fontSize:10,
+       marginTop:15,
+       marginBottom:15,
+       marginRight:"auto",
+       marginLeft:'auto',
+       color:'#ffffff',
+       paddingHorizontal:7
+    },
     Message:{
         backgroundColor:"#FFBE98",
         borderTopLeftRadius:15,
