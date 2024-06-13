@@ -116,12 +116,12 @@ const InputTextBox = () => {
           keyExtractor={item => item._id}
           renderItem={({ item }) => (
             <TouchableHighlight  
-              style={{ marginBottom: 3, height: 30, zIndex: 4,width: '100%'}} 
-              underlayColor={'#C1C1C1'}
+              style={{ marginBottom: 3, height: 35, zIndex: 4,width: '100%'}} 
+              underlayColor={'#D5D5D5'}
               onPress={() => {handleSelectTopic(item)}
               }
               >
-                <Text style ={styles.TopicText}>{"    "+item.name}</Text>
+                <Text style ={styles.TopicText}>{"       "+item.name}</Text>
             </TouchableHighlight >
           )}
           style = {[styles.ItemList, {borderColor: filteredData.length === 0 ? 'white' : 'black'}]}
@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   TopicText: {
     flex: 1,
     justifyContent: 'center',
-    fontSize: 14,
+    fontSize: 15,
     textAlign: 'left',
     fontFamily: 'Coda-Regular',
     color: COLORS.black,
