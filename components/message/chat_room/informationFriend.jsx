@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, ScrollView, TouchableOpacity, Alert } from "react-native";
 import { Stack } from "expo-router";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { COLORS } from "@constants";
@@ -10,6 +10,9 @@ import { router } from "expo-router";
 import avatarDefault from "@assets/images/avatarDefault.jpg";
 import { useAction } from "../../../utils/useAction";
 import { useNavigation,useIsFocused, useFocusEffect } from '@react-navigation/native';
+import GetData from '../../../utils/getdata';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
 
 const InformationFriend = ({
 	username,
@@ -19,6 +22,7 @@ const InformationFriend = ({
 	avatar,
 	imageCerti,
 	description,
+	chatId
 }) => {
 	const navigation = useNavigation();
 
@@ -30,7 +34,55 @@ const InformationFriend = ({
 
 	const handleBackButton = () => {
 		router.back();
+		// navigation.navigate('(tabs)')
 	};
+	const handleDeleteFriend= async()=>
+	{
+
+		const url = `https://se346-skillexchangebe.onrender.com/api/v1/chat/delete/${chatId}`
+		console.log(url);
+		const accessToken = await AsyncStorage.getItem("accessToken");
+		try {
+			const response = await axios.delete(url, {
+				headers: {
+					Authorization: `Bearer ${accessToken}`,
+				},
+			});
+			if(response.data.message=="Deleted chat successfully")
+				{
+					navigation.navigate('(tabs)');
+				}
+				else{
+					Alert.alert(
+						'Thông báo',
+						'Đã xảy ra lỗi khi xóa bạn bè. Vui lòng thử lại sau.',
+					  );
+				}
+		} catch (error) {
+							Alert.alert(
+				'Thông báo',
+				'Đã xảy ra lỗi khi xóa bạn bè. Vui lòng thử lại sau.',
+			  );
+		}
+	}
+	const handleConfirmDelete = async () => {
+		Alert.alert(
+		  'Xác nhận',
+		  'Bạn có chắc chắn muốn xóa kết bạn hay không?',
+		  [
+			{
+			  text: 'Hủy',
+			  onPress: () => console.log('Đã hủy'),
+			  style: 'cancel',
+			},
+			{ 
+			  text: 'Xóa', 
+			  onPress: () => handleDeleteFriend()
+			}
+		  ],
+		  { cancelable: false }
+		);
+	  };
 
 	return (
 		<SafeAreaView
@@ -54,7 +106,14 @@ const InformationFriend = ({
 					),
 				}}
 			/>
-			
+			<View style={styles.buttonContainer}>
+				<CircleButton
+					iconUrl={require("@assets/icons/cancel.svg")}
+					handlePress={() => {
+						handleConfirmDelete();
+					}}
+				/>
+			</View>
 
 			<ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
 				<View style={styles.container}>

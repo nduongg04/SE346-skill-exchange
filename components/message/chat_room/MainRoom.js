@@ -123,10 +123,8 @@ const ContentScreen = () => {
     const hours = Math.floor(time.getHours());
     const minutes = Math.floor(time.getMinutes());
     const formattedMinutes = String(minutes).padStart(2, '0');
-    let formattedHours = hours
-    if (hours >= 10) {
-      formattedHours = String(hours).padStart(2, '0');
-    }
+    let formattedHours = String(hours).padStart(2, '0');
+
 
     return `${formattedHours}:${formattedMinutes}`;
   }
@@ -155,6 +153,15 @@ const ContentScreen = () => {
     const formattedDate = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')} ${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
     return formattedDate;
   };
+  const checkTimeDifference = (dateTime1, dateTime2) => {
+    const diff = Math.abs(dateTime2 - dateTime1); // Lấy giá trị tuyệt đối của hiệu hai thời điểm
+
+    // Chuyển đổi từ milliseconds sang phút
+    const diffMinutes = Math.floor(diff / (1000 * 60)); // 1000 milliseconds = 1 giây, 60 giây = 1 phút
+
+    // Kiểm tra nếu hiệu của hai thời điểm lớn hơn 10 phút
+    return diffMinutes > 5;
+};
   const renderMessage = () => {
     const list = [];
     let start=0;
@@ -183,7 +190,15 @@ const ContentScreen = () => {
         }
         if ((i + 1) < messageList.length) {
           if (messageList[i].senderID.id == messageList[i + 1].senderID.id) {
-            list.push(<Message key={i} User={sender} Content={messageList[i].content} Time='' Avatar='no' Type={messageList[i].type} Function={getFile} />);
+            if(checkTimeDifference( new Date(messageList[i].dateTime), new Date(messageList[i+1].dateTime)))
+              {
+                list.push(<Message key={i} User={sender} Content={messageList[i].content} Time={formatTimeMessage(time)} Avatar='no' Type={messageList[i].type} Function={getFile} />);
+              }
+              else
+              {
+                list.push(<Message key={i} User={sender} Content={messageList[i].content} Time='' Avatar='no' Type={messageList[i].type} Function={getFile} />);
+              }
+           
           }
           else {
            
@@ -196,6 +211,12 @@ const ContentScreen = () => {
 
       }
       return list;
+    }
+    else
+    {
+      return (
+        <Text style={{marginHorizontal:"auto", marginVertical:"auto", fontSize:18, color:"#FF9400", marginTop:"80%"}}>Let’s start the conversation !</Text>
+      )
     }
 
   }
@@ -575,7 +596,7 @@ const ContentScreen = () => {
             </TouchableOpacity>
             <Text style={styles.Name} numberOfLines={1} ellipsizeMode="tail">{name}</Text>
            
-            <TouchableOpacity onPress={() => navigation.navigate('chatRoom/redirectInformation', { id:idFriend })}>
+            <TouchableOpacity onPress={() => navigation.navigate('chatRoom/redirectInformation', { id:idFriend, idChat: chatId })}>
               <Image source={icons.info_orange} style={{ height: 32, width: 32, marginLeft: 5 }} />
             </TouchableOpacity>
 

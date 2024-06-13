@@ -126,7 +126,6 @@ const refeshReques= (idRemove)=>{
 //     }
 // };
 const getRequest= async()=>{
- console.log("đã lấy")
   const url=`https://se346-skillexchangebe.onrender.com/api/v1/request/find/receiver/${user.id}`
   const data=await GetData(url);
   if (data !== "Something went wrong"){
@@ -183,13 +182,18 @@ const getRequest= async()=>{
         <ActivityIndicator size="large" color="#FF9557" animating={true} style={{flex:1}} />
       ) :(isRequestTab)?
         (
-          <FlatList
-            data={requests}
-            keyExtractor={(item) => item._id}
-            renderItem={({item}) => (
-              <Request Type="Request" Name={item.senderID.username} Avatar={item.senderID.avatar} Time={item.dateTime} Id={item._id} Delete={refeshReques} SenderId={item.senderID.id} MyId={user.id} Acccept={createChat} ></Request>
-            )}
-          />
+          (requests.length === 0 || !requests) ? (
+            <Text style={{marginHorizontal:"auto", color:"#FF9400", fontSize:16, marginTop:"3%"}}>No friend requests !</Text>
+            ) : (
+              <FlatList
+              data={requests}
+              keyExtractor={(item) => item._id}
+              renderItem={({item}) => (
+                <Request Type="Request" Name={item.senderID.username} Avatar={item.senderID.avatar} Time={item.dateTime} Id={item._id} Delete={refeshReques} SenderId={item.senderID.id} MyId={user.id} Acccept={createChat} ></Request>
+              )}
+            />
+            )
+          
         ):
         (
           <View>

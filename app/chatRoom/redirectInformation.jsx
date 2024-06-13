@@ -7,7 +7,7 @@ const RedirectInformation = () => {
 	const baseUrl = "https://se346-skillexchangebe.onrender.com";
 
 	const { id } = useLocalSearchParams();
-	console.log(id)
+	const {idChat}= useLocalSearchParams();
 	const [user, setUser] = useState(null);
 	useEffect(() => {
 		console.log("Hello")
@@ -22,6 +22,6 @@ const RedirectInformation = () => {
 		
 	}, []);
 
-	return <InformationFriend {...user}/>;
+	return <InformationFriend {...user} chatId={idChat}/>;
 };
 export default RedirectInformation ;

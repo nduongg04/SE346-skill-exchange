@@ -10,8 +10,6 @@ const Redirect = () => {
 
 	const { id } = useLocalSearchParams();
 	const {idRequest}= useLocalSearchParams();
-	console.log(id)
-	console.log(idRequest);
 	const [user, setUser] = useState(null);
 	useEffect(() => {
 		console.log("Hello")
