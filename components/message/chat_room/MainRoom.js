@@ -240,11 +240,23 @@ const ContentScreen = () => {
       type: Type,
     }
     
+    const msg = {
+      chatID: `${chatId}`,
+      createAt: `${new Date()}`,
+      dateTime: `${new Date()}`,
+      content: Content,
+      type: Type,
+      senderID: user
+    }
+    console.log(msg)
+    setMessageList([...messageList, msg])
     const url = 'https://se346-skillexchangebe.onrender.com/api/v1/message/send';
     const response = await PostData(url, dataPost);
+    
+    console.log(response.data)
     if (response != 404 && response !== "Something went wrong" && response) {
       setNewMessage(response.data)
-      setMessageList([...messageList, response.data])
+      
       return true
     }
     else {
