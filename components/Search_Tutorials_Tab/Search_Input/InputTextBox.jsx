@@ -116,7 +116,7 @@ const InputTextBox = () => {
           keyExtractor={item => item._id}
           renderItem={({ item }) => (
             <TouchableHighlight  
-              style={{ marginBottom: 3, height: 35, zIndex: 4,width: '100%'}} 
+              style={{ marginBottom: 3, height: 35, zIndex: 4,width: '100%', borderRadius: 10}} 
               underlayColor={'#D5D5D5'}
               onPress={() => {handleSelectTopic(item)}
               }
@@ -134,6 +134,7 @@ const styles = StyleSheet.create({
   TopicText: {
     flex: 1,
     justifyContent: 'center',
+    alignItems:'center',
     fontSize: 15,
     textAlign: 'left',
     fontFamily: 'Coda-Regular',
