@@ -14,7 +14,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from '@react-navigation/native';
 import { Alert } from "react-native";
 
-const InformationRequest = ({ 
+const InformationFriend = ({ 
 	username,
 	skill,
 	birthDay,
@@ -290,4 +290,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default InformationRequest;
+export default InformationFriend;

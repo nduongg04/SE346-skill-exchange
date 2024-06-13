@@ -213,7 +213,7 @@ const ScreenMess = () => {
 
 		}
 		return (
-			<TouchableOpacity onPress={() => navigation.navigate('chatRoom/room', { chatId: item.chatInfo._id, chat: item.chatInfo, name: item.chatInfo.members[num].username })}>
+			<TouchableOpacity onPress={() => navigation.navigate('chatRoom/room', { chatId: item.chatInfo._id, chat: item.chatInfo, name: item.chatInfo.members[num].username, idFriend: item.chatInfo.members[num].id})}>
 				<CardMessage Name={item.chatInfo.members[num].username}
 					Avatar={item.chatInfo.members[num].avatar}
 					Status={

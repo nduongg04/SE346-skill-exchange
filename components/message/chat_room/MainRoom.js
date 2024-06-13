@@ -46,6 +46,9 @@ const ContentScreen = () => {
   const [isUploading, setUploading] = useState(false);
   const {soundcheck, setSoundCheck} = useContext(MessageContext);
   const isFocused = useIsFocused();
+  const name = route.params.name
+  const navigation = useNavigation();
+  const idFriend= route.params.idFriend;
   //
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -78,9 +81,7 @@ const ContentScreen = () => {
     );
 
 
-  const name = route.params.name
-  // const [modalVisible, setModalVisible] = useState(false);
-  const navigation = useNavigation();
+
   //socket send message
   useEffect(() => {
     if (socket === null) return
@@ -572,7 +573,7 @@ const ContentScreen = () => {
             <TouchableOpacity >
               <Image source={icons.call} style={{ height: 20.5, width: 20.5 }}></Image>
             </TouchableOpacity>
-            <TouchableOpacity >
+            <TouchableOpacity onPress={() => navigation.navigate('chatRoom/redirectInformation', { id:idFriend })}>
               <Image source={icons.video} style={{ height: 20, width: 23.5, marginLeft: 10 }} />
             </TouchableOpacity>
 
