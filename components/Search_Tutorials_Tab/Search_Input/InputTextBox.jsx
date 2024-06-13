@@ -1,10 +1,10 @@
 import React, { useState, useEffect,useRef } from 'react';
-import { SafeAreaView, Alert, StyleSheet, TouchableOpacity, FlatList, Text, View,TouchableHighlight  } from "react-native";
+import { SafeAreaView, Alert, StyleSheet, TouchableOpacity, FlatList, Text, View,TouchableHighlight, Keyboard  } from "react-native";
 import { scale } from "react-native-size-matters";
 import axios from "axios";
 import { COLORS } from "../../../constants";
 import { router } from "expo-router";
-import InputText from "../../register/Button/InputText";
+import InputText from "../../Search_Tutorials_Tab/Button/InputText";
 
 
 const InputTextBox = () => {
@@ -12,6 +12,7 @@ const InputTextBox = () => {
   const [query, setQuery] = useState("");
   const [topicdata, setTopicData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
+  const inputQuery = useRef(null)
   useEffect(() => {
     if (query) {
       setFilteredData(topicdata.filter(topic => topic.name.includes(query)));
@@ -24,6 +25,17 @@ const InputTextBox = () => {
     getTopicData();
   },[]);
 
+  useEffect(()=>{
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', ()=>{
+      console.log("Unfocus")
+      inputQuery.current.blur();
+    })
+
+    return () => {
+      hideSubscription.remove();
+    };
+
+  }, [])
   const handleOnChangeText = (text) => {
     setQuery(text);
   };
@@ -101,6 +113,7 @@ const InputTextBox = () => {
       
       <View style={styles.TopicList}>
       <InputText
+        ref= {inputQuery}
         style = {{zIndex:3}}
         placeholder="Enter your topic"
         label="Enter your query"
