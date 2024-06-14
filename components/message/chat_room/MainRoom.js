@@ -112,7 +112,7 @@ const ContentScreen = () => {
 
   useEffect(()=>{
     socket.on("isUnFriend", (res)=>{
-      console.log(chat);
+      console.log(chat+ "abajhdja");
       if(chat._id !== res.chatId) return
       setIsFriend(false)
       console.log(isFriend)
