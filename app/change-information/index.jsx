@@ -135,15 +135,6 @@ const ChangeInformation = () => {
                         error={null}
                         keyboardType='numeric'
                     />
-                    <TouchableOpacity>
-                        <InputText
-                            placeholder='Your birthday'
-                            label='Birthday'
-                            error={null}
-                            editable={false}
-                            value={"Your Birthday"}
-                        />
-                    </TouchableOpacity>
 
                     <TouchableOpacity
                         style={{
@@ -154,7 +145,6 @@ const ChangeInformation = () => {
                             paddingVertical: 7,
                             marginTop: 16,
                         }}
-                        
                     >
                         <Text
                             style={{
