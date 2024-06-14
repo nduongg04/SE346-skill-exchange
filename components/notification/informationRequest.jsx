@@ -15,6 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import { Alert } from "react-native";
 import PostData from "../../utils/postdata";
 import HandleSessionExpired from "../../utils/handlesession";
+import { useSocketContext } from "../../context/SocketContext";
 
 const InformationRequest = ({ 
 	username,
@@ -48,6 +49,7 @@ const InformationRequest = ({
 	const navigation = useNavigation();
 	const swipeLeft = useAction((state) => state.swipeLeft);
 	const swipeRight = useAction((state) => state.swipeRight);
+	const {socket}= useSocketContext();
 	const createChat = async (id1, id2) => {
 		const dataPost = {
 			"firstID": id1,
@@ -60,6 +62,13 @@ const InformationRequest = ({
             const response = await PostData(url, dataPost);
             console.log(response.data)
             if (response != 404 && response !== "Something went wrong" && response) {
+				const chatData = response.data
+                const recipientID = id1
+                const res={
+                    recipientID,
+                    chatData
+                }
+                socket.emit("acceptrequest", res)
                 return true
             }
             else {
