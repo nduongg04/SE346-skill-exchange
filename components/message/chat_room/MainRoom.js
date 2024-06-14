@@ -49,6 +49,7 @@ const ContentScreen = () => {
   const name = route.params.name
   const navigation = useNavigation();
   const idFriend= route.params.idFriend;
+  const [isFriend, setIsFriend] = useState(true)
   //
   const [page, setPage] = useState(0);
   const [hasMore, setHasMore] = useState(true);
@@ -111,6 +112,13 @@ const ContentScreen = () => {
     }
   }, [socket, messageList])
 
+  useEffect(()=>{
+    socket.on("isUnFriend", (res)=>{
+      if(chat._id !== res.chatId) return
+      setIsFriend(false)
+      console.log(isFriend)
+    })
+  },[])
   //set up
   const formatTimeRecord = (time) => {
     const minutes = Math.floor((time % 3600) / 60);
@@ -647,53 +655,63 @@ const ContentScreen = () => {
 
 
           {/* bottom */}
-          <View style={styles.Bottom}>
+          {
+            (isFriend) ? (
+              <View style={styles.Bottom}>
 
-            {
-              !isRecord ?
-                (
-                  <View style={styles.Input}>
-                    <TextInput value={message}
-                      onChangeText={handleMessageChange}
-                      multiline={true}
-                      placeholder="Message" />
-                  </View>
-                ) : (
-                  <>
-                    <TouchableOpacity onPress={stopRecording} >
-                      <Image source={icons.delete_icon} style={{ height: 24.5, width: 22, marginRight: 8 }} />
-                    </TouchableOpacity>
-                    <View style={styles.RecordContainer} >
-                      <Image source={icons.clock} style={{ height: 15.4, width: 13.2, marginRight: 0, marginTop: 2.3 }} />
-                      <Text style={styles.TimeRecord}>{formatTimeRecord(seconds)}</Text>
-                    </View>
-                  </>
+                  {
+                    !isRecord ?
+                      (
+                        <View style={styles.Input}>
+                          <TextInput value={message}
+                            onChangeText={handleMessageChange}
+                            multiline={true}
+                            placeholder="Message" />
+                        </View>
+                      ) : (
+                        <>
+                          <TouchableOpacity onPress={stopRecording} >
+                            <Image source={icons.delete_icon} style={{ height: 24.5, width: 22, marginRight: 8 }} />
+                          </TouchableOpacity>
+                          <View style={styles.RecordContainer} >
+                            <Image source={icons.clock} style={{ height: 15.4, width: 13.2, marginRight: 0, marginTop: 2.3 }} />
+                            <Text style={styles.TimeRecord}>{formatTimeRecord(seconds)}</Text>
+                          </View>
+                        </>
 
 
-                )
-            }
+                      )
+                  }
 
-            {(message.trim().length > 0) || (isRecord) ? (
-              <TouchableOpacity onPress={handleSendMessage} >
-                <Image source={icons.send} style={{ height: 29, width: 29, marginLeft: 7 }} />
-              </TouchableOpacity>) : (
-              <>
-                <TouchableOpacity onPress={startRecording} >
-                  <Image source={icons.micro} style={{ height: 27.6, width: 27.6, marginLeft: 10 }} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleCamera} >
-                  <Image source={icons.camera} style={{ height: 28, width: 28, marginLeft: 10 }} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleChooseImage} >
-                  <Image source={icons.image} style={{ height: 22, width: 22.1, marginLeft: 10 }} />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={handleChooseFile} >
-                  <Image source={icons.menu} style={{ height: 20, width: 23.5, marginLeft: 10 }} />
-                </TouchableOpacity>
-              </>
-            )}
+                  {(message.trim().length > 0) || (isRecord) ? (
+                    <TouchableOpacity onPress={handleSendMessage} >
+                      <Image source={icons.send} style={{ height: 29, width: 29, marginLeft: 7 }} />
+                    </TouchableOpacity>) : (
+                    <>
+                      <TouchableOpacity onPress={startRecording} >
+                        <Image source={icons.micro} style={{ height: 27.6, width: 27.6, marginLeft: 10 }} />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={handleCamera} >
+                        <Image source={icons.camera} style={{ height: 28, width: 28, marginLeft: 10 }} />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={handleChooseImage} >
+                        <Image source={icons.image} style={{ height: 22, width: 22.1, marginLeft: 10 }} />
+                      </TouchableOpacity>
+                      <TouchableOpacity onPress={handleChooseFile} >
+                        <Image source={icons.menu} style={{ height: 20, width: 23.5, marginLeft: 10 }} />
+                      </TouchableOpacity>
+                    </>
+                  )}
 
-          </View>
+              </View>
+            ): (
+              <View style={styles.UnfriendBottom}>
+                  <Text>
+                      You can no longer chat with this person.
+                  </Text>
+              </View>
+            )
+          }
           <LoadingOverlay visible={isUploading} />
         </View>
       </KeyboardAvoidingView>
