@@ -8,6 +8,7 @@ import { MessageContext } from './messageContext';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import * as Permissions from 'expo-permissions';
+import { useNavigation,useIsFocused, useFocusEffect } from '@react-navigation/native';
 
 
 export const Message = (props) => {
@@ -19,6 +20,14 @@ export const Message = (props) => {
     const [idCount, setIdCount] = useState(null);
     const [seconds, setSeconds] = useState(0);
     const [check, setCheck] = useState(false);
+    const isFocused = useIsFocused();
+    useEffect(() => {
+        if(isPlay)
+            {
+                setIsPlay(false);
+                setCheck(false)
+            }
+    }, [isFocused]);
     let contentType;
     const openModal = () => {
         setModalVisible(true);

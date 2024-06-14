@@ -39,7 +39,8 @@ export const styles = StyleSheet.create(
         fontSize:23.5,
         flex:1,
         textAlign:'center', 
-        paddingRight:15
+        paddingRight:15,
+        color:"#3A3939"
     },
     Scroll:
     {
