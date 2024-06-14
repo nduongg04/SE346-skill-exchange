@@ -57,29 +57,29 @@ const InformationFriend = ({
 				}
 				else{
 					Alert.alert(
-						'Thông báo',
-						'Đã xảy ra lỗi khi xóa bạn bè. Vui lòng thử lại sau.',
+						'Alert',
+						'An error has occurred. Please try again later.',
 					  );
 				}
 		} catch (error) {
-							Alert.alert(
-				'Thông báo',
-				'Đã xảy ra lỗi khi xóa bạn bè. Vui lòng thử lại sau.',
+			Alert.alert(
+				'Alert',
+				'An error has occurred. Please try again later.',
 			  );
 		}
 	}
 	const handleConfirmDelete = async () => {
 		Alert.alert(
-		  'Xác nhận',
-		  'Bạn có chắc chắn muốn xóa kết bạn hay không?',
+		  'Confirm',
+		  'Are you sure you want to unfriend ?',
 		  [
 			{
-			  text: 'Hủy',
+			  text: 'Cancel',
 			  onPress: () => console.log('Đã hủy'),
 			  style: 'cancel',
 			},
 			{ 
-			  text: 'Xóa', 
+			  text: 'Delete', 
 			  onPress: () => handleDeleteFriend()
 			}
 		  ],

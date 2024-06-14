@@ -191,7 +191,7 @@ export const Message = (props) => {
     const downloadImage = async () => {
         const { status } = await MediaLibrary.requestPermissionsAsync();
         if (status !== 'granted') {
-          Alert.alert('Quyền bị từ chối', 'Không thể truy cập thư viện phương tiện');
+          Alert.alert('Permission denied', 'Unable to access media library');
           return;
         }
         imageUrl=props.Content;
@@ -202,7 +202,7 @@ export const Message = (props) => {
             // Yêu cầu quyền truy cập thư viện phương tiện
             const { status } = await MediaLibrary.requestPermissionsAsync();
             if (status !== 'granted') {
-              Alert.alert('Quyền bị từ chối', 'Không thể truy cập thư viện phương tiện');
+                Alert.alert('Permission denied', 'Unable to access media library');
               return;
             }
         
@@ -214,7 +214,7 @@ export const Message = (props) => {
             const extension = getFileExtensionFromMimeType(mimeType);
         
             if (!extension) {
-                Alert.alert('Lỗi', 'Không thể tải xuống hình ảnh');
+                Alert.alert("Error", "Unable to download image");
                 return;
             }
         
@@ -227,10 +227,9 @@ export const Message = (props) => {
             // Lưu hình ảnh vào thư viện phương tiện
             const asset = await MediaLibrary.createAssetAsync(finalUri);
             await MediaLibrary.createAlbumAsync('Download', asset, false);
-            Alert.alert('Tải xuống thành công', 'Hình ảnh đã được lưu vào thư viện phương tiện');
+            Alert.alert("Download successful", "Image saved to media library");
           } catch (error) {
-            console.error('Lỗi khi tải xuống hình ảnh:', error);
-            Alert.alert('Lỗi', 'Không thể tải xuống hình ảnh');
+            Alert.alert("Error", "Unable to download image");
           }
       };
 

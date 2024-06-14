@@ -48,16 +48,16 @@ const Request = (props) => {
             }
             else {
                 Alert.alert(
-                    'Thông báo',
-                    'Kết bạn không thành công',
+                    'Alert',
+                    'Friend request unsuccessful.',
                 )
                 return false
             }
         }
         else {
             Alert.alert(
-                'Thông báo',
-                'Kết bạn không thành công',
+                'Alert',
+                'Friend request unsuccessful.',
             )
             return false
         }
@@ -106,8 +106,8 @@ const Request = (props) => {
             }
         } catch (error) {
             Alert.alert(
-                'Thông báo',
-                'Từ chối yêu cầu không thành công !',
+                'Alert',
+                'Request denial unsuccessful !',
             )
         } finally {
 

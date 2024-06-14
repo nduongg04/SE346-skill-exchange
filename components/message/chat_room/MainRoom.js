@@ -91,8 +91,6 @@ const ContentScreen = () => {
   useEffect(() => {
     if (socket === null) return
     const recipientID = chat?.members?.find((member) => member.id !== user.id)._id
-    // console.log(recipientID)
-    // console.log("socket " + socket.id)
     socket.emit("sendMessage", { ...newMessageData, recipientID })
   }, [newMessageData])
 
@@ -114,6 +112,7 @@ const ContentScreen = () => {
 
   useEffect(()=>{
     socket.on("isUnFriend", (res)=>{
+      console.log(chat);
       if(chat._id !== res.chatId) return
       setIsFriend(false)
       console.log(isFriend)
@@ -307,8 +306,8 @@ const ContentScreen = () => {
       const msgList = messageList.filter((value)=> value._id != idMsg)
       setMessageList([...msgList])
       Alert.alert(
-        'Thông báo',
-        'Không gửi được tin nhắn',)
+        'Alert',
+        'Message could not be sent',)
       return false
     }
   }
@@ -355,14 +354,14 @@ const ContentScreen = () => {
         }
       }
       Alert.alert(
-        'Thông báo',
-        'Không gửi được ảnh',)
+        'Alert',
+        'Unable to send photo',)
       return false;
     }
     catch (error) {
       Alert.alert(
-        'Thông báo',
-        'Không gửi được ảnh',)
+        'Alert',
+        'Unable to send photo',)
       return false;
     }
     finally {
@@ -417,14 +416,14 @@ const ContentScreen = () => {
         }
       }
       Alert.alert(
-        'Thông báo',
-        'Không gửi được file',)
+        'Alert',
+        'Unable to send file',)
       return false;
     }
     catch (error) {
       Alert.alert(
-        'Thông báo',
-        'Không gửi được file',)
+        'Alert',
+        'Unable to send file',)
       return false;
     }
     finally {
@@ -470,7 +469,8 @@ const ContentScreen = () => {
       console.log('Recording started');
     } catch (error) {
       setIsRecord(false);
-      console.error('Failed to start recording', error);
+      Alert.alert('Alert','Failed to start recording');
+    
     }
   };
   const stopRecording = async () => {
@@ -482,7 +482,7 @@ const ContentScreen = () => {
       clearInterval(idCount);
       setSeconds(0);
     } catch (error) {
-      console.error('Failed to stop recording', error);
+      Alert.alert('Alert','Failed to start recording');
     }
     finally
     {
@@ -508,8 +508,9 @@ const ContentScreen = () => {
       setUploading(true);
       const listImage = Array.from(result.assets);
       for (let i = 0; i < listImage.length; i++) {
-        let imageUri = await uploadImage(listImage[i].uri, user.id);
-        console.log(imageUri)
+        const currentTime = new Date();
+      const timestamp = currentTime.getTime();
+        let imageUri = await uploadImage(listImage[i].uri,""+timestamp+user.id);
         if (imageUri) {
           image.push(imageUri);
         }
@@ -533,8 +534,9 @@ const ContentScreen = () => {
     if (!result.canceled) {
       setUploading(true);
       image = result.assets;
-      console.log(image[0].uri)
-      const imageUrl = await uploadImage(image[0].uri, user.id)
+      const currentTime = new Date();
+      const timestamp = currentTime.getTime();
+      const imageUrl = await uploadImage(image[0].uri, ""+timestamp+user.id)
       if (imageUrl) {
         sendMessage('image', imageUrl);
         setMessage('');
@@ -555,12 +557,16 @@ const ContentScreen = () => {
         sendMessage('file', response)
       }
       else {
-        alert("Gửi file không thành công");
+        Alert.alert(
+          'Alert',
+          'Unable to send file',);
       }
 
     }
     catch (error) {
-      console.log(`Error picking document`);
+      Alert.alert(
+        'Alert',
+        'An error has occurred. Please try again later !',);
     }
     finally {
       setUploading(false)

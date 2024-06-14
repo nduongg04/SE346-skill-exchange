@@ -70,38 +70,7 @@ const refeshReques= (idRemove)=>{
   const newRes= requests.filter((res)=>res._id!==idRemove)
   setRequest(newRes);
 }
-// const getRequest = async () => {
-//     try {
-//       const response = await fetch(`https://se346-skillexchangebe.onrender.com/api/v1/request/find/receiver/${user.id}`,
-//       {
-//         method: 'GET',
-//         headers: {
-//           'Content-Type': 'application/json',
-//           Authorization:`Bearer ${accessToken}`        
-//         }
-//       });
 
-//       if(response.status==200)
-//       {
-//         const json = await response.json();
-//         setRequest(json.data);
-//       }
-//       else
-//       {
-//         Alert.alert(
-//           'Thông báo', 
-//           'Lỗi kết nối với sever', 
-//         )
-//       }
-//     } catch  {
-//       Alert.alert(
-// 				'Thông báo', 
-// 				'Ứng dụng đang gặp lỗi', 
-// 			)
-//     } finally {
-//       setLoading(false);
-//     }
-// };
 const getRequest= async()=>{
   const url=`https://se346-skillexchangebe.onrender.com/api/v1/request/find/receiver/${user.id}`
   const data=await GetData(url);
@@ -113,8 +82,7 @@ const getRequest= async()=>{
 };
  
   useEffect(() => {
-    // loadToken();
-    // if(accessToken!='')
+
      getRequest();
   }, [isFocused]);
   

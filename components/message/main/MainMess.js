@@ -186,13 +186,13 @@ const ScreenMess = () => {
 			}
 		if (newMessage) {
 			if (newMessage.senderID._id == user.id) {
-				format = 'Bạn: '
+				format = 'You: '
 			}
 			if (newMessage.type == 'text') {
 				latest = format + newMessage.content
 			}
 			else {
-				latest = format + "Đã gửi một " + newMessage.type;
+				latest = format + newMessage.type + " sent.";
 			}
 
 		}
