@@ -91,10 +91,9 @@ const InformationRequest = ({
                         Authorization: `Bearer ${token}`,
                     }
                 });
-            console.log(response.status)
 
             if (response.status == 200) {
-				return;
+				
             }
             else {
                 if (response.status == 401) {
@@ -108,7 +107,7 @@ const InformationRequest = ({
                             }
                         });
                     if (response2.status == 200) {
-                        return;
+                        
                     }
                 }
             }
@@ -118,12 +117,14 @@ const InformationRequest = ({
                 'Từ chối yêu cầu không thành công !',
             )
         } 
+		finally{
+			navigation.goBack('(tabs)');
+		}
     }
 	const handlePressAccept= async ()=>{
 		if( await createChat(_id,user.id))
 		{
 			await deleteRequest();
-			navigation.goBack('(tabs)');
 		}
 			
 		

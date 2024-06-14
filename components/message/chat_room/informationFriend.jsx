@@ -40,7 +40,6 @@ const InformationFriend = ({
 	};
 	const handleDeleteFriend= async()=>
 	{
-
 		const url = `https://se346-skillexchangebe.onrender.com/api/v1/chat/delete/${chatId}`
 		console.log(url);
 		const accessToken = await AsyncStorage.getItem("accessToken");
