@@ -11,18 +11,23 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native";
 import { COLORS } from "@constants";
-
 import Background from "@assets/icons/Background.png";
 import EditProfile from "@assets/icons/Edit profile.png";
 import LogOut from '@assets/icons/LogOut.png';
 import React, { useEffect, useState } from "react";
-import { Stack, router } from "expo-router";
+import { Stack, router, useNavigation } from "expo-router";
 import { useSession } from "../../context/AuthContext";
+import avatarDefault from "@assets/images/avatarDefault.jpg";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useSocketContext } from "../../context/SocketContext";
+import axios from "axios";
 
 const Profile = () => {
 	const { user, logout } = useSession();
 	const [showLogoutModal, setShowLogoutModal] = useState(false);
-
+	const navigation = useNavigation()
+	const {socket} = useSocketContext()
+	const baseUrl = "https://se346-skillexchangebe.onrender.com/api/v1"
 	useEffect(() => {
 		if (user) {
 			console.log(user.username);
@@ -71,7 +76,15 @@ const Profile = () => {
 	};
 
 	const handleChangeInformationPress = () => {
-		router.navigate("/change-information");
+		console.log(user.username + user.email+user.phoneNumber)
+		router.navigate({
+			pathname: "/change-information",
+			params: {
+				name: user.username,
+				mail: user.email,
+				number: user.phoneNumber
+			}
+		});
 	};
 
 	const handleOpenModal = () => {
@@ -82,8 +95,31 @@ const Profile = () => {
 		setShowLogoutModal(false);
 	};
 
-	const handleLogout = () => {
-		navigation.navigate("Login");
+	const logoutApi = async()=>{
+		const refreshToken = await AsyncStorage.getItem("refreshToken")
+		console.log(refreshToken)
+		try{
+			const response = await axios.post(`${baseUrl}/user/logout`, {},{
+				headers: {
+					Authorization: `Bearer ${refreshToken}`
+				}
+			})
+			if(response.status === 200){
+				console.log("Logout successfull")
+			}
+			else{
+				console.log(response.data)
+			}
+
+		}catch(e){
+			console.log(e)
+		}
+	}
+	const handleLogout = async () => {
+		logoutApi()
+		await AsyncStorage.clear()
+		navigation.navigate("EnterName")
+		socket.disconnect()
 	};
 
 	return (
@@ -115,7 +151,9 @@ const Profile = () => {
 							<Text style={styles.headerText}>Personal</Text>
 						</View>
 						<View style={styles.imgContainer}>
-							<Image source={{ uri: user.avatar }} style={styles.avatarImage} />
+							<Image source={user.avatar ==="" ? avatarDefault : { uri: user.avatar }} 
+								style={styles.avatarImage} 
+							/>
 							<TouchableOpacity style={{ alignItems: "flex-end", top: -115 }} onPress={handleEditProfilePress}>
 								<Image source={EditProfile} />
 							</TouchableOpacity>
@@ -305,7 +343,7 @@ const Profile = () => {
 									<View style={styles.logoutModalButtons}>
 										<TouchableOpacity
 											style={styles.logoutButton}
-											onPress={handleLogout}
+											onPress={async ()=>{await handleLogout()}}
 										>
 											<Text style={styles.logoutButtonText}>Yes</Text>
 										</TouchableOpacity>
