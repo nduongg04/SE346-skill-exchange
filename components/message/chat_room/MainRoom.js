@@ -297,7 +297,6 @@ const ContentScreen = () => {
     setMessageList([...messageList, msg])
     const url = 'https://se346-skillexchangebe.onrender.com/api/v1/message/send';
     const response = await PostData(url, dataPost);
-    
     console.log(response.data)
     if (response != 404 && response !== "Something went wrong" && response) {
       setNewMessage(response.data)
@@ -401,7 +400,6 @@ const ContentScreen = () => {
         return json.image;
       }
       else {
-        console.log(await response.text())
         if (response.status == 401) {
           access = await loadToken();
           const response2 = await fetch('https://se346-skillexchangebe.onrender.com/api/v1/upload/file', {
@@ -471,6 +469,7 @@ const ContentScreen = () => {
       setRecord(newRecording);
       console.log('Recording started');
     } catch (error) {
+      setIsRecord(false);
       console.error('Failed to start recording', error);
     }
   };
@@ -480,11 +479,14 @@ const ContentScreen = () => {
       console.log('Recording stopped');
       const uri = record.getURI();
       setTest('' + uri);
-      setIsRecord(false);
       clearInterval(idCount);
       setSeconds(0);
     } catch (error) {
       console.error('Failed to stop recording', error);
+    }
+    finally
+    {
+      setIsRecord(false);
     }
   };
 
