@@ -68,7 +68,10 @@ const ScreenMess = () => {
 			const chatId = res.chatId
 			const chatIndex = chatRooms.findIndex((e)=> e.chatInfo._id === chatId)
 			if(chatIndex != -1){
-				const newChatRooms= chatRooms.splice(chatIndex, 1)
+				const newChatRooms = [
+					...chatRooms.slice(0, chatIndex),
+					...chatRooms.slice(chatIndex + 1)
+				  ];
 				setChatRooms([...newChatRooms])
 				setChatAppear([...newChatRooms])
 			}
@@ -88,35 +91,7 @@ const ScreenMess = () => {
 		}
 	}, [chatRooms, socket, chatAppear])
 	
-	const deleteChat = async () => {
-		try {
-			const response = await fetch("https://se346-skillexchangebe.onrender.com/api/v1/chat/delete/661d725075b060d39134b9d9",
-				{
-					method: 'DELETE',
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODI5NSwiZXhwIjoxNzE1NzkwMjk1fQ.4EHaQTxyYqJrQARjGcPXBYG6BYUOTRzZ51tYBju6JRQ",
-					}
-				});
-			console.log(response);
-			console.log(response.status)
-
-			if (response.status == 400) {
-				console.log(response.statusText);
-			}
-			else {
-				console.log(response.message);
-				if (response.message == "Deleted chat successfully") {
-					console.log("delete success");
-				}
-
-			}
-		} catch (error) {
-			console.error(error);
-		} finally {
-
-		}
-	}
+	
 	const loadToken = async () => {
 		const token = await AsyncStorage.getItem('refreshToken');
 		if (token) {

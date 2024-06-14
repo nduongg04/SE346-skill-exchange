@@ -44,29 +44,6 @@ const ScreenNotification = () => {
 		// 	await logout();
 		// }
 	}
-const createChat= async (id1,id2)=>{
-		const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/chat/create',{
-			method:'POST',
-			headers:{
-			  'Content-Type': 'application/json',
-			  Authorization:`Bearer ${accessToken}`
-			},
-			body: JSON.stringify({
-				"firstID": id1,
-				"secondID": id2
-			})
-		  })
-		  const data = await response.json();
-		  console.log(response.status)
-		  console.log(data);
-		  if(response.status==400)
-		  {
-			console.log(response.statusText)
-		  }
-		  else{
-			console.log(response.statusText)
-		  }
-}
 const createRequest= async()=>
 {
   const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/request/create',{
@@ -189,7 +166,7 @@ const getRequest= async()=>{
               data={requests}
               keyExtractor={(item) => item._id}
               renderItem={({item}) => (
-                <Request Type="Request" Name={item.senderID.username} Avatar={item.senderID.avatar} Time={item.dateTime} Id={item._id} Delete={refeshReques} SenderId={item.senderID.id} MyId={user.id} Acccept={createChat} ></Request>
+                <Request Type="Request" Name={item.senderID.username} Avatar={item.senderID.avatar} Time={item.dateTime} Id={item._id} Delete={refeshReques} SenderId={item.senderID.id} MyId={user.id}  ></Request>
               )}
             />
             )
