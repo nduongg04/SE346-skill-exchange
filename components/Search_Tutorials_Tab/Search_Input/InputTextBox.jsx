@@ -12,6 +12,8 @@ const InputTextBox = () => {
   const [query, setQuery] = useState("");
   const [topicdata, setTopicData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
+  const [isFocused, setIsFocused] = useState(false);
+
   useEffect(() => {
     if (query) {
       setFilteredData(topicdata.filter(topic => topic.name.includes(query)));
@@ -28,10 +30,12 @@ const InputTextBox = () => {
     setQuery(text);
   };
   const handleOnBlur= () => {
+    setIsFocused(false);
     setFilteredData([]);
   };
 
   const handleonFocus=() =>{
+    setIsFocused(true);
     if (query) {
       setFilteredData(topicdata.filter(topic => topic.name.includes(query)));
     } else {
@@ -97,9 +101,9 @@ const InputTextBox = () => {
   };
 
   return (
-    <SafeAreaView>
-      
-      <View style={styles.TopicList}>
+    <SafeAreaView style={{ flex: 1 }}>
+      {isFocused && <View style={styles.overlay} />}
+      <View style={[styles.TopicList, isFocused ? { zIndex: 5 } : {}]}>
       <InputText
         style = {{zIndex:3}}
         placeholder="Enter your topic"
@@ -154,6 +158,15 @@ const styles = StyleSheet.create({
     zIndex:3,
     maxHeight: 300,
     marginHorizontal: 20,
+  },
+  overlay: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 4,
   },
 });
 export default InputTextBox;
