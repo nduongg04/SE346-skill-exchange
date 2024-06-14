@@ -23,6 +23,7 @@ const Request=(props)=>
 		  })
 		  if(response.status==200)
 		  {
+            console.log(response.body.data)
 			return true
 		  }
 		  else{

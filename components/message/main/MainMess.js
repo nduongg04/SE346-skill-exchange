@@ -70,10 +70,23 @@ const ScreenMess = () => {
 			if(chatIndex != -1){
 				const newChatRooms= chatRooms.splice(chatIndex, 1)
 				setChatRooms([...newChatRooms])
+				setChatAppear([...newChatRooms])
 			}
 		})
-	}, [chatRooms, socket])
+		return () => {
+			socket.off("isUnFriend");
+		}
+	}, [chatRooms, socket, chatAppear])
 
+	useEffect(()=>{
+		socket.on("getnewchatroom",(chatData)=>{
+			setChatAppear([chatData,...chatAppear])
+			setChatRooms([chatData,...chatRooms])
+		})
+		return () => {
+			socket.off("getnewchatroom");
+		}
+	}, [chatRooms, socket, chatAppear])
 	
 	const deleteChat = async () => {
 		try {
