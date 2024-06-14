@@ -1,4 +1,4 @@
-import { Text, View, TouchableOpacity, Alert, Image, StyleSheet } from "react-native";
+import { Text, View, TouchableOpacity, Alert, Image, StyleSheet, Modal } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
 import { COLORS } from "../../constants";
 import { useEffect, useState, useRef } from "react";
@@ -12,47 +12,47 @@ import UploadImages from "../../utils/upload-images";
 import { useSession } from "../../context/AuthContext";
 import PatchData from "../../utils/patchdata";
 import { Scale, VerticalScale, scale } from 'react-native-size-matters';
+import avatarDefault from "@assets/images/avatarDefault.jpg";
+import UploadModal from "../../components/register/UploadModal";
+import UploadImage from "../../utils/uploadImage";
 
 const EditAvatarProfile = () => {
     const [isUpdating, setIsUpdating] = useState(false);
     const { user, login } = useSession();
-
+    const [imageUri, setImageUri] = useState("")
     const [certificationImages, setCertificationImages] = useState([
         ...user.imageCerti,
     ]);
-
+    const [uploadVisible, setUploadedVisible] = useState(false)
     const [uploadedImages, setUploadedImages] = useState([]);
     const updatedCertificationImages = useRef([]);
 
-    const handleChangeCertifications = async () => {
+    const toogleUploadModal= ()=>{
+        setUploadedVisible(!uploadVisible)
+    }
+    const handleChangeAvatar = async () => {
         setIsUpdating(true);
         const baseUrl = "https://se346-skillexchangebe.onrender.com";
-        if (uploadedImages.length !== 0) {
-            const uploadImagesResponse = await UploadImages(
-                `${baseUrl}/api/v1/upload/files`,
-                uploadedImages
+        let avatar =""
+        if (imageUri !== "") {
+            const uploadImagesResponse = await UploadImage(
+                `${baseUrl}/api/v1/upload/file`,
+                imageUri
             );
             if (
                 !uploadImagesResponse ||
                 uploadImagesResponse === "Something went wrong"
             ) {
-                alert("Something went wrong when uploading images");
+                alert("Something went wrong when uploading image");
                 setIsUpdating(false);
                 return;
+            }else{
+                avatar= uploadImagesResponse
             }
-            uploadImagesResponse.forEach((image) => {
-                updatedCertificationImages.current.push(image.url);
-            });
         }
 
-        certificationImages.forEach((imageUri) => {
-            if (imageUri.startsWith("http")) {
-                updatedCertificationImages.current.push(imageUri);
-            }
-        });
-
         const data = await PatchData(`${baseUrl}/api/v1/user/update/${user.id}`, {
-            imageCerti: updatedCertificationImages.current,
+           avatar: avatar
         });
         if (!data || data === "404" || data === "Something went wrong") {
             alert("Something went wrong when updating user's certifications");
@@ -62,7 +62,7 @@ const EditAvatarProfile = () => {
 
         login({
             ...user,
-            imageCerti: updatedCertificationImages.current,
+            avatar: avatar,
         });
         Alert.alert("Successfully", "Update successfully", [
             {
@@ -75,19 +75,6 @@ const EditAvatarProfile = () => {
         setIsUpdating(false);
     };
 
-    const handleUploadImage = async () => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            quality: 1,
-            allowsMultipleSelection: true,
-        });
-        if (!result.canceled) {
-            result.assets.forEach((asset) => {
-                setCertificationImages((prev) => [...prev, asset.uri]);
-                setUploadedImages((prev) => [...prev, asset.uri]);
-            });
-        }
-    };
     return (
         <SafeAreaView
             style={{
@@ -98,6 +85,12 @@ const EditAvatarProfile = () => {
             }}
         >
             <Stack.Screen options={{ headerShown: false }} />
+            <Modal
+                    transparent={true}
+                    visible={uploadVisible}
+                    onRequestClose={() => toogleUploadModal()}>
+                    <UploadModal setImageUri={setImageUri} onRequestClose={() => toogleUploadModal()}></UploadModal>
+                </Modal>
             <Spinner
                 visible={isUpdating}
                 textContent={"Updating..."}
@@ -161,6 +154,7 @@ const EditAvatarProfile = () => {
                             paddingHorizontal: 30,
                             paddingVertical: 10,
                         }}
+                        onPress={toogleUploadModal}
                     >
 
                         <Text
@@ -184,10 +178,19 @@ const EditAvatarProfile = () => {
                             margin: 15,
                         }}
                     />
-
-                    <View style={styles.imgContainer}>
-                        <Image source={{ uri: user.avatar }} style={styles.avatarImage} />
-                    </View>
+                    {
+                        imageUri==="" ? 
+                    (
+                        <View style={styles.imgContainer}>
+                            <Image source={user.avatar === "" ?  avatarDefault:{ uri: user.avatar }} style={styles.avatarImage} />
+                        </View>
+                    ) : (
+                        <View style={styles.imgContainer}>
+                            <Image source={{ uri: imageUri }} style={styles.avatarImage} />
+                        </View>
+                    )
+                    }
+                    
 
                     <TouchableOpacity
                         style={{
@@ -198,6 +201,7 @@ const EditAvatarProfile = () => {
                             paddingVertical: 7,
                             marginTop: 16,
                         }}
+                        onPress={handleChangeAvatar}
                     >
                         <Text
                             style={{
