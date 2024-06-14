@@ -63,6 +63,16 @@ const ScreenMess = () => {
 		}
 	}, [isFocused, latestMessage, socket])
 
+	useEffect(()=>{   
+		socket.on("isUnFriend",(res)=>{
+			const chatId = res.chatId
+			const chatIndex = chatRooms.findIndex((e)=> e.chatInfo._id === chatId)
+			if(chatIndex != -1){
+				const newChatRooms= chatRooms.splice(chatIndex, 1)
+				setChatRooms([...newChatRooms])
+			}
+		})
+	}, [chatRooms, socket])
 
 	
 	const deleteChat = async () => {
@@ -180,6 +190,12 @@ const ScreenMess = () => {
 			}
 
 		}
+		if(message && !newMessage)
+			{
+				if (item.chatInfo._id === message.chatID) {
+					newMessage = message
+				}
+			}
 		if (newMessage) {
 			if (newMessage.senderID._id == user.id) {
 				format = 'Bạn: '

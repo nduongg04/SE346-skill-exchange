@@ -13,8 +13,10 @@ import { useNavigation,useIsFocused, useFocusEffect } from '@react-navigation/na
 import GetData from '../../../utils/getdata';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
+import { useSocketContext } from "../../../context/SocketContext";
 
 const InformationFriend = ({
+	_id,
 	username,
 	skill,
 	birthDay,
@@ -25,7 +27,7 @@ const InformationFriend = ({
 	chatId
 }) => {
 	const navigation = useNavigation();
-
+	const {socket} = useSocketContext();
 	function convertDate(isoDate) {
 		const date = new Date(isoDate);
 		const formattedDate = date.toLocaleDateString("en-GB");
@@ -50,6 +52,8 @@ const InformationFriend = ({
 			});
 			if(response.data.message=="Deleted chat successfully")
 				{
+					const recipientID = _id
+					socket.emit("unfriend", {recipientID,chatId})
 					navigation.navigate('(tabs)');
 				}
 				else{

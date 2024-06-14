@@ -60,6 +60,15 @@ export const styles = StyleSheet.create(
         alignItems:'center',
         flexDirection:'row',
     },
+    UnfriendBottom:{
+        height:60,
+        width:'100%',
+        justifyContent: 'center',
+        alignItems:'center',
+        flexDirection:'row',
+        borderColor: 'gray',
+        borderWidth: 0.2
+    },
     Input:{
     //    width:'90%',
         flex:1,
