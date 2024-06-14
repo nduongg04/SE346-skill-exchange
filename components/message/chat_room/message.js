@@ -89,7 +89,13 @@ export const Message = (props) => {
         setSound(newSound);
     }
 
-
+    const formatTimeRecord = (time) => {
+        const minutes = Math.floor((time % 3600) / 60);
+        const seconds = Math.floor(time % 60);
+        const formattedMinutes = String(minutes).padStart(2, '0');
+        const formattedSeconds = String(seconds).padStart(2, '0');
+        return `${formattedMinutes}:${formattedSeconds}`;
+      };
 
     const handlePressPlay = async () => {
         if (isPlay) {
@@ -134,9 +140,9 @@ export const Message = (props) => {
                         {
                             clearInterval(idCount);
                         }
-                    setIdCount(setInterval(() => {
+                        setIdCount(setInterval(() => {
                         checksound(sound, time);
-                    }, 500))
+                    }, 1000))
                 }
             }
         }

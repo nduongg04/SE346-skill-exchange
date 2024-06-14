@@ -23,6 +23,7 @@ import PostData from '../../../utils/postdata';
 import HandleSessionExpired from '../../../utils/handlesession';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MessageProvider, MessageContext } from './messageContext';
+import { err } from 'react-native-svg';
 
 const ContentScreen = () => {
   const route = useRoute();
@@ -75,14 +76,40 @@ const ContentScreen = () => {
           await soundcheck.stopAsync();
         }
     }
+    const removeRecord= async()=>
+      {
+        if(record && isRecord)
+          {
+            try {
+              const status = await record.getStatusAsync();
+              if (status.isDoneRecording) {
+        
+              } else {
+                if(idCount)
+                  {
+                    clearInterval(idCount);
+                    setIdCount(null);
+                  }
+                  setIsRecord(false);
+                  setSeconds(0);
+                  await record.stopAndUnloadAsync();
+              }
+          } catch (error) {
+              console.error('Error checking recording status:', error);
+          }
+          }
+      }
     useFocusEffect(
       React.useCallback(() => {
   
         return () => {
           // Màn hình bị unfocus (người dùng rời khỏi màn hình)
           removeSound();
+          removeRecord();
+         
+          
         };
-      }, [soundcheck])
+      }, [soundcheck,record])
     );
 
 
@@ -473,14 +500,16 @@ const ContentScreen = () => {
   };
   const stopRecording = async () => {
     try {
+      setIsRecord(false);
       await record.stopAndUnloadAsync();
       console.log('Recording stopped');
       const uri = record.getURI();
       setTest('' + uri);
       clearInterval(idCount);
       setSeconds(0);
+      setRecord(null);
     } catch (error) {
-      Alert.alert('Alert','Failed to start recording');
+      Alert.alert('Alert','Failed to stop recording');
     }
     finally
     {
