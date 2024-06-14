@@ -127,7 +127,7 @@ export const Message = (props) => {
                         }
                     setIdCount(setInterval(() => {
                         checksound(newSound, time);
-                    }, 500))
+                    }, 1000))
                 }
                 else {
                     setSoundCheck(sound);
@@ -255,10 +255,14 @@ export const Message = (props) => {
                     </View>;
                 break;
             case 'record':
-                contentType = <View style={{ justifyContent: 'center', alignItems: 'center', width: 70, height: 45, borderRadius: 20, backgroundColor: "#FF9557", marginTop: 5, marginRight: 5 }}>
+                contentType = <View style={{ justifyContent: 'center', alignItems: 'center', maxWidth: 200, height:45, borderRadius: 20, backgroundColor: "#FF9557", marginTop: 5, marginRight: 5, flexDirection:"row", paddingHorizontal:12, paddingVertical:7 }}>
                     <TouchableOpacity onPress={handlePressPlay}>
-                        <Image source={isPlay ? icons.pause : icons.play} style={isPlay ? { width: 23, height: 23, resizeMode: "cover" } : { width: 30, height: 30, resizeMode: "cover" }} />
+                        <Image source={isPlay ? icons.pause : icons.play} style={isPlay ? { width: 23, height: 23, resizeMode: "cover" } : { width: 30, height: 30, resizeMode: "cover", marginHorizontal:5}} />
                     </TouchableOpacity>
+                    {(!isPlay)?"":
+                        <Text style={{marginLeft:2, fontSize:16}}> {formatTimeRecord(seconds)}</Text>
+                    }
+                    
                 </View>;
                 break;
             case 'file':
@@ -304,12 +308,15 @@ export const Message = (props) => {
                     </View>;
                 break;
             case 'record':
-                contentType = <View style={{ justifyContent: 'center', alignItems: 'center', width: 70, height: 45, borderRadius: 20, backgroundColor: "#FF9557", marginTop: 5, marginLeft: 5 }}>
-                    <TouchableOpacity onPress={handlePressPlay}>
-                        <Image source={isPlay ? icons.pause : icons.play} style={isPlay ? { width: 23, height: 23, resizeMode: "cover" } : { width: 30, height: 30, resizeMode: "cover" }} />
-                    </TouchableOpacity>
-                </View>;
-                break;
+                contentType = <View style={{ justifyContent: 'center', alignItems: 'center', maxWidth: 200, height:45, borderRadius: 20, backgroundColor: "#FF9557", marginTop: 5, marginRight: 5, flexDirection:"row", paddingHorizontal:12, paddingVertical:7 }}>
+                <TouchableOpacity onPress={handlePressPlay}>
+                    <Image source={isPlay ? icons.pause : icons.play} style={isPlay ? { width: 23, height: 23, resizeMode: "cover" } : { width: 30, height: 30, resizeMode: "cover", marginHorizontal:5}} />
+                </TouchableOpacity>
+                {(!isPlay)?"":
+                    <Text style={{marginLeft:2, fontSize:16}}> {formatTimeRecord(seconds)}</Text>
+                }
+            </View>;
+            break;
             case 'file':
                 const fileName = getFileName(props.Content);
                 contentType =
