@@ -162,7 +162,6 @@ const Profile = () => {
 									<Text>General Information</Text>
 								</View>
 								<TouchableOpacity onPress={handleChangeInformationPress}>
-									<Text style={{ color: "blue" }}>Change Password</Text>
 									<Text style={{ color: "blue" }}>Change Information</Text>
 								</TouchableOpacity>
 							</View>
