@@ -88,13 +88,6 @@ const ContentScreen = () => {
 
 
   //socket send message
-  useEffect(() => {
-    if (socket === null) return
-    const recipientID = chat?.members?.find((member) => member.id !== user.id)._id
-    // console.log(recipientID)
-    // console.log("socket " + socket.id)
-    socket.emit("sendMessage", { ...newMessageData, recipientID })
-  }, [newMessageData])
 
   //reciever Socket
   useEffect(() => {
@@ -300,8 +293,11 @@ const ContentScreen = () => {
     
     console.log(response.data)
     if (response != 404 && response !== "Something went wrong" && response) {
-      setNewMessage(response.data)
-      
+      if (socket === null) return
+      const recipientID = chat?.members?.find((member) => member.id !== user.id)._id
+      // console.log(recipientID)
+      // console.log("socket " + socket.id)
+      socket.emit("sendMessage", { ...response.data, recipientID })
       return true
     }
     else {
