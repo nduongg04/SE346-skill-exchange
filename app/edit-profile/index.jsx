@@ -1,4 +1,4 @@
-import { Text, View, FlatList, TouchableOpacity, Alert } from "react-native";
+import { Text, View, TouchableOpacity, Alert, Image, StyleSheet } from "react-native";
 import Spinner from "react-native-loading-spinner-overlay";
 import { COLORS } from "../../constants";
 import { useEffect, useState, useRef } from "react";
@@ -11,6 +11,7 @@ import * as ImagePicker from "expo-image-picker";
 import UploadImages from "../../utils/upload-images";
 import { useSession } from "../../context/AuthContext";
 import PatchData from "../../utils/patchdata";
+import { Scale, VerticalScale, scale } from 'react-native-size-matters';
 
 const EditAvatarProfile = () => {
     const [isUpdating, setIsUpdating] = useState(false);
@@ -147,6 +148,11 @@ const EditAvatarProfile = () => {
                         </Text>
                     </TouchableOpacity>
 
+                    <Image
+                        source={require('../../assets/images/teamwork.png')}
+                        style={styles.image}
+                    />
+
                     <TouchableOpacity
                         style={{
                             backgroundColor: COLORS.orange,
@@ -155,8 +161,8 @@ const EditAvatarProfile = () => {
                             paddingHorizontal: 30,
                             paddingVertical: 10,
                         }}
-                        onPress={handleUploadImage}
                     >
+
                         <Text
                             style={{
                                 textAlign: "center",
@@ -164,7 +170,7 @@ const EditAvatarProfile = () => {
                                 color: COLORS.white,
                             }}
                         >
-                            Upload new photo
+                            Upload new avatar
                         </Text>
                     </TouchableOpacity>
 
@@ -179,60 +185,9 @@ const EditAvatarProfile = () => {
                         }}
                     />
 
-                    <FlatList
-                        style={{
-                            width: "100%",
-                            minHeight: 200,
-                            maxHeight: 410,
-                            overflow: "scroll",
-                        }}
-                        data={certificationImages}
-                        keyExtractor={(item) => item}
-                        renderItem={({ item }) => (
-                            <ImageBackground
-                                source={{ uri: item }}
-                                style={{
-                                    width: "100%",
-                                    height: 200,
-                                }}
-                                borderRadius={10}
-                            >
-                                {console.log(item)}
-                                <View
-                                    style={{
-                                        backgroundColor: "rgba(0,0,0,0.3)",
-                                        flex: 1,
-                                        borderRadius: 10,
-                                    }}
-                                >
-                                    <TouchableOpacity
-                                        style={{
-                                            position: "absolute",
-                                            top: 10,
-                                            right: 10,
-                                        }}
-                                        onPress={() => {
-                                            setCertificationImages((prev) =>
-                                                prev.filter((image) => image !== item)
-                                            );
-                                            setUploadedImages((prev) =>
-                                                prev.filter((image) => image !== item)
-                                            );
-                                        }}
-                                    >
-                                        <AntDesign
-                                            name="closecircle"
-                                            size={30}
-                                            color={COLORS.white}
-                                            style={{}}
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                            </ImageBackground>
-                        )}
-                        numColumns={1}
-                        ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-                    />
+                    <View style={styles.imgContainer}>
+                        <Image source={{ uri: user.avatar }} style={styles.avatarImage} />
+                    </View>
 
                     <TouchableOpacity
                         style={{
@@ -243,7 +198,6 @@ const EditAvatarProfile = () => {
                             paddingVertical: 7,
                             marginTop: 16,
                         }}
-                        onPress={handleChangeCertifications}
                     >
                         <Text
                             style={{
@@ -260,5 +214,24 @@ const EditAvatarProfile = () => {
         </SafeAreaView>
     );
 };
+
+const styles = StyleSheet.create({
+    avatarImage: {
+        width: 120,
+        height: 120,
+        marginTop: 20,
+        marginLeft: 100,
+        borderRadius: 60,
+        resizeMode: "cover",
+        overflow: "hidden",
+    },
+    image: {
+        width: 130,
+        height: 130,
+        marginTop: 20,
+        marginLeft: 100,
+        marginBottom: 20,
+    },
+});
 
 export default EditAvatarProfile;
