@@ -192,7 +192,7 @@ const ScreenMess = () => {
 				latest = format + newMessage.content
 			}
 			else {
-				latest = format + newMessage.type + " sent.";
+				latest = format + newMessage.type + " sent";
 			}
 
 		}
