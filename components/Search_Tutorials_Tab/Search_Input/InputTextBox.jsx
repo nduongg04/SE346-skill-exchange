@@ -1,10 +1,10 @@
 import React, { useState, useEffect,useRef } from 'react';
-import { SafeAreaView, Alert, StyleSheet, TouchableOpacity, FlatList, Text, View,TouchableHighlight  } from "react-native";
+import { SafeAreaView, Alert, StyleSheet, TouchableOpacity, FlatList, Text, View,TouchableHighlight, Keyboard  } from "react-native";
 import { scale } from "react-native-size-matters";
 import axios from "axios";
 import { COLORS } from "../../../constants";
 import { router } from "expo-router";
-import InputText from "../../register/Button/InputText";
+import InputText from "../../Search_Tutorials_Tab/Button/InputText";
 
 
 const InputTextBox = () => {
@@ -12,8 +12,7 @@ const InputTextBox = () => {
   const [query, setQuery] = useState("");
   const [topicdata, setTopicData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [isFocused, setIsFocused] = useState(false);
-
+  const inputQuery = useRef(null)
   useEffect(() => {
     if (query) {
       setFilteredData(topicdata.filter(topic => topic.name.includes(query)));
@@ -26,16 +25,25 @@ const InputTextBox = () => {
     getTopicData();
   },[]);
 
+  useEffect(()=>{
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', ()=>{
+      console.log("Unfocus")
+      inputQuery.current.blur();
+    })
+
+    return () => {
+      hideSubscription.remove();
+    };
+
+  }, [])
   const handleOnChangeText = (text) => {
     setQuery(text);
   };
   const handleOnBlur= () => {
-    setIsFocused(false);
     setFilteredData([]);
   };
 
   const handleonFocus=() =>{
-    setIsFocused(true);
     if (query) {
       setFilteredData(topicdata.filter(topic => topic.name.includes(query)));
     } else {
@@ -101,19 +109,20 @@ const InputTextBox = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
-      {isFocused && <View style={styles.overlay} />}
-      <View style={[styles.TopicList, isFocused ? { zIndex: 5 } : {}]}>
-      <InputText
-        style = {{zIndex:3}}
-        placeholder="Enter your topic"
-        label="Enter your query"
-        onChangeText={handleOnChangeText}
-        onFocus={handleonFocus}
-        onBlur={handleOnBlur}
-        onSubmitEditing={getTopic}
-        value={query}
-      />
+    <SafeAreaView>
+      
+      <View style={styles.TopicList}>
+        <InputText
+          ref= {inputQuery}
+          style = {{zIndex:3}}
+          placeholder="Enter your topic"
+          label="Enter your query"
+          onChangeText={handleOnChangeText}
+          onFocus={handleonFocus}
+          onBlur={handleOnBlur}
+          onSubmitEditing={getTopic}
+          value={query}
+        />
         <FlatList
           data={filteredData}
           keyboardShouldPersistTaps='handled'
@@ -121,7 +130,7 @@ const InputTextBox = () => {
           renderItem={({ item }) => (
             <TouchableHighlight  
               style={{ marginBottom: 3, height: 35, zIndex: 4,width: '100%', borderRadius: 10}} 
-              underlayColor={'#D5D5D5'}
+              underlayColor={'#E5E5E5'}
               onPress={() => {handleSelectTopic(item)}
               }
               >
@@ -158,15 +167,6 @@ const styles = StyleSheet.create({
     zIndex:3,
     maxHeight: 300,
     marginHorizontal: 20,
-  },
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    bottom: 0,
-    left: 0,
-    right: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    zIndex: 4,
   },
 });
 export default InputTextBox;

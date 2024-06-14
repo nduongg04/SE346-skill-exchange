@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef,useContext } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Image, KeyboardAvoidingView, TextInput, Modal, Linking, ActivityIndicator, Alert } from 'react-native';
+import { View, Text, ScrollView,RefreshControl, TouchableOpacity, Image, KeyboardAvoidingView, TextInput, Modal, Linking, ActivityIndicator, Alert } from 'react-native';
 import { registerRootComponent } from 'expo';
 import { icons } from "@constants";
 import { loadFonts, styles } from "./mainRoom.style";
@@ -13,7 +13,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import * as FileSystem from 'expo-file-system';
 import * as DocumentPicker from 'expo-document-picker';
 import { useSocketContext } from '../../../context/SocketContext';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation,useIsFocused, useFocusEffect } from '@react-navigation/native';
 import { useSession } from '../../../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import LoadingOverlay from '../loadingOverlay';
@@ -23,7 +23,8 @@ import PostData from '../../../utils/postdata';
 import HandleSessionExpired from '../../../utils/handlesession';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MessageProvider, MessageContext } from './messageContext';
-const ScreenChatRoom = ({ router }) => {
+
+const ContentScreen = () => {
   const route = useRoute();
   const { user, login, logout } = useSession();
   const scrollViewRef = useRef(null);
@@ -43,18 +44,54 @@ const ScreenChatRoom = ({ router }) => {
   const { socket, setSocket, onlineUsers, setOnlineUsers } = useSocketContext()
   const [isLoading, setLoading] = useState(true);
   const [isUploading, setUploading] = useState(false);
-  // const {soundcheck, setSoundCheck} = useContext(MessageContext);
-
-
+  const {soundcheck, setSoundCheck} = useContext(MessageContext);
+  const isFocused = useIsFocused();
   const name = route.params.name
-  // const [modalVisible, setModalVisible] = useState(false);
   const navigation = useNavigation();
+  const idFriend= route.params.idFriend;
+  //
+  const [page, setPage] = useState(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [checkScroll, setcheckScroll] = useState(true);
+  const handleLoadMore = async () => { 
+      setPage(page + 1);
+  };
+  const onRefresh = () => {
+    setRefreshing(true);
+    handleLoadMore().then(() => setRefreshing(false));
+  };
+  useEffect(()=>
+  {
+      setPage(0);
+  },[isFocused])
+
+  const removeSound= async()=>
+    {
+      
+      if(soundcheck)
+        {
+          await soundcheck.stopAsync();
+        }
+    }
+    useFocusEffect(
+      React.useCallback(() => {
+  
+        return () => {
+          // Màn hình bị unfocus (người dùng rời khỏi màn hình)
+          removeSound();
+        };
+      }, [soundcheck])
+    );
+
+
+
   //socket send message
   useEffect(() => {
     if (socket === null) return
     const recipientID = chat?.members?.find((member) => member.id !== user.id)._id
-    console.log(recipientID)
-    console.log("socket " + socket.id)
+    // console.log(recipientID)
+    // console.log("socket " + socket.id)
     socket.emit("sendMessage", { ...newMessageData, recipientID })
   }, [newMessageData])
 
@@ -65,6 +102,7 @@ const ScreenChatRoom = ({ router }) => {
     console.log("socket ")
     socket.on("getMessage", (res) => {
       if (chatId !== res.chatID) return
+      setcheckScroll(true);
       setMessageList([...messageList, res])
     })
 
@@ -85,10 +123,8 @@ const ScreenChatRoom = ({ router }) => {
     const hours = Math.floor(time.getHours());
     const minutes = Math.floor(time.getMinutes());
     const formattedMinutes = String(minutes).padStart(2, '0');
-    let formattedHours = hours
-    if (hours >= 10) {
-      formattedHours = String(hours).padStart(2, '0');
-    }
+    let formattedHours = String(hours).padStart(2, '0');
+
 
     return `${formattedHours}:${formattedMinutes}`;
   }
@@ -112,35 +148,79 @@ const ScreenChatRoom = ({ router }) => {
     }
 
   };
+  const formatDateTime = (dateTimeString) => {
+    const date = new Date(dateTimeString);
+    const formattedDate = `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')} ${date.getDate().toString().padStart(2, '0')}/${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getFullYear()}`;
+    return formattedDate;
+  };
+  const checkTimeDifference = (dateTime1, dateTime2) => {
+    const diff = Math.abs(dateTime2 - dateTime1); // Lấy giá trị tuyệt đối của hiệu hai thời điểm
+
+    // Chuyển đổi từ milliseconds sang phút
+    const diffMinutes = Math.floor(diff / (1000 * 60)); // 1000 milliseconds = 1 giây, 60 giây = 1 phút
+
+    // Kiểm tra nếu hiệu của hai thời điểm lớn hơn 10 phút
+    return diffMinutes > 5;
+};
   const renderMessage = () => {
     const list = [];
+    let start=0;
+    if(messageList.length>=(page*4+15))
+      {
+        start=messageList.length-(page*4+15);
+      }
     if (messageList.length != 0) {
-      for (let i = 0; i < messageList.length; i++) {
+      for (let i = start; i < messageList.length; i++) {
         let sender = ''
+        let time = new Date(messageList[i].dateTime);
+        if(i-1>=0)
+          {
+            timeBefore= new Date(messageList[i-1].dateTime);
+            if(timeBefore)
+              {
+                if(timeBefore.getDate()!=time.getDate())
+                  {
+                    list.push(<Text key={formatDateTime(messageList[i].dateTime)} style={styles.DateMessage}>{formatDateTime(messageList[i].dateTime)}</Text>)
+                  }
+              }
+          }
         // console.log((messageList));
         if (messageList[i].senderID.id === user.id) {
           sender = "My message"
         }
         if ((i + 1) < messageList.length) {
           if (messageList[i].senderID.id == messageList[i + 1].senderID.id) {
-            list.push(<Message key={i} User={sender} Content={messageList[i].content} Time='' Avatar='no' Type={messageList[i].type} Function={getFile} />);
+            if(checkTimeDifference( new Date(messageList[i].dateTime), new Date(messageList[i+1].dateTime)))
+              {
+                list.push(<Message key={i} User={sender} Content={messageList[i].content} Time={formatTimeMessage(time)} Avatar='no' Type={messageList[i].type} Function={getFile} />);
+              }
+              else
+              {
+                list.push(<Message key={i} User={sender} Content={messageList[i].content} Time='' Avatar='no' Type={messageList[i].type} Function={getFile} />);
+              }
+           
           }
           else {
-            let time = new Date(messageList[i].dateTime);
+           
             list.push(<Message key={i} User={sender} Content={messageList[i].content} Time={formatTimeMessage(time)} Avatar={messageList[i].senderID.avatar} Type={messageList[i].type} Function={getFile} />);
           }
         }
         else {
-          let time = new Date(messageList[i].dateTime);
-
           list.push(<Message key={i} User={sender} Content={messageList[i].content} Time={formatTimeMessage(time)} Avatar={messageList[i].senderID.avatar} Type={messageList[i].type} Function={getFile} />);
         }
 
       }
       return list;
     }
+    else
+    {
+      return (
+        <Text style={{marginHorizontal:"auto", marginVertical:"auto", fontSize:18, color:"#FF9400", marginTop:"80%"}}>Let’s start the conversation !</Text>
+      )
+    }
 
   }
+ 
   const handleKeyboardDidShow = () => {
     scrollViewRef.current.scrollToEnd({ animated: true }); // Cuộn xuống cuối của ScrollView
   };
@@ -169,27 +249,56 @@ const ScreenChatRoom = ({ router }) => {
     if (data !== "Something went wrong") {
       setMessageList(data);
     }
-
     setLoading(false);
   }
 
+  const generateID = ()=>{
+    const codeInit = "qwertyuiopasdfghjklzxcvbnm1234567890"
+    let code = ""
+    for(let i =0; i<10;i++){
+        const index = Math.floor(Math.random()*codeInit.length)
+        code += codeInit.charAt(index)
+    }
+    return code
+  }
   const sendMessage = async (Type, Content) => {
     if (!Content)
-      Content = message;
+      {
+        Content = message;
+        setMessage('');
+      }
+      
     const dataPost = {
       chatID: `${chatId}`,
       senderID: `${user.id}`,
       content: Content,
       type: Type,
     }
+    
+    const idMsg = generateID()
+    const msg = {
+      _id: idMsg,
+      chatID: `${chatId}`,
+      createAt: `${new Date()}`,
+      dateTime: `${new Date()}`,
+      content: Content,
+      type: Type,
+      senderID: user
+    }
+    console.log(msg)
+    setMessageList([...messageList, msg])
     const url = 'https://se346-skillexchangebe.onrender.com/api/v1/message/send';
     const response = await PostData(url, dataPost);
+    
+    console.log(response.data)
     if (response != 404 && response !== "Something went wrong" && response) {
       setNewMessage(response.data)
-      setMessageList([...messageList, response.data])
+      
       return true
     }
     else {
+      const msgList = messageList.filter((value)=> value._id != idMsg)
+      setMessageList([...msgList])
       Alert.alert(
         'Thông báo',
         'Không gửi được tin nhắn',)
@@ -449,6 +558,7 @@ const ScreenChatRoom = ({ router }) => {
   }
   //send
   const handleSendMessage = async () => {
+    setcheckScroll(true);
     //Record
     if (isRecord) {
       await stopRecording();
@@ -466,28 +576,28 @@ const ScreenChatRoom = ({ router }) => {
     }
     else {
       if (await sendMessage('text')) {
-        setMessage('');
+        // setMessage('');
       }
     }
   };
+//
+
 
 
 
   return (
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-        <MessageProvider>
+    
           <View style={styles.Container}>
 
           <View style={styles.Header}>
-            <TouchableOpacity onPress={() => { navigation.goBack('(tabs)'); }} >
-              <Image source={icons.back} style={[{ height: 25, width: 25.5, marginRight: 40 }]}  ></Image>
+            <TouchableOpacity onPress={() => {navigation.goBack('(tabs)'); }} >
+              <Image source={icons.back_orange} style={[{ height: 25, width: 25, marginRight: 20, marginTop:3 }]}  ></Image>
             </TouchableOpacity>
             <Text style={styles.Name} numberOfLines={1} ellipsizeMode="tail">{name}</Text>
-            <TouchableOpacity >
-              <Image source={icons.call} style={{ height: 20.5, width: 20.5 }}></Image>
-            </TouchableOpacity>
-            <TouchableOpacity >
-              <Image source={icons.video} style={{ height: 20, width: 23.5, marginLeft: 10 }} />
+           
+            <TouchableOpacity onPress={() => navigation.navigate('chatRoom/redirectInformation', { id:idFriend, idChat: chatId })}>
+              <Image source={icons.info_orange} style={{ height: 32, width: 32, marginLeft: 5 }} />
             </TouchableOpacity>
 
           </View>
@@ -512,9 +622,21 @@ const ScreenChatRoom = ({ router }) => {
                 onKeyboardDidShow={handleKeyboardDidShow}
                 contentContainerStyle={styles.scrollViewContainer}
                 onContentSizeChange={(contentWidth, contentHeight) => {
-                  scrollViewRef.current.scrollToEnd({ animated: true });
+                  if(checkScroll)
+                    {
+                      scrollViewRef.current.scrollToEnd({ animated: true });
+                      setcheckScroll(false);
+                    }
                 }}
-                ref={scrollViewRef} >
+                ref={scrollViewRef} 
+                onScroll={({ nativeEvent }) => {
+                  if (nativeEvent.contentOffset.y <= 0) {
+                    handleLoadMore();
+                  }
+                }}
+                scrollEventThrottle={16}
+                refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+                >
                 {renderMessage()}
 
               </ScrollView>
@@ -534,7 +656,7 @@ const ScreenChatRoom = ({ router }) => {
                     <TextInput value={message}
                       onChangeText={handleMessageChange}
                       multiline={true}
-                      placeholder="Nhắn tin" />
+                      placeholder="Message" />
                   </View>
                 ) : (
                   <>
@@ -574,10 +696,18 @@ const ScreenChatRoom = ({ router }) => {
           </View>
           <LoadingOverlay visible={isUploading} />
         </View>
-        </MessageProvider>
       </KeyboardAvoidingView>
    
   )
 }
-export default (ScreenChatRoom);
+const ScreenChatRoom =()=>{
+  const isFocused= useIsFocused();
+ 
+  return (
+    <MessageProvider>
+      < ContentScreen/>
+    </MessageProvider>
+  );
+};
+export default ScreenChatRoom;
 // registerRootComponent(ScreenChatRoom);

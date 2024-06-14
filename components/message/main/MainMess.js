@@ -64,28 +64,7 @@ const ScreenMess = () => {
 	}, [isFocused, latestMessage, socket])
 
 
-	// const createChat = async () => {
-	// 	const response = await fetch('https://se346-skillexchangebe.onrender.com/api/v1/chat/create', {
-	// 		method: 'POST',
-	// 		headers: {
-	// 			'Content-Type': 'application/json',
-	// 			Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODI5NSwiZXhwIjoxNzE1NzkwMjk1fQ.4EHaQTxyYqJrQARjGcPXBYG6BYUOTRzZ51tYBju6JRQ"
-	// 		},
-	// 		body: JSON.stringify({
-	// 			"firstID": "661aceb50b954258a9b6dc70",
-	// 			"secondID": "660bfe5a500caf5003a7f407"
-	// 		})
-	// 	})
-	// 	const data = await response.json();
-	// 	console.log(response.status)
-	// 	console.log(data);
-	// 	if (response.status == 400) {
-	// 		console.log(response.statusText)
-	// 	}
-	// 	else {
-	// 		console.log(response.statusText)
-	// 	}
-	// }
+	
 	const deleteChat = async () => {
 		try {
 			const response = await fetch("https://se346-skillexchangebe.onrender.com/api/v1/chat/delete/661d725075b060d39134b9d9",
@@ -157,12 +136,13 @@ const ScreenMess = () => {
 
 			}
 			else {
+				prevSearchText.current='';
 				setChatAppear(chatRooms);
 			}
 		}
-		else {
-			setSearchText('')
-		}
+		// else {
+		// 	setSearchText('')
+		// }
 	}, [searchText]);
 
 	useEffect(() => {
@@ -192,7 +172,7 @@ const ScreenMess = () => {
 		}
 		let newMessage = item.latestMessage[0]
 		const message = latestMessage.find((msg) => msg.chatID === item.chatInfo._id)
-		if (message) {
+		if (message && newMessage) {
 			if (newMessage.dateTime < message.dateTime) {
 				if (item.chatInfo._id === message.chatID) {
 					newMessage = message
@@ -213,7 +193,7 @@ const ScreenMess = () => {
 
 		}
 		return (
-			<TouchableOpacity onPress={() => navigation.navigate('chatRoom/room', { chatId: item.chatInfo._id, chat: item.chatInfo, name: item.chatInfo.members[num].username })}>
+			<TouchableOpacity onPress={() => navigation.navigate('chatRoom/room', { chatId: item.chatInfo._id, chat: item.chatInfo, name: item.chatInfo.members[num].username, idFriend: item.chatInfo.members[num].id})}>
 				<CardMessage Name={item.chatInfo.members[num].username}
 					Avatar={item.chatInfo.members[num].avatar}
 					Status={
@@ -237,7 +217,7 @@ const ScreenMess = () => {
 				<Text style={styles.Header}>Message</Text>
 				<View style={styles.Search}>
 					<Image source={icons.search_icon} style={styles.IconSearch}></Image>
-					<TextInput placeholder="Tìm kiếm"
+					<TextInput placeholder="Search"
 						style={styles.Input}
 						value={searchText}
 						onChangeText={handleSearch}></TextInput>
@@ -250,11 +230,15 @@ const ScreenMess = () => {
 					<ActivityIndicator size="large" color="#FF9557" animating={true} style={{flex:1}}/>
 				) :
 					(
-						<FlatList
-						data={chatAppear}
-						renderItem={renderItem}
-						keyExtractor={(item) => item.chatInfo._id}
-					/>
+						(chatAppear.length === 0 || !chatAppear) ? (
+							<Text style={{marginHorizontal:"auto", color:'#FF9400', fontSize:16, marginTop:"5%"}}>Let's find more new friends !</Text>
+						  ) : (
+							<FlatList
+							  data={chatAppear}
+							  renderItem={renderItem}
+							  keyExtractor={(item) => item.chatInfo._id}
+							/>
+						  )
 					)
 				}
 

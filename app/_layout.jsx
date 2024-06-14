@@ -24,25 +24,17 @@ const Layout = () => {
 
 	return (
 		<SafeAreaProvider>
-				<AuthProvider>
-					<SocketProvider>
-						<Stack>
-							<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-							<Stack.Screen
-								name="signing/Signing"
-								options={{ headerShown: false }}
-							/>
-							<Stack.Screen
-								name="chatRoom/room"
-								options={{ headerShown: false }}
-							/>
-							<Stack.Screen
-								name="informationRequest/redirect"
-								options={{ headerShown: false }}
-							/>
-						</Stack>
-					</SocketProvider>
-				</AuthProvider>
+			<AuthProvider>
+				<SocketProvider>
+					<Stack>
+						<Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+						<Stack.Screen name="signing/Signing" options={{ headerShown: false }} />
+						<Stack.Screen name="chatRoom/room" options={{headerShown:false}} />
+						<Stack.Screen name="chatRoom/redirectInformation" options={{headerShown:false}} />
+						<Stack.Screen name="informationRequest/redirect" options={{headerShown:false}}/>
+					</Stack>
+				</SocketProvider>
+			</AuthProvider>
 		</SafeAreaProvider>
 	);
 };

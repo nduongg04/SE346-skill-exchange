@@ -16,7 +16,7 @@ return(
             style={styles.Avatar}/>
         </View>
         <View style={styles.MessageContainer}>
-            <Text style={styles.Name}>{props.Name}</Text>
+            <Text style={styles.Name} numberOfLines={1} ellipsizeMode="tail">{props.Name}</Text>
             <Text style={styles.RecentMessage}>{props.Recent}</Text>
         </View>
         <View style={styles.StatusContainer}>
