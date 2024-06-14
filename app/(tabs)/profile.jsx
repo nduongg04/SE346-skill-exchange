@@ -7,24 +7,43 @@ import {
 	ScrollView,
 	TouchableOpacity,
 	TouchableHighlight,
+	Modal,
 } from "react-native";
 import { SafeAreaView } from "react-native";
 import { COLORS } from "@constants";
 
 import Background from "@assets/icons/Background.png";
-import Ellipse from "@assets/icons/Ellipse 1.png";
 import EditProfile from "@assets/icons/Edit profile.png";
-import React, { useEffect } from "react";
+import LogOut from '@assets/icons/LogOut.png';
+import React, { useEffect, useState } from "react";
 import { Stack, router } from "expo-router";
 import { useSession } from "../../context/AuthContext";
 
 const Profile = () => {
-	const { user, username } = useSession();
+	const { user, logout } = useSession();
+	const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+	useEffect(() => {
+		if (user) {
+			console.log(user.username);
+			console.log(user.email);
+			console.log(user.birthDay);
+			console.log(user.avatar);
+		}
+	}, [user]);
 
 	function convertDate(isoDate) {
 		const date = new Date(isoDate);
 		const formattedDate = date.toLocaleDateString("en-GB");
 		return formattedDate;
+	}
+
+	if (!user) {
+		return (
+			<SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.darkGrayProfile }}>
+				<Text>Loading...</Text>
+			</SafeAreaView>
+		);
 	}
 
 	const handleYourSkillsPress = () => {
@@ -45,6 +64,26 @@ const Profile = () => {
 
 	const handleAboutYou = () => {
 		router.navigate("/change-about-you");
+	};
+
+	const handleEditProfilePress = () => {
+		router.navigate("/edit-profile");
+	};
+
+	const handleChangeInformationPress = () => {
+		router.navigate("/change-information");
+	};
+
+	const handleOpenModal = () => {
+		setShowLogoutModal(true);
+	};
+
+	const handleCloseModal = () => {
+		setShowLogoutModal(false);
+	};
+
+	const handleLogout = () => {
+		navigation.navigate("Login");
 	};
 
 	return (
@@ -76,8 +115,8 @@ const Profile = () => {
 							<Text style={styles.headerText}>Personal</Text>
 						</View>
 						<View style={styles.imgContainer}>
-							<Image source={Ellipse} style={styles.avatarImage} />
-							<TouchableOpacity style={{ alignItems: "flex-end", top: -115 }}>
+							<Image source={{ uri: user.avatar }} style={styles.avatarImage} />
+							<TouchableOpacity style={{ alignItems: "flex-end", top: -115 }} onPress={handleEditProfilePress}>
 								<Image source={EditProfile} />
 							</TouchableOpacity>
 						</View>
@@ -92,7 +131,7 @@ const Profile = () => {
 								<View>
 									<Text>General Information</Text>
 								</View>
-								<TouchableOpacity>
+								<TouchableOpacity onPress={handleChangeInformationPress}>
 									<Text style={{ color: "blue" }}>Change Password</Text>
 									<Text style={{ color: "blue" }}>Change Information</Text>
 								</TouchableOpacity>
@@ -235,6 +274,54 @@ const Profile = () => {
 							</TouchableOpacity>
 						</View>
 
+						<TouchableOpacity
+							style={{
+								backgroundColor: COLORS.white,
+								borderRadius: 27,
+								alignSelf: "center",
+								paddingHorizontal: 30,
+								paddingVertical: 10,
+							}}
+							onPress={handleOpenModal}
+						>
+							<Text
+								style={{
+									textAlign: "center",
+									fontSize: 16,
+									fontWeight:"bold",
+									color: COLORS.red,
+								}}
+							>
+								Log out
+							</Text>
+						</TouchableOpacity>
+						<Modal
+							transparent={true}
+							visible={showLogoutModal}
+							onRequestClose={handleCloseModal}
+						>
+							<View style={styles.logoutModalContainer}>
+								<View style={styles.logoutModalContent}>
+									<Text style={styles.logoutModalText}>Are you sure you want to log out?</Text>
+									<View style={styles.logoutModalButtons}>
+										<TouchableOpacity
+											style={styles.logoutButton}
+											onPress={handleLogout}
+										>
+											<Text style={styles.logoutButtonText}>Yes</Text>
+										</TouchableOpacity>
+										<TouchableOpacity
+											style={styles.cancelButton}
+											onPress={handleCloseModal}
+										>
+											<Text style={styles.cancelButtonText}>Cancel</Text>
+										</TouchableOpacity>
+									</View>
+								</View>
+							</View>
+						</Modal>
+
+
 						<View></View>
 					</View>
 				</ScrollView>
@@ -269,9 +356,9 @@ const styles = StyleSheet.create({
 		width: 120,
 		height: 120,
 		marginTop: 100,
-
-		flex: 1,
-		resizeMode: "contain",
+		borderRadius: 60,
+		resizeMode: "cover",
+		overflow: "hidden",
 	},
 	textContainer: {
 		alignItems: "center",
@@ -295,6 +382,7 @@ const styles = StyleSheet.create({
 		gap: 20,
 		marginTop: 20,
 		paddingHorizontal: 10,
+		
 	},
 	items: {
 		flexDirection: "row",
@@ -312,6 +400,44 @@ const styles = StyleSheet.create({
 		backgroundColor: "#FFFFFF",
 		marginTop: 10,
 		borderRadius: 10,
+	},
+	logoutModalContainer: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		backgroundColor: 'rgba(0, 0, 0, 0.5)',
+	},
+	logoutModalContent: {
+		backgroundColor: 'white',
+		padding: 20,
+		borderRadius: 10,
+		alignItems: 'center',
+	},
+	logoutModalText: {
+		fontSize: 18,
+		marginBottom: 20,
+	},
+	logoutModalButtons: {
+		flexDirection: 'row',
+	},
+	logoutButton: {
+		backgroundColor: 'red',
+		padding: 10,
+		borderRadius: 5,
+		marginRight: 10,
+	},
+	logoutButtonText: {
+		color: 'white',
+		fontWeight: 'bold',
+	},
+	cancelButton: {
+		backgroundColor: 'gray',
+		padding: 10,
+		borderRadius: 5,
+	},
+	cancelButtonText: {
+		color: 'white',
+		fontWeight: 'bold',
 	},
 });
 
