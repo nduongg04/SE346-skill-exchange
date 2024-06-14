@@ -107,10 +107,14 @@ const ContentScreen = () => {
 
   useEffect(()=>{
     socket.on("isUnFriend", (res)=>{
+      console.log("isFriend" + isFriend)
       if(chat._id !== res.chatId) return
       setIsFriend(false)
       console.log(isFriend)
     })
+    return ()=>{
+      socket.off("isUnFriend")
+    }
   },[])
   //set up
   const formatTimeRecord = (time) => {

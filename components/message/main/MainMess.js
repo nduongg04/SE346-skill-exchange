@@ -64,7 +64,7 @@ const ScreenMess = () => {
 	}, [isFocused, latestMessage, socket])
 
 	useEffect(()=>{   
-		socket.on("isUnFriend",(res)=>{
+		socket.on("deleteChatRoom",(res)=>{
 			const chatId = res.chatId
 			const chatIndex = chatRooms.findIndex((e)=> e.chatInfo._id === chatId)
 			if(chatIndex != -1){
@@ -74,7 +74,7 @@ const ScreenMess = () => {
 			}
 		})
 		return () => {
-			socket.off("isUnFriend");
+			socket.off("deleteChatRoom");
 		}
 	}, [chatRooms, socket, chatAppear])
 
