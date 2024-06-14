@@ -13,25 +13,32 @@ import CustomButton from "../../components/register/Button/CustomButton";
 import { COLORS } from "../../constants";
 import { scale } from "react-native-size-matters";
 import React, { useState } from "react";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Stack } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { AntDesign } from "@expo/vector-icons";
 import { useSession } from "../../context/AuthContext";
 import Spinner from "react-native-loading-spinner-overlay";
 import PatchData from "../../utils/patchdata";
-
+import avatarDefault from "@assets/images/avatarDefault.jpg";
 
 const ChangeInformation = () => {
+    const {name}= useLocalSearchParams()
+    const {mail} =useLocalSearchParams()
+    const {number} = useLocalSearchParams()
     const [skill, setSkill] = useState("");
     const { user, login } = useSession();
     const [isUpdating, setIsUpdating] = useState(false);
-
-    const handleChangeSkillDescription = async () => {
+    const [username, setUserName] = useState(name)
+    const [email, setEmail] = useState(mail)
+    const [phonenumber,setPhoneNumber] = useState(number)
+    const handleChangeInformation = async () => {
         setIsUpdating(true);
         const baseUrl = "https://se346-skillexchangebe.onrender.com";
         const data = await PatchData(`${baseUrl}/api/v1/user/update/${user.id}`, {
-            skill: [skill],
+            username: username,
+            email: email,
+            phoneNumber: phonenumber
         });
         if (!data || data === "404" || data === "Something went wrong") {
             alert("Something went wrong when updating user's skill");
@@ -40,7 +47,9 @@ const ChangeInformation = () => {
         }
         login({
             ...user,
-            skill: [skill],
+            username: username,
+            email: email,
+            phoneNumber: phonenumber
         });
         Alert.alert("Successfully", "Update successfully", [
             {
@@ -122,18 +131,23 @@ const ChangeInformation = () => {
                         placeholder='Your username'
                         label='Username'
                         error={null}
-
+                        value= {username}
+                        onChangeText= {(text)=>{setUserName(text)}}
                     />
                     <InputText
                         placeholder='Your email address'
                         label='Email'
                         error={null} 
+                        value={email}
+                        onChangeText={(text)=> {setEmail(text)}}
                     />
                     <InputText
                         placeholder='Your phone number'
                         label='Phone Number'
                         error={null}
                         keyboardType='numeric'
+                        value={phonenumber}
+                        onChangeText={(text)=>{setPhoneNumber(text)}}
                     />
 
                     <TouchableOpacity
@@ -145,6 +159,7 @@ const ChangeInformation = () => {
                             paddingVertical: 7,
                             marginTop: 16,
                         }}
+                        onPress={handleChangeInformation}
                     >
                         <Text
                             style={{

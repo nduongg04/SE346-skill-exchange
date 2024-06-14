@@ -76,7 +76,15 @@ const Profile = () => {
 	};
 
 	const handleChangeInformationPress = () => {
-		router.navigate("/change-information");
+		console.log(user.username + user.email+user.phoneNumber)
+		router.navigate({
+			pathname: "/change-information",
+			params: {
+				name: user.username,
+				mail: user.email,
+				number: user.phoneNumber
+			}
+		});
 	};
 
 	const handleOpenModal = () => {
