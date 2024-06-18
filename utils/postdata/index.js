@@ -6,7 +6,6 @@ import { Alert } from "react-native";
 
 const PostData = (url, data) => {
 	const postUsingAccessToken = async () => {
-		console.log("PostData");
 		const accessToken = await AsyncStorage.getItem("accessToken");
 		try {
 			const response = await axios.post(url, data, {
