@@ -13,7 +13,7 @@ import { SafeAreaView } from "react-native";
 import { COLORS } from "@constants";
 import Background from "@assets/icons/Background.png";
 import EditProfile from "@assets/icons/Edit profile.png";
-import LogOut from '@assets/icons/LogOut.png';
+import LogOut from "@assets/icons/LogOut.png";
 import React, { useEffect, useState } from "react";
 import { Stack, router, useNavigation } from "expo-router";
 import { useSession } from "../../context/AuthContext";
@@ -25,9 +25,9 @@ import axios from "axios";
 const Profile = () => {
 	const { user, logout } = useSession();
 	const [showLogoutModal, setShowLogoutModal] = useState(false);
-	const navigation = useNavigation()
-	const {socket} = useSocketContext()
-	const baseUrl = "https://se346-skillexchangebe.onrender.com/api/v1"
+	const navigation = useNavigation();
+	const { socket } = useSocketContext();
+	const baseUrl = "https://se346-skillexchangebe.onrender.com/api/v1";
 	useEffect(() => {
 		if (user) {
 			console.log(user.username);
@@ -45,7 +45,14 @@ const Profile = () => {
 
 	if (!user) {
 		return (
-			<SafeAreaView style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: COLORS.darkGrayProfile }}>
+			<SafeAreaView
+				style={{
+					flex: 1,
+					justifyContent: "center",
+					alignItems: "center",
+					backgroundColor: COLORS.darkGrayProfile,
+				}}
+			>
 				<Text>Loading...</Text>
 			</SafeAreaView>
 		);
@@ -76,14 +83,14 @@ const Profile = () => {
 	};
 
 	const handleChangeInformationPress = () => {
-		console.log(user.username + user.email+user.phoneNumber)
+		console.log(user.username + user.email + user.phoneNumber);
 		router.navigate({
 			pathname: "/change-information",
 			params: {
 				name: user.username,
 				mail: user.email,
-				number: user.phoneNumber
-			}
+				number: user.phoneNumber,
+			},
 		});
 	};
 
@@ -95,31 +102,33 @@ const Profile = () => {
 		setShowLogoutModal(false);
 	};
 
-	const logoutApi = async()=>{
-		const refreshToken = await AsyncStorage.getItem("refreshToken")
-		console.log(refreshToken)
-		try{
-			const response = await axios.post(`${baseUrl}/user/logout`, {},{
-				headers: {
-					Authorization: `Bearer ${refreshToken}`
+	const logoutApi = async () => {
+		const refreshToken = await AsyncStorage.getItem("refreshToken");
+		console.log(refreshToken);
+		try {
+			const response = await axios.post(
+				`${baseUrl}/user/logout`,
+				{},
+				{
+					headers: {
+						Authorization: `Bearer ${refreshToken}`,
+					},
 				}
-			})
-			if(response.status === 200){
-				console.log("Logout successfull")
+			);
+			if (response.status === 200) {
+				console.log("Logout successfull");
+			} else {
+				console.log(response.data);
 			}
-			else{
-				console.log(response.data)
-			}
-
-		}catch(e){
-			console.log(e)
+		} catch (e) {
+			console.log(e);
 		}
-	}
+	};
 	const handleLogout = async () => {
-		logoutApi()
-		await AsyncStorage.clear()
-		navigation.navigate("EnterName")
-		socket.disconnect()
+		logoutApi();
+		await AsyncStorage.clear();
+		navigation.navigate("EnterName");
+		socket.disconnect();
 	};
 
 	return (
@@ -151,10 +160,16 @@ const Profile = () => {
 							<Text style={styles.headerText}>Personal</Text>
 						</View>
 						<View style={styles.imgContainer}>
-							<Image source={user.avatar ==="" ? avatarDefault : { uri: user.avatar }} 
-								style={styles.avatarImage} 
+							<Image
+								source={
+									user.avatar === "" ? avatarDefault : { uri: user.avatar }
+								}
+								style={styles.avatarImage}
 							/>
-							<TouchableOpacity style={{ alignItems: "flex-end", top: -115 }} onPress={handleEditProfilePress}>
+							<TouchableOpacity
+								style={{ alignItems: "flex-end", top: -115 }}
+								onPress={handleEditProfilePress}
+							>
 								<Image source={EditProfile} />
 							</TouchableOpacity>
 						</View>
@@ -164,17 +179,51 @@ const Profile = () => {
 					</View>
 
 					<View style={styles.informationContainer}>
-						<View>
-							<View style={styles.items}>
-								<View>
-									<Text>General Information</Text>
-								</View>
+						<View
+							style={{
+								backgroundColor: "white",
+								borderRadius: 7,
+								elevation: 5,
+								shadowColor: COLORS.shadowBlue,
+								paddingHorizontal: 2,
+							}}
+						>
+							<View
+								style={{
+									paddingHorizontal: 10,
+									paddingVertical: 25,
+									display: "flex",
+									flexDirection: "row",
+									justifyContent: "space-between",
+								}}
+							>
+								<Text
+									style={{
+										fontSize: 15,
+										fontWeight: "500",
+										color: "#222222",
+									}}
+								>
+									General information
+								</Text>
 								<TouchableOpacity onPress={handleChangeInformationPress}>
-									<Text style={{ color: "blue" }}>Change Information</Text>
+									<Text style={{ fontSize: 15, color: "#0386D0" }}>
+										Change Information
+									</Text>
 								</TouchableOpacity>
 							</View>
 
-							<View style={styles.items}>
+							<View
+								style={{
+									paddingHorizontal: 10,
+									paddingBottom: 20,
+									borderBottomWidth: 1,
+									borderColor: "#D1D1D1",
+									display: "flex",
+									flexDirection: "row",
+									justifyContent: "space-between",
+								}}
+							>
 								<View>
 									<Text>Birthday</Text>
 								</View>
@@ -213,8 +262,7 @@ const Profile = () => {
 							<TouchableOpacity
 								style={{
 									paddingHorizontal: 10,
-									paddingVertical: 20,
-									paddingTop: 0,
+									paddingBottom: 20,
 									borderBottomWidth: 1,
 									borderColor: "#D1D1D1",
 									display: "flex",
@@ -325,7 +373,7 @@ const Profile = () => {
 								style={{
 									textAlign: "center",
 									fontSize: 16,
-									fontWeight:"bold",
+									fontWeight: "bold",
 									color: COLORS.red,
 								}}
 							>
@@ -339,11 +387,15 @@ const Profile = () => {
 						>
 							<View style={styles.logoutModalContainer}>
 								<View style={styles.logoutModalContent}>
-									<Text style={styles.logoutModalText}>Are you sure you want to log out?</Text>
+									<Text style={styles.logoutModalText}>
+										Are you sure you want to log out?
+									</Text>
 									<View style={styles.logoutModalButtons}>
 										<TouchableOpacity
 											style={styles.logoutButton}
-											onPress={async ()=>{await handleLogout()}}
+											onPress={async () => {
+												await handleLogout();
+											}}
 										>
 											<Text style={styles.logoutButtonText}>Yes</Text>
 										</TouchableOpacity>
@@ -357,7 +409,6 @@ const Profile = () => {
 								</View>
 							</View>
 						</Modal>
-
 
 						<View></View>
 					</View>
@@ -419,7 +470,6 @@ const styles = StyleSheet.create({
 		gap: 20,
 		marginTop: 20,
 		paddingHorizontal: 10,
-		
 	},
 	items: {
 		flexDirection: "row",
@@ -440,41 +490,41 @@ const styles = StyleSheet.create({
 	},
 	logoutModalContainer: {
 		flex: 1,
-		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: 'rgba(0, 0, 0, 0.5)',
+		justifyContent: "center",
+		alignItems: "center",
+		backgroundColor: "rgba(0, 0, 0, 0.5)",
 	},
 	logoutModalContent: {
-		backgroundColor: 'white',
+		backgroundColor: "white",
 		padding: 20,
 		borderRadius: 10,
-		alignItems: 'center',
+		alignItems: "center",
 	},
 	logoutModalText: {
 		fontSize: 18,
 		marginBottom: 20,
 	},
 	logoutModalButtons: {
-		flexDirection: 'row',
+		flexDirection: "row",
 	},
 	logoutButton: {
-		backgroundColor: 'red',
+		backgroundColor: "red",
 		padding: 10,
 		borderRadius: 5,
 		marginRight: 10,
 	},
 	logoutButtonText: {
-		color: 'white',
-		fontWeight: 'bold',
+		color: "white",
+		fontWeight: "bold",
 	},
 	cancelButton: {
-		backgroundColor: 'gray',
+		backgroundColor: "gray",
 		padding: 10,
 		borderRadius: 5,
 	},
 	cancelButtonText: {
-		color: 'white',
-		fontWeight: 'bold',
+		color: "white",
+		fontWeight: "bold",
 	},
 });
 
