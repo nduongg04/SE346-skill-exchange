@@ -8,6 +8,7 @@ import { MessageContext } from './messageContext';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import * as Permissions from 'expo-permissions';
+import { useNavigation,useIsFocused, useFocusEffect } from '@react-navigation/native';
 
 
 export const Message = (props) => {
@@ -19,6 +20,14 @@ export const Message = (props) => {
     const [idCount, setIdCount] = useState(null);
     const [seconds, setSeconds] = useState(0);
     const [check, setCheck] = useState(false);
+    const isFocused = useIsFocused();
+    useEffect(() => {
+        if(isPlay)
+            {
+                setIsPlay(false);
+                setCheck(false)
+            }
+    }, [isFocused]);
     let contentType;
     const openModal = () => {
         setModalVisible(true);
@@ -89,7 +98,13 @@ export const Message = (props) => {
         setSound(newSound);
     }
 
-
+    const formatTimeRecord = (time) => {
+        const minutes = Math.floor((time % 3600) / 60);
+        const seconds = Math.floor(time % 60);
+        const formattedMinutes = String(minutes).padStart(2, '0');
+        const formattedSeconds = String(seconds).padStart(2, '0');
+        return `${formattedMinutes}:${formattedSeconds}`;
+      };
 
     const handlePressPlay = async () => {
         if (isPlay) {
@@ -121,7 +136,7 @@ export const Message = (props) => {
                         }
                     setIdCount(setInterval(() => {
                         checksound(newSound, time);
-                    }, 500))
+                    }, 1000))
                 }
                 else {
                     setSoundCheck(sound);
@@ -134,9 +149,9 @@ export const Message = (props) => {
                         {
                             clearInterval(idCount);
                         }
-                    setIdCount(setInterval(() => {
+                        setIdCount(setInterval(() => {
                         checksound(sound, time);
-                    }, 500))
+                    }, 1000))
                 }
             }
         }
@@ -191,7 +206,7 @@ export const Message = (props) => {
     const downloadImage = async () => {
         const { status } = await MediaLibrary.requestPermissionsAsync();
         if (status !== 'granted') {
-          Alert.alert('Quyền bị từ chối', 'Không thể truy cập thư viện phương tiện');
+          Alert.alert('Permission denied', 'Unable to access media library');
           return;
         }
         imageUrl=props.Content;
@@ -202,7 +217,7 @@ export const Message = (props) => {
             // Yêu cầu quyền truy cập thư viện phương tiện
             const { status } = await MediaLibrary.requestPermissionsAsync();
             if (status !== 'granted') {
-              Alert.alert('Quyền bị từ chối', 'Không thể truy cập thư viện phương tiện');
+                Alert.alert('Permission denied', 'Unable to access media library');
               return;
             }
         
@@ -214,7 +229,7 @@ export const Message = (props) => {
             const extension = getFileExtensionFromMimeType(mimeType);
         
             if (!extension) {
-                Alert.alert('Lỗi', 'Không thể tải xuống hình ảnh');
+                Alert.alert("Error", "Unable to download image");
                 return;
             }
         
@@ -227,10 +242,9 @@ export const Message = (props) => {
             // Lưu hình ảnh vào thư viện phương tiện
             const asset = await MediaLibrary.createAssetAsync(finalUri);
             await MediaLibrary.createAlbumAsync('Download', asset, false);
-            Alert.alert('Tải xuống thành công', 'Hình ảnh đã được lưu vào thư viện phương tiện');
+            Alert.alert("Download successful", "Image saved to media library");
           } catch (error) {
-            console.error('Lỗi khi tải xuống hình ảnh:', error);
-            Alert.alert('Lỗi', 'Không thể tải xuống hình ảnh');
+            Alert.alert("Error", "Unable to download image");
           }
       };
 
@@ -250,10 +264,14 @@ export const Message = (props) => {
                     </View>;
                 break;
             case 'record':
-                contentType = <View style={{ justifyContent: 'center', alignItems: 'center', width: 70, height: 45, borderRadius: 20, backgroundColor: "#FF9557", marginTop: 5, marginRight: 5 }}>
+                contentType = <View style={{ justifyContent: 'center', alignItems: 'center', maxWidth: 200, height:45, borderRadius: 20, backgroundColor: "#FF9557", marginTop: 5, marginRight: 5, flexDirection:"row", paddingHorizontal:12, paddingVertical:7 }}>
                     <TouchableOpacity onPress={handlePressPlay}>
-                        <Image source={isPlay ? icons.pause : icons.play} style={isPlay ? { width: 23, height: 23, resizeMode: "cover" } : { width: 30, height: 30, resizeMode: "cover" }} />
+                        <Image source={isPlay ? icons.pause : icons.play} style={isPlay ? { width: 23, height: 23, resizeMode: "cover" } : { width: 30, height: 30, resizeMode: "cover", marginHorizontal:5}} />
                     </TouchableOpacity>
+                    {(!isPlay)?"":
+                        <Text style={{marginLeft:2, fontSize:16}}> {formatTimeRecord(seconds)}</Text>
+                    }
+                    
                 </View>;
                 break;
             case 'file':
@@ -299,12 +317,15 @@ export const Message = (props) => {
                     </View>;
                 break;
             case 'record':
-                contentType = <View style={{ justifyContent: 'center', alignItems: 'center', width: 70, height: 45, borderRadius: 20, backgroundColor: "#FF9557", marginTop: 5, marginLeft: 5 }}>
-                    <TouchableOpacity onPress={handlePressPlay}>
-                        <Image source={isPlay ? icons.pause : icons.play} style={isPlay ? { width: 23, height: 23, resizeMode: "cover" } : { width: 30, height: 30, resizeMode: "cover" }} />
-                    </TouchableOpacity>
-                </View>;
-                break;
+                contentType = <View style={{ justifyContent: 'center', alignItems: 'center', maxWidth: 200, height:45, borderRadius: 20, backgroundColor: "#FF9557", marginTop: 5, marginRight: 5, flexDirection:"row", paddingHorizontal:12, paddingVertical:7 }}>
+                <TouchableOpacity onPress={handlePressPlay}>
+                    <Image source={isPlay ? icons.pause : icons.play} style={isPlay ? { width: 23, height: 23, resizeMode: "cover" } : { width: 30, height: 30, resizeMode: "cover", marginHorizontal:5}} />
+                </TouchableOpacity>
+                {(!isPlay)?"":
+                    <Text style={{marginLeft:2, fontSize:16}}> {formatTimeRecord(seconds)}</Text>
+                }
+            </View>;
+            break;
             case 'file':
                 const fileName = getFileName(props.Content);
                 contentType =

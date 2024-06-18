@@ -64,46 +64,34 @@ const ScreenMess = () => {
 	}, [isFocused, latestMessage, socket])
 
 	useEffect(()=>{   
-		socket.on("isUnFriend",(res)=>{
+		socket.on("deleteChatRoom",(res)=>{
 			const chatId = res.chatId
 			const chatIndex = chatRooms.findIndex((e)=> e.chatInfo._id === chatId)
 			if(chatIndex != -1){
-				const newChatRooms= chatRooms.splice(chatIndex, 1)
+				const newChatRooms = [
+					...chatRooms.slice(0, chatIndex),
+					...chatRooms.slice(chatIndex + 1)
+				  ];
 				setChatRooms([...newChatRooms])
+				setChatAppear([...newChatRooms])
 			}
 		})
-	}, [chatRooms, socket])
-
-	
-	const deleteChat = async () => {
-		try {
-			const response = await fetch("https://se346-skillexchangebe.onrender.com/api/v1/chat/delete/661d725075b060d39134b9d9",
-				{
-					method: 'DELETE',
-					headers: {
-						'Content-Type': 'application/json',
-						Authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjFhY2ViNTBiOTU0MjU4YTliNmRjNzAiLCJ0eXBlIjoicmVmcmVzaCIsImlhdCI6MTcxMzE5ODI5NSwiZXhwIjoxNzE1NzkwMjk1fQ.4EHaQTxyYqJrQARjGcPXBYG6BYUOTRzZ51tYBju6JRQ",
-					}
-				});
-			console.log(response);
-			console.log(response.status)
-
-			if (response.status == 400) {
-				console.log(response.statusText);
-			}
-			else {
-				console.log(response.message);
-				if (response.message == "Deleted chat successfully") {
-					console.log("delete success");
-				}
-
-			}
-		} catch (error) {
-			console.error(error);
-		} finally {
-
+		return () => {
+			socket.off("deleteChatRoom");
 		}
-	}
+	}, [chatRooms, socket, chatAppear])
+
+	useEffect(()=>{
+		socket.on("getnewchatroom",(chatData)=>{
+			setChatAppear([chatData,...chatAppear])
+			setChatRooms([chatData,...chatRooms])
+		})
+		return () => {
+			socket.off("getnewchatroom");
+		}
+	}, [chatRooms, socket, chatAppear])
+	
+	
 	const loadToken = async () => {
 		const token = await AsyncStorage.getItem('refreshToken');
 		if (token) {
@@ -198,13 +186,13 @@ const ScreenMess = () => {
 			}
 		if (newMessage) {
 			if (newMessage.senderID._id == user.id) {
-				format = 'Bạn: '
+				format = 'You: '
 			}
 			if (newMessage.type == 'text') {
 				latest = format + newMessage.content
 			}
 			else {
-				latest = format + "Đã gửi một " + newMessage.type;
+				latest = format + newMessage.type + " sent";
 			}
 
 		}

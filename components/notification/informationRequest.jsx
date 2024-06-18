@@ -13,6 +13,9 @@ import { useSession } from "../../context/AuthContext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useNavigation } from '@react-navigation/native';
 import { Alert } from "react-native";
+import PostData from "../../utils/postdata";
+import HandleSessionExpired from "../../utils/handlesession";
+import { useSocketContext } from "../../context/SocketContext";
 
 const InformationRequest = ({ 
 	username,
@@ -25,85 +28,112 @@ const InformationRequest = ({
 	_id,
 	idRequest 
 }) => {
+	const loadToken = async () => {
+		const token = await AsyncStorage.getItem('refreshToken');
+		if (token) {
+		  const access = await CheckRefreshToken(token);
+		  if (access === null || access == "Session expired") {
+			HandleSessionExpired();
+		  }
+		  else {
+			await AsyncStorage.setItem('accessToken', access);
+			return access;
+		  }
+		}
+		else {
+		  HandleSessionExpired();
+		}
+	  }
 	
 	const { user } = useSession();
 	const navigation = useNavigation();
 	const swipeLeft = useAction((state) => state.swipeLeft);
 	const swipeRight = useAction((state) => state.swipeRight);
-	const createChat= async (id1,id2)=>{
-        const token= await AsyncStorage.getItem('accessToken');
-        try{
-            const response= await fetch('https://se346-skillexchangebe.onrender.com/api/v1/chat/create',{
-			method:'POST',
-			headers:{
-			  'Content-Type': 'application/json',
-			  Authorization:`Bearer ${token}`
-			},
-			body: JSON.stringify({
-				"firstID": id1,
-				"secondID": id2
-			})
-		  })
-		  if(response.status==200)
-		  {
-			return true
+	const {socket}= useSocketContext();
+	const createChat = async (id1, id2) => {
+		const dataPost = {
+			"firstID": id1,
+            "secondID": id2
 		  }
-		  else{
-            Alert.alert(
-                'Thông báo', 
-                'Kết bạn không thành công', 
-            )
-			return false
-		  }
+        
+		console.log(dataPost)
+        if (dataPost) {
+            const url = 'https://se346-skillexchangebe.onrender.com/api/v1/chat/create';
+            const response = await PostData(url, dataPost);
+            console.log(response.data)
+            if (response != 404 && response !== "Something went wrong" && response) {
+				const chatData = response.data
+                const recipientID = id1
+                const res={
+                    recipientID,
+                    chatData
+                }
+                socket.emit("acceptrequest", res)
+                return true
+            }
+            else {
+                Alert.alert(
+                    'Alert',
+                    'Friend request unsuccessful.',
+                )
+                return false
+            }
         }
-        catch{
-            Alert.alert(
-                'Thông báo', 
-                'Kết bạn không thành công', 
-            )
+        else {
+			Alert.alert(
+				'Alert',
+				'Friend request unsuccessful.',
+			)
             return false
-         }
-		 
+        }
+
     }
 	const deleteRequest=async ()=>{
 		console.log(idRequest);
-        try {
-            const token= await AsyncStorage.getItem('accessToken');
+		try {
+            const token = await AsyncStorage.getItem('accessToken');
             const response = await fetch(`https://se346-skillexchangebe.onrender.com/api/v1/request/delete/${idRequest}`,
-            {
-              method: 'DELETE',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization:`Bearer ${token}`,
-              }
-            });
-            console.log(response.status)
-      
-            if(response.status==200)
-            {
-                const json = await response.json();
-                if(json.message=="Deleted request successfully")
                 {
-                  console.log("delete success");
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${token}`,
+                    }
+                });
+
+            if (response.status == 200) {
+				
+            }
+            else {
+                if (response.status == 401) {
+                    const access = await loadToken();
+                    const response2 = await fetch(`https://se346-skillexchangebe.onrender.com/api/v1/request/delete/${idRequest}`,
+                        {
+                            method: 'DELETE',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                Authorization: `Bearer ${access}`,
+                            }
+                        });
+                    if (response2.status == 200) {
+                        
+                    }
                 }
-             
             }
-            else
-            {
-                console.log("error"+response.statusText);
-              
-            }
-          } catch (error) {
-            console.error(error);
-          } finally {
-            navigation.goBack('(tabs)');
-          }
+        } catch (error) {
+            Alert.alert(
+                'Alert',
+                'Request denial unsuccessful !',
+            )
+        } 
+		finally{
+			navigation.goBack('(tabs)');
+		}
     }
 	const handlePressAccept= async ()=>{
 		if( await createChat(_id,user.id))
 		{
 			await deleteRequest();
-			navigation.goBack('(tabs)');
 		}
 			
 		

@@ -23,6 +23,7 @@ import PostData from '../../../utils/postdata';
 import HandleSessionExpired from '../../../utils/handlesession';
 import { LinearGradient } from 'expo-linear-gradient';
 import { MessageProvider, MessageContext } from './messageContext';
+import { err } from 'react-native-svg';
 
 const ContentScreen = () => {
   const route = useRoute();
@@ -75,26 +76,45 @@ const ContentScreen = () => {
           await soundcheck.stopAsync();
         }
     }
+    const removeRecord= async()=>
+      {
+        if(record && isRecord)
+          {
+            try {
+              const status = await record.getStatusAsync();
+              if (status.isDoneRecording) {
+        
+              } else {
+                if(idCount)
+                  {
+                    clearInterval(idCount);
+                    setIdCount(null);
+                  }
+                  setIsRecord(false);
+                  setSeconds(0);
+                  await record.stopAndUnloadAsync();
+              }
+          } catch (error) {
+              console.error('Error checking recording status:', error);
+          }
+          }
+      }
     useFocusEffect(
       React.useCallback(() => {
   
         return () => {
           // Màn hình bị unfocus (người dùng rời khỏi màn hình)
           removeSound();
+          removeRecord();
+         
+          
         };
-      }, [soundcheck])
+      }, [soundcheck,record])
     );
 
 
 
   //socket send message
-  useEffect(() => {
-    if (socket === null) return
-    const recipientID = chat?.members?.find((member) => member.id !== user.id)._id
-    // console.log(recipientID)
-    // console.log("socket " + socket.id)
-    socket.emit("sendMessage", { ...newMessageData, recipientID })
-  }, [newMessageData])
 
   //reciever Socket
   useEffect(() => {
@@ -114,10 +134,14 @@ const ContentScreen = () => {
 
   useEffect(()=>{
     socket.on("isUnFriend", (res)=>{
+      console.log("isFriend" + isFriend)
       if(chat._id !== res.chatId) return
       setIsFriend(false)
       console.log(isFriend)
     })
+    return ()=>{
+      socket.off("isUnFriend")
+    }
   },[])
   //set up
   const formatTimeRecord = (time) => {
@@ -297,19 +321,21 @@ const ContentScreen = () => {
     setMessageList([...messageList, msg])
     const url = 'https://se346-skillexchangebe.onrender.com/api/v1/message/send';
     const response = await PostData(url, dataPost);
-    
     console.log(response.data)
     if (response != 404 && response !== "Something went wrong" && response) {
-      setNewMessage(response.data)
-      
+      if (socket === null) return
+      const recipientID = chat?.members?.find((member) => member.id !== user.id)._id
+      // console.log(recipientID)
+      // console.log("socket " + socket.id)
+      socket.emit("sendMessage", { ...response.data, recipientID })
       return true
     }
     else {
       const msgList = messageList.filter((value)=> value._id != idMsg)
       setMessageList([...msgList])
       Alert.alert(
-        'Thông báo',
-        'Không gửi được tin nhắn',)
+        'Alert',
+        'Message could not be sent',)
       return false
     }
   }
@@ -356,14 +382,14 @@ const ContentScreen = () => {
         }
       }
       Alert.alert(
-        'Thông báo',
-        'Không gửi được ảnh',)
+        'Alert',
+        'Unable to send photo',)
       return false;
     }
     catch (error) {
       Alert.alert(
-        'Thông báo',
-        'Không gửi được ảnh',)
+        'Alert',
+        'Unable to send photo',)
       return false;
     }
     finally {
@@ -401,7 +427,6 @@ const ContentScreen = () => {
         return json.image;
       }
       else {
-        console.log(await response.text())
         if (response.status == 401) {
           access = await loadToken();
           const response2 = await fetch('https://se346-skillexchangebe.onrender.com/api/v1/upload/file', {
@@ -419,14 +444,14 @@ const ContentScreen = () => {
         }
       }
       Alert.alert(
-        'Thông báo',
-        'Không gửi được file',)
+        'Alert',
+        'Unable to send file',)
       return false;
     }
     catch (error) {
       Alert.alert(
-        'Thông báo',
-        'Không gửi được file',)
+        'Alert',
+        'Unable to send file',)
       return false;
     }
     finally {
@@ -471,20 +496,27 @@ const ContentScreen = () => {
       setRecord(newRecording);
       console.log('Recording started');
     } catch (error) {
-      console.error('Failed to start recording', error);
+      setIsRecord(false);
+      Alert.alert('Alert','Failed to start recording');
+    
     }
   };
   const stopRecording = async () => {
     try {
+      setIsRecord(false);
       await record.stopAndUnloadAsync();
       console.log('Recording stopped');
       const uri = record.getURI();
       setTest('' + uri);
-      setIsRecord(false);
       clearInterval(idCount);
       setSeconds(0);
+      setRecord(null);
     } catch (error) {
-      console.error('Failed to stop recording', error);
+      Alert.alert('Alert','Failed to stop recording');
+    }
+    finally
+    {
+      setIsRecord(false);
     }
   };
 
@@ -506,8 +538,9 @@ const ContentScreen = () => {
       setUploading(true);
       const listImage = Array.from(result.assets);
       for (let i = 0; i < listImage.length; i++) {
-        let imageUri = await uploadImage(listImage[i].uri, user.id);
-        console.log(imageUri)
+        const currentTime = new Date();
+      const timestamp = currentTime.getTime();
+        let imageUri = await uploadImage(listImage[i].uri,""+timestamp+user.id);
         if (imageUri) {
           image.push(imageUri);
         }
@@ -531,8 +564,9 @@ const ContentScreen = () => {
     if (!result.canceled) {
       setUploading(true);
       image = result.assets;
-      console.log(image[0].uri)
-      const imageUrl = await uploadImage(image[0].uri, user.id)
+      const currentTime = new Date();
+      const timestamp = currentTime.getTime();
+      const imageUrl = await uploadImage(image[0].uri, ""+timestamp+user.id)
       if (imageUrl) {
         sendMessage('image', imageUrl);
         setMessage('');
@@ -553,12 +587,16 @@ const ContentScreen = () => {
         sendMessage('file', response)
       }
       else {
-        alert("Gửi file không thành công");
+        Alert.alert(
+          'Alert',
+          'Unable to send file',);
       }
 
     }
     catch (error) {
-      console.log(`Error picking document`);
+      Alert.alert(
+        'Alert',
+        'An error has occurred. Please try again later !',);
     }
     finally {
       setUploading(false)
