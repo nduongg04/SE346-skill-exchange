@@ -216,8 +216,7 @@ const Profile = () => {
 							<View
 								style={{
 									paddingHorizontal: 10,
-									paddingVertical: 20,
-									paddingTop: 20,
+									paddingBottom: 20,
 									borderBottomWidth: 1,
 									borderColor: "#D1D1D1",
 									display: "flex",
@@ -263,8 +262,7 @@ const Profile = () => {
 							<TouchableOpacity
 								style={{
 									paddingHorizontal: 10,
-									paddingVertical: 20,
-									paddingTop: 0,
+									paddingBottom: 20,
 									borderBottomWidth: 1,
 									borderColor: "#D1D1D1",
 									display: "flex",
