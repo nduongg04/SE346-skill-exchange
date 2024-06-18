@@ -113,14 +113,6 @@ const Home = () => {
 		getUsers();
 	}, [user.learnTopicSkill]);
 
-	if (isLoading) {
-		return (
-			<View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-				<ActivityIndicator size="large" color={COLORS.darkOrange} />
-			</View>
-		);
-	}
-
 	return (
 		<SafeAreaView
 			style={{
@@ -146,71 +138,82 @@ const Home = () => {
 			</View>
 
 			<View style={{ height: "95%", width: "100%" }}>
-				{!isEndUsers ? (
-					<>
-						<View style={{ marginTop: 10, height: "80%" }}>
-							<SwiperList
-								users={users}
-								swiperRef={swiperRef}
-								onSwipedAll={() => {
-									setIsLoading(true);
-									setTimeout(() => {
-										getUsers();
-									}, 500);
-								}}
-							/>
-						</View>
-
-						<View
-							style={{
-								flex: 1,
-								flexDirection: "row",
-								justifyContent: "center",
-								alignItems: "center",
-								gap: (screenWidth / 100) * 7,
-							}}
-						>
-							<CircleButton
-								iconUrl={icons.cancel}
-								width={backButtonSize}
-								height={backButtonSize}
-								handlePress={() => swiperRef.current.swipeLeft()}
-								style={{ flex: 1 }}
-							/>
-
-							<CircleButton
-								iconUrl={icons.tickCircle}
-								width={backButtonSize}
-								height={backButtonSize}
-								handlePress={() => {
-									swiperRef.current.swipeRight();
-								}}
-							/>
-						</View>
-					</>
-				) : (
+				{isLoading ? (
 					<View
-						style={{
-							width: "100%",
-							height: "100%",
-							alignItems: "center",
-							justifyContent: "center",
-							paddingHorizontal: 20,
-						}}
+						style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
 					>
-						<Text
-							style={{
-								fontSize: 15,
-								color: COLORS.lightOrange,
-								fontWeight: "500",
-								lineHeight: 23,
-								textAlign: "center",
-							}}
-						>
-							You have browsed through all the users in the topic you want to
-							learn, go to the search tab or change to new skills to find more
-						</Text>
+						<ActivityIndicator size="large" color={COLORS.darkOrange} />
 					</View>
+				) : (
+					<>
+						{!isEndUsers ? (
+							<>
+								<View style={{ marginTop: 10, height: "80%" }}>
+									<SwiperList
+										users={users}
+										swiperRef={swiperRef}
+										onSwipedAll={() => {
+											setIsLoading(true);
+											setTimeout(() => {
+												getUsers();
+											}, 500);
+										}}
+									/>
+								</View>
+
+								<View
+									style={{
+										flex: 1,
+										flexDirection: "row",
+										justifyContent: "center",
+										alignItems: "center",
+										gap: (screenWidth / 100) * 7,
+									}}
+								>
+									<CircleButton
+										iconUrl={icons.cancel}
+										width={backButtonSize}
+										height={backButtonSize}
+										handlePress={() => swiperRef.current.swipeLeft()}
+										style={{ flex: 1 }}
+									/>
+
+									<CircleButton
+										iconUrl={icons.tickCircle}
+										width={backButtonSize}
+										height={backButtonSize}
+										handlePress={() => {
+											swiperRef.current.swipeRight();
+										}}
+									/>
+								</View>
+							</>
+						) : (
+							<View
+								style={{
+									width: "100%",
+									height: "100%",
+									alignItems: "center",
+									justifyContent: "center",
+									paddingHorizontal: 20,
+								}}
+							>
+								<Text
+									style={{
+										fontSize: 15,
+										color: COLORS.lightOrange,
+										fontWeight: "500",
+										lineHeight: 23,
+										textAlign: "center",
+									}}
+								>
+									You have browsed through all the users in the topic you want
+									to learn, go to the search tab or change to new skills to find
+									more
+								</Text>
+							</View>
+						)}
+					</>
 				)}
 			</View>
 		</SafeAreaView>
