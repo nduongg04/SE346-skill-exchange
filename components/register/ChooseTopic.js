@@ -49,7 +49,7 @@ class ChooseTopic extends React.Component {
     const page = await AsyncStorage.getItem('topicPage');
     this.setState({page: parseInt(page)});
     const topic = await AsyncStorage.getItem('topic');
-    this.setState({topic: JSON.parse(topic)});
+    this.setState({learnTopic: JSON.parse(topic)});
     this.fetchTopic();
   }
   render() {

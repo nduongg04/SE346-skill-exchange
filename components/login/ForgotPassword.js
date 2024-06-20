@@ -168,8 +168,8 @@ render() {
             {this.state.sended && 
             <Text style={{marginHorizontal: 20, fontFamily: 'Coda-Regular'}}>Email: {this.state.email}</Text>}
             {this.state.sended && <InputText
-                placeholder='Varify code'
-                label='Varify Code'
+                placeholder='Verify code'
+                label='Verify Code'
                 error={this.state.errorCode}
                 onFocus={()=>this.setState({errorCode: null})}
                 onChangeText={(text)=>this.setState({code: text})}

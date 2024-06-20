@@ -13,7 +13,7 @@ import { ScrollView} from "react-native-gesture-handler";
 import Policy from "./Policy";
 import Spinner from "react-native-loading-spinner-overlay";
 import mime from 'react-native-mime-types';
-class ChooseTopic extends React.Component {
+class UploadInfo extends React.Component {
   state = {
       //Input fields
       password: null,
@@ -301,9 +301,10 @@ class ChooseTopic extends React.Component {
             iconName={!this.state.success?'warning':'check-circle'}
             iconColor={!this.state.success? COLORS.red: COLORS.green}
             buttonColor={COLORS.skyBlue}
-            onPress={()=>!this.state.success
-              ?this.toogleAlert()
-              : this.props.navigation.navigate('Login') }/>
+            onPress={()=>{
+               this.toogleAlert(); 
+              if(this.state.success) this.props.navigation.navigate('Login')               
+              } }/>
           </Modal>          
           <Spinner
             visible={this.state.loading}
@@ -314,4 +315,4 @@ class ChooseTopic extends React.Component {
     );
   }
 }
-export default ChooseTopic;
+export default UploadInfo;
