@@ -1,5 +1,5 @@
 import { registerRootComponent } from 'expo';
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import {Dimensions} from 'react-native';
 import { Scale, VerticalScale } from 'react-native-size-matters';
@@ -12,9 +12,9 @@ class GradienLayout extends React.Component {
                 style={{...styles.container, ...this.props.style}}
                 colors={["#FFBE98", "#7751C7"]}
                 >
-                <View style={[styles.floating, this.props.innerStyle]}>      
+                <SafeAreaView style={[styles.floating, this.props.innerStyle]}>      
                     {this.props.children}           
-                </View>
+                </SafeAreaView>
             </LinearGradient>
         );
     }
