@@ -115,8 +115,8 @@ const InputTextBox = () => {
         <InputText
           ref= {inputQuery}
           style = {{zIndex:3}}
-          placeholder="Enter your topic"
-          label="Enter your query"
+          placeholder="Enter topic to search"
+          label=""
           onChangeText={handleOnChangeText}
           onFocus={handleonFocus}
           onBlur={handleOnBlur}
