@@ -141,10 +141,10 @@ const EditAvatarProfile = () => {
                         </Text>
                     </TouchableOpacity>
 
-                    <Image
+                    {/* <Image
                         source={require('../../assets/images/teamwork.png')}
                         style={styles.image}
-                    />
+                    /> */}
 
                     <TouchableOpacity
                         style={{

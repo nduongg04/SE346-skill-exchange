@@ -5,6 +5,8 @@ import {
 	TouchableOpacity,
 	SafeAreaView,
 	Alert,
+	TouchableWithoutFeedback,
+	Keyboard
 } from "react-native";
 import { useSession } from "../../context/AuthContext";
 import { Image } from "expo-image";
@@ -45,6 +47,7 @@ const ChangeAboutYou = () => {
 	};
 
 	return (
+		<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 		<SafeAreaView
 			style={{
 				flex: 1,
@@ -155,6 +158,7 @@ const ChangeAboutYou = () => {
 				</View>
 			</LinearGradient>
 		</SafeAreaView>
+		</TouchableWithoutFeedback>
 	);
 };
 

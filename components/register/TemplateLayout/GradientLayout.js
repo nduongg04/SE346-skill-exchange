@@ -1,5 +1,5 @@
 import { registerRootComponent } from 'expo';
-import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, TextInput, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import {Dimensions} from 'react-native';
 import { Scale, VerticalScale } from 'react-native-size-matters';
@@ -8,6 +8,7 @@ import styles from '../style';
 class GradienLayout extends React.Component {
     render(){
         return (
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <LinearGradient
                 style={{...styles.container, ...this.props.style}}
                 colors={["#FFBE98", "#7751C7"]}
@@ -16,6 +17,7 @@ class GradienLayout extends React.Component {
                     {this.props.children}           
                 </View>
             </LinearGradient>
+            </TouchableWithoutFeedback>
         );
     }
 }

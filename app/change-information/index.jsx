@@ -5,6 +5,8 @@ import {
     SafeAreaView,
     Alert,
     ScrollView,
+    TouchableWithoutFeedback,
+    Keyboard
 } from "react-native";
 import styles from "../../components/register/style";
 import InputText from "../../components/register/Button/InputText";
@@ -63,6 +65,7 @@ const ChangeInformation = () => {
     };
     
     return (
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <SafeAreaView
             style={{
                 flex: 1,
@@ -174,6 +177,7 @@ const ChangeInformation = () => {
                 </View>
             </LinearGradient>
         </SafeAreaView>
+        </TouchableWithoutFeedback>
     );
 };
 
