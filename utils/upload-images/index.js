@@ -12,7 +12,7 @@ const UploadImages = async (url, images) => {
 				formData.append("files", {
 					uri: image,
 					type: "image/jpeg",
-					name: `image_${index}.jpg`,
+					name: `image_${Date.now().toString()}.jpg`,
 				});
 			});
 
