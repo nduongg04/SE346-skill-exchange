@@ -15,34 +15,30 @@ const Policy = ({
           <Text style={styles.header}>Terms of Service and</Text>
           <Text style={[styles.header, {marginBottom: 10}]}>Privacy Policy</Text>
           <ScrollView 
-            style={{flexGrow: 1,
-            paddingVertical: 20}}>
+            style={{flexGrow: 1}}>
             <Text style={styles.text}>
-            Welcome to Skill Exchange!
-
-            By accessing or using our service, you agree to be bound by these Terms of Service ("Terms"). Please read these Terms carefully before using our Service.
-
-Use of the Service
-
-You agree to use the Service only for lawful purposes and in accordance with these Terms.
-Intellectual Property
-
-The Service and its original content, features, and functionality are owned by [Company Name] and are protected by international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.
-User Accounts
-
-You may be required to create an account to access certain features of the Service. You are responsible for maintaining the confidentiality of your account and password and for restricting access to your computer or device.
-Limitation of Liability
-
-In no event shall [Company Name], nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses.
-Governing Law
-
-These Terms shall be governed and construed in accordance with the laws of [Your Country], without regard to its conflict of law provisions.
-Changes
-
-We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days' notice prior to any new terms taking effect.
-            </Text>
+            Welcome to Skill Exchange!{'\n\n'}
+            By accessing or using our service, you agree to be bound by these Terms of Service. Please read these Terms carefully before using our Service.{'\n\n'}
+            
+            <Text style={styles.subheader}>Use of the Service: </Text>
+            You agree to use the Service only for lawful purposes and in accordance with these Terms.{'\n'}
+            
+            <Text style={styles.subheader}>Intellectual Property: </Text>
+            The Service and its original content, features, and functionality are owned by AppServiceUIT and are protected by international copyright, trademark, patent, trade secret, and other intellectual property or proprietary rights laws.{'\n'}
+            
+            <Text style={styles.subheader}>User Accounts: </Text>
+            You may be required to create an account to access certain features of the Service. You are responsible for maintaining the confidentiality of your account and password and for restricting access to your computer or device.{'\n'}
+            
+            <Text style={styles.subheader}>Limitation of Liability: </Text>
+            In no event shall AppServiceUIT, nor its directors, employees, partners, agents, suppliers, or affiliates, be liable for any indirect, incidental, special, consequential, or punitive damages, including without limitation, loss of profits, data, use, goodwill, or other intangible losses.{'\n'}
+            
+            <Text style={styles.subheader}>Governing Law: </Text>
+            These Terms shall be governed and construed in accordance with the laws of Viet Nam, without regard to its conflict of law provisions.{'\n'}
+            <Text style={styles.subheader}>Changes: </Text>
+            We reserve the right, at our sole discretion, to modify or replace these Terms at any time. If a revision is material, we will provide at least 30 days' notice prior to any new terms taking effect.
+          </Text>
           </ScrollView>
-        <BackButton  onPress={onPress}></BackButton>
+        <BackButton onPress={onPress}></BackButton>
         </View>
       </View>
     );
@@ -54,17 +50,17 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
   },
   modalView: {
-    margin: 10,
     backgroundColor: "white",
     borderRadius: 20,
-    padding: 10,
+    padding: 20,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 1,
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
@@ -73,16 +69,30 @@ const styles = StyleSheet.create({
     height: '70%',
   },
   header: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignSelf: "center",
-    fontSize: 20,
+    fontSize: scale(18),
     fontWeight: "bold",
     fontFamily: "Coda-Regular",
+    textAlign: "left",
+  },
+  scrollView: {
+    flexGrow: 1,
+    width: '100%',
   },
   text: {
     fontSize: 16,
-    textAlign: 'justify',
-    paddingHorizontal: 20,
-  }
+    textAlign: 'left'
+  },
+  subheader: {
+    fontWeight: "bold"
+  },
+  button: {
+    backgroundColor: COLORS.primary,
+    borderRadius: 10
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
 });
