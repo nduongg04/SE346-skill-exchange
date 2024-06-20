@@ -1,4 +1,10 @@
-import { View, Text, ImageBackground } from "react-native";
+import {
+	View,
+	Text,
+	ImageBackground,
+	StyleSheet,
+	ActivityIndicator,
+} from "react-native";
 import { COLORS } from "@constants";
 import { icons } from "@constants";
 import Topic from "@components/common/cards/Topic";
@@ -23,9 +29,7 @@ const ProfileCard = ({
 		});
 	};
 
-	const [sourceBackground, setSourceBackground] = useState(
-		require("@assets/images/avatarDefault.jpg")
-	);
+	const [isLoading, setIsLoading] = useState(false);
 
 	return (
 		<View
@@ -46,12 +50,13 @@ const ProfileCard = ({
 			}}
 		>
 			<ImageBackground
-				onLoad={() => {
-					if (imageDisplay) {
-						setSourceBackground({ uri: imageDisplay });
-					}
-				}}
-				source={sourceBackground}
+				source={
+					imageDisplay
+						? { uri: imageDisplay }
+						: require("@assets/images/avatarDefault.jpg")
+				}
+				onLoadStart={() => setIsLoading(true)}
+				onLoadEnd={() => setIsLoading(false)}
 				contentFit="cover"
 				style={{
 					width: "100%",
@@ -63,6 +68,18 @@ const ProfileCard = ({
 				}}
 				transition={1000}
 			>
+				{isLoading && (
+					<View
+						style={{
+							...StyleSheet.absoluteFillObject,
+							justifyContent: "center",
+							alignItems: "center",
+							backgroundColor: "rgba(0, 0, 0, 1)",
+						}}
+					>
+						<ActivityIndicator size="large" color="#ffffff" />
+					</View>
+				)}
 				<View style={{ height: "50%", width: "100%" }} />
 				<ImageBackground
 					source={icons.transparent_background}

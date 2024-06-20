@@ -6,14 +6,12 @@ import {
 	StyleSheet,
 	ScrollView,
 	TouchableOpacity,
-	TouchableHighlight,
 	Modal,
 } from "react-native";
 import { SafeAreaView } from "react-native";
 import { COLORS } from "@constants";
 import Background from "@assets/icons/Background.png";
 import EditProfile from "@assets/icons/Edit profile.png";
-import LogOut from "@assets/icons/LogOut.png";
 import React, { useEffect, useState } from "react";
 import { Stack, router, useNavigation } from "expo-router";
 import { useSession } from "../../context/AuthContext";

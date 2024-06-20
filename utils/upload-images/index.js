@@ -9,10 +9,11 @@ const UploadImages = async (url, images) => {
 		try {
 			const formData = new FormData();
 			images.forEach((image, index) => {
+				console.log("image", image);
 				formData.append("files", {
 					uri: image,
 					type: "image/jpeg",
-					name: `image_${Date.now().toString()}.jpg`,
+					name: `image_${Date.now().toString()}_${index}.jpg`,
 				});
 			});
 

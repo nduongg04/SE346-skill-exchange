@@ -52,9 +52,10 @@ const Home = () => {
 	}, []);
 
 	useEffect(() => {
-		if (swipe === "left") {
+		console.log("swipe", swipe);
+		if (swipe.startsWith("left")) {
 			swiperRef.current.swipeLeft();
-		} else if (swipe === "right") {
+		} else if (swipe.startsWith("right")) {
 			swiperRef.current.swipeRight();
 		}
 	}, [swipe]);
