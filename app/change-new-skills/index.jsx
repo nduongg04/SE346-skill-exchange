@@ -164,7 +164,7 @@ const ChangeNewSkills = () => {
 					<Text style={[styles.text_center, { marginTop: 10 }]}>
 						CHOOSE TOPIC
 					</Text>
-					<Text style={styles.text_center}>you know</Text>
+					<Text style={styles.text_center}>you learn</Text>
 					<View
 						style={{
 							height: 4,
