@@ -20,6 +20,7 @@ const ChangeCertifications = () => {
 	const [certificationImages, setCertificationImages] = useState([
 		...user.imageCerti,
 	]);
+	console.log(user.imageCerti);
 
 	const [uploadedImages, setUploadedImages] = useState([]);
 	const updatedCertificationImages = useRef([]);
@@ -65,13 +66,13 @@ const ChangeCertifications = () => {
 			imageCerti: updatedCertificationImages.current,
 		});
 		Alert.alert("Successfully", "Update successfully", [
-            {
-                text: "OK",
-                onPress: () => {
-                    router.replace("/profile");
-                },
-            },
-        ]);
+			{
+				text: "OK",
+				onPress: () => {
+					router.replace("/profile");
+				},
+			},
+		]);
 		setIsUpdating(false);
 	};
 
@@ -88,6 +89,7 @@ const ChangeCertifications = () => {
 			});
 		}
 	};
+
 	return (
 		<SafeAreaView
 			style={{
@@ -180,60 +182,75 @@ const ChangeCertifications = () => {
 						}}
 					/>
 
-					<FlatList
-						style={{
-							width: "100%",
-							minHeight: 200,
-							maxHeight: 410,
-							overflow: "scroll",
-						}}
-						data={certificationImages}
-						keyExtractor={(item) => item}
-						renderItem={({ item }) => (
-							<ImageBackground
-								source={{ uri: item }}
-								style={{
-									width: "100%",
-									height: 200,
-								}}
-								borderRadius={10}
-							>
-								{console.log(item)}
-								<View
+					{certificationImages.length !== 0 ? (
+						<FlatList
+							style={{
+								width: "100%",
+								minHeight: 200,
+								maxHeight: 410,
+								overflow: "scroll",
+							}}
+							data={certificationImages}
+							keyExtractor={(item) => item}
+							renderItem={({ item }) => (
+								<ImageBackground
+									source={{ uri: item }}
 									style={{
-										backgroundColor: "rgba(0,0,0,0.3)",
-										flex: 1,
-										borderRadius: 10,
+										width: "100%",
+										height: 200,
 									}}
+									borderRadius={10}
 								>
-									<TouchableOpacity
+									{console.log(item)}
+									<View
 										style={{
-											position: "absolute",
-											top: 10,
-											right: 10,
-										}}
-										onPress={() => {
-											setCertificationImages((prev) =>
-												prev.filter((image) => image !== item)
-											);
-											setUploadedImages((prev) =>
-												prev.filter((image) => image !== item)
-											);
+											backgroundColor: "rgba(0,0,0,0.3)",
+											flex: 1,
+											borderRadius: 10,
 										}}
 									>
-										<AntDesign
-											name="closecircle"
-											size={30}
-											color={COLORS.white}
-											style={{}}
-										/>
-									</TouchableOpacity>
-								</View>
-							</ImageBackground>
-						)}
-						numColumns={1}
-						ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
-					/>
+										<TouchableOpacity
+											style={{
+												position: "absolute",
+												top: 10,
+												right: 10,
+											}}
+											onPress={() => {
+												setCertificationImages((prev) =>
+													prev.filter((image) => image !== item)
+												);
+												setUploadedImages((prev) =>
+													prev.filter((image) => image !== item)
+												);
+											}}
+										>
+											<AntDesign
+												name="closecircle"
+												size={30}
+												color={COLORS.white}
+												style={{}}
+											/>
+										</TouchableOpacity>
+									</View>
+								</ImageBackground>
+							)}
+							numColumns={1}
+							ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
+						/>
+					) : (
+						<Text
+							style={{
+								fontSize: 15,
+								color: COLORS.lightOrange,
+								fontWeight: "500",
+								lineHeight: 23,
+								textAlign: "center",
+							}}
+						>
+							No certification images yet. Click on the button above to upload
+							one.
+						</Text>
+					)}
 
 					<TouchableOpacity
 						style={{
