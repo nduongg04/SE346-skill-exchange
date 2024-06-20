@@ -14,7 +14,7 @@ import { useSession } from "../../context/AuthContext";
 import PatchData from "../../utils/patchdata";
 import { Alert } from "react-native";
 
-const ChangeNewSkills = () => {
+const ChangeYourSkills = () => {
 	const baseUrl = "https://se346-skillexchangebe.onrender.com";
 
 	const { user, login } = useSession();
@@ -23,7 +23,7 @@ const ChangeNewSkills = () => {
 	const [topics, setTopics] = useState([]);
 	const [isUpdating, setIsUpdating] = useState(false);
 
-	const [updatedTopics, setUpdatedTopics] = useState([...user.userTopicSkill]);
+	const [updatedTopics, setUpdatedTopics] = useState([...user.learnTopicSkill]);
 
 	const selectTopic = (item) => {
 		if (!item.chosen) {
@@ -54,8 +54,8 @@ const ChangeNewSkills = () => {
 			}
 			const json = await response.json();
 			const topicsWithChosen = json.data.map((topic) => {
-				for (let i = 0; i < user.userTopicSkill.length; i++) {
-					if (topic.id === user.userTopicSkill[i].id) {
+				for (let i = 0; i < user.learnTopicSkill.length; i++) {
+					if (topic.id === user.learnTopicSkill[i].id) {
 						return { ...topic, chosen: true };
 					}
 				}
@@ -75,14 +75,14 @@ const ChangeNewSkills = () => {
 		fetchTopics();
 	}, []);
 
-	const handleChangeNewSkills = async () => {
+	const handleChangeYourSkills = async () => {
 		if (updatedTopics.length === 0) {
 			Alert.alert("Error", "Please choose at least one topic");
 			return;
 		}
 		setIsUpdating(true);
 		const updatedJson = {
-			userTopicSkill: updatedTopics,
+			learnTopicSkill: updatedTopics,
 		};
 		const data = await PatchData(
 			`${baseUrl}/api/v1/user/update/${user.id}`,
@@ -96,7 +96,7 @@ const ChangeNewSkills = () => {
 		} else {
 			login({
 				...user,
-				userTopicSkill: updatedTopics,
+				learnTopicSkill: updatedTopics,
 			});
 			Alert.alert("Successfully", "Update successfully", [
 				{
@@ -215,7 +215,7 @@ const ChangeNewSkills = () => {
 						text="Done"
 						margin={false}
 						style={{ alignSelf: "flex-end", marginTop: 20, marginRight: 20 }}
-						onPress={handleChangeNewSkills}
+						onPress={handleChangeYourSkills}
 					/>
 				</View>
 			</GradienLayout>
@@ -223,4 +223,4 @@ const ChangeNewSkills = () => {
 	);
 };
 
-export default ChangeNewSkills;
+export default ChangeYourSkills;
