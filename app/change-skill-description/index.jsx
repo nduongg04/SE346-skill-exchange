@@ -6,6 +6,8 @@ import {
 	TouchableOpacity,
 	SafeAreaView,
 	Alert,
+	TouchableWithoutFeedback,
+	Keyboard
 } from "react-native";
 import styles from "../../components/register/style";
 import { COLORS } from "../../constants";
@@ -50,6 +52,7 @@ const ChangeSkillDescription = () => {
         setIsUpdating(false);
 	};
 	return (
+		<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 		<SafeAreaView
 			style={{
 				flex: 1,
@@ -164,6 +167,7 @@ const ChangeSkillDescription = () => {
 				</View>
 			</LinearGradient>
 		</SafeAreaView>
+		</TouchableWithoutFeedback>
 	);
 };
 
