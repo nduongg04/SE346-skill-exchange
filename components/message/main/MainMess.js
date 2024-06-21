@@ -55,14 +55,12 @@ const ScreenMess = () => {
 			} else {
 				setLatestMessage((prev) => [...prev, res])
 			}
-			console.log(chatRooms.map((e)=> e.latestMessage[0]))
 			const list=[...chatRooms]
 			const listAppear = [...chatAppear]
 			const update=moveItemToTop(list,res.chatID);
 			const updateAppear = moveItemToTop(listAppear, res.chatID)
 			setChatRooms(update)
 			setChatAppear(updateAppear)
-			console.log(chatRooms)
 		})
 
 		return () => {
