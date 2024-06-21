@@ -231,6 +231,13 @@ const ScreenMess = () => {
 					}
 				
 			}
+			const list = [...chatRooms]
+			const chatRoomIndex = list.findIndex((e)=> e._id === newMessage.chatID)
+			if(chatRoomIndex!== -1){
+				list[chatRoomIndex].latestMessage = [newMessage]
+				setChatRooms([...list])
+			}
+			
 
 		}
 		return (
