@@ -50,14 +50,15 @@ export const styles= StyleSheet.create({
     {
 
         paddingHorizontal:'3%',
-        paddingTop:'2.5%',
-        height:100,
+        paddingVertical:'2.5%',
+        height:'auto',
         flexDirection:'row',
         width:'94%',
         backgroundColor:'rgba(255, 190, 152, 0.11)',
         marginTop:3,
         borderRadius:14,
         marginLeft:'2.5%'
+
     
         
         
@@ -108,7 +109,8 @@ export const styles= StyleSheet.create({
     },
     ContentContainer:
     {
-        marginLeft:12
+        marginLeft:12,
+        width:'auto'
     },
     Time:{
         fontFamily:'Inter-Regular',
@@ -118,12 +120,13 @@ export const styles= StyleSheet.create({
     textContainer: {
         flexDirection: 'row', // Đặt hướng của các phần tử con là hàng ngang
         alignItems: 'center', // Căn giữa theo chiều dọc
+        maxWidth:'100%',
       },
     Name:
     {
-        maxWidth:115,
         fontFamily:'Inter-SemiBold',
-        fontSize:15
+        fontSize:15,
+        maxWidth:100
     },
     Content:{
         fontFamily:'Inter-Regular',

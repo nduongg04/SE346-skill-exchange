@@ -55,6 +55,15 @@ const ScreenMess = () => {
 			} else {
 				setLatestMessage((prev) => [...prev, res])
 			}
+			const list=[...chatRooms]
+			const update=moveItemToTop(list,res.chatID);
+			console.log(update)
+			setChatRooms(update)
+			if(!searchText|| searchText==='')
+				{
+					setChatAppear(update)
+				}
+			console.log(chatRooms)
 		})
 
 		return () => {
@@ -90,6 +99,21 @@ const ScreenMess = () => {
 			socket.off("getnewchatroom");
 		}
 	}, [chatRooms, socket, chatAppear])
+	const moveItemToTop = (items, targetId) => {
+		// Tìm vị trí của item có item.chatInfo._id trùng với targetId
+		const index = items.findIndex(item => item.chatInfo._id === targetId);
+	  
+		if (index === -1) {
+		  // Nếu không tìm thấy, trả về danh sách gốc
+		  return items;
+		}
+	  
+		// Lấy item ra khỏi danh sách
+		const [item] = items.splice(index, 1);
+	  
+		// Thêm item vào đầu danh sách
+		return [item, ...items];
+	  };
 	
 	
 	const loadToken = async () => {
@@ -114,8 +138,13 @@ const ScreenMess = () => {
 		const data = await GetData(url);
 		if (data !== "Something went wrong") {
 			if (Array.isArray(data)) {
-				setChatRooms(data);
-				setChatAppear(data);
+				const dataSort= data.sort((a, b) => {
+					const dateA = a.latestMessage[0] ? new Date(a.latestMessage[0].createdAt) : new Date(0);
+					const dateB = b.latestMessage[0] ? new Date(b.latestMessage[0].createdAt) : new Date(0);
+					return dateB - dateA;
+				  });
+				setChatRooms(dataSort);
+				setChatAppear(dataSort);
 			}
 		}
 		setLoading(false);
@@ -192,7 +221,15 @@ const ScreenMess = () => {
 				latest = format + newMessage.content
 			}
 			else {
-				latest = format + newMessage.type + " sent";
+				if(newMessage.type == 'image')
+					{
+						latest = format + "sent an "+ newMessage.type;
+					}
+					else
+					{
+						latest = format + "sent a "+ newMessage.type;
+					}
+				
 			}
 
 		}

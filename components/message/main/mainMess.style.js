@@ -48,7 +48,7 @@ export const styles= StyleSheet.create({
     {
         marginTop:10,
         marginLeft:'5%',
-        height:70,
+        height:'auto',
         flexDirection:'row',
         width:'90%',
         
@@ -83,8 +83,9 @@ export const styles= StyleSheet.create({
     RecentMessage:
     {
         fontFamily:'Inter-Regular',
-        height:32,
-        fontSize:13.5
+        height:"auto",
+        fontSize:13.5,
+        paddingRight:3
     },
     StatusContainer:{
         justifyContent: 'center',
