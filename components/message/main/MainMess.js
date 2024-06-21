@@ -57,13 +57,11 @@ const ScreenMess = () => {
 			}
 			console.log(chatRooms.map((e)=> e.latestMessage[0]))
 			const list=[...chatRooms]
+			const listAppear = [...chatAppear]
 			const update=moveItemToTop(list,res.chatID);
-			console.log(update.map((e)=> e.latestMessage[0]))
+			const updateAppear = moveItemToTop(listAppear, res.chatID)
 			setChatRooms(update)
-			if(!searchText|| searchText==='')
-			{
-				setChatAppear(update)
-			}
+			setChatAppear(updateAppear)
 			console.log(chatRooms)
 		})
 
@@ -71,7 +69,7 @@ const ScreenMess = () => {
 			socket.off("getOnlineUsers");
 			socket.off("getLatestMessage");
 		}
-	}, [isFocused, latestMessage, socket, chatRooms])
+	}, [isFocused, latestMessage, socket, chatRooms, chatAppear])
 
 	useEffect(()=>{   
 		socket.on("deleteChatRoom",(res)=>{
