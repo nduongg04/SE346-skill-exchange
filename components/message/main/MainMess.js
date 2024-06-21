@@ -25,7 +25,7 @@ import GetData from "../../../utils/getdata";
 
 const ScreenMess = () => {
 	const [isFontLoaded, setFontLoaded] = useState(false);
-	const [chatRooms, setChatRooms] = useState([]);
+	const  [chatRooms, setChatRooms] = useState([]);
 	const [chatAppear, setChatAppear] = useState([]);
 	const [isLoading, setLoading] = useState(true);
 	const [accessToken, setAccessToken] = useState('');
@@ -55,14 +55,15 @@ const ScreenMess = () => {
 			} else {
 				setLatestMessage((prev) => [...prev, res])
 			}
+			console.log(chatRooms.map((e)=> e.latestMessage[0]))
 			const list=[...chatRooms]
 			const update=moveItemToTop(list,res.chatID);
-			console.log(update)
+			console.log(update.map((e)=> e.latestMessage[0]))
 			setChatRooms(update)
 			if(!searchText|| searchText==='')
-				{
-					setChatAppear(update)
-				}
+			{
+				setChatAppear(update)
+			}
 			console.log(chatRooms)
 		})
 
@@ -70,7 +71,7 @@ const ScreenMess = () => {
 			socket.off("getOnlineUsers");
 			socket.off("getLatestMessage");
 		}
-	}, [isFocused, latestMessage, socket])
+	}, [isFocused, latestMessage, socket, chatRooms])
 
 	useEffect(()=>{   
 		socket.on("deleteChatRoom",(res)=>{
@@ -78,7 +79,7 @@ const ScreenMess = () => {
 			const chatIndex = chatRooms.findIndex((e)=> e.chatInfo._id === chatId)
 			if(chatIndex != -1){
 				const newChatRooms = [
-					...chatRooms.slice(0, chatIndex),
+					...chatRooms.slice(0, chatIndex), 
 					...chatRooms.slice(chatIndex + 1)
 				  ];
 				setChatRooms([...newChatRooms])
@@ -230,12 +231,6 @@ const ScreenMess = () => {
 						latest = format + "sent a "+ newMessage.type;
 					}
 				
-			}
-			const list = [...chatRooms]
-			const chatRoomIndex = list.findIndex((e)=> e._id === newMessage.chatID)
-			if(chatRoomIndex!== -1){
-				list[chatRoomIndex].latestMessage = [newMessage]
-				setChatRooms([...list])
 			}
 			
 
