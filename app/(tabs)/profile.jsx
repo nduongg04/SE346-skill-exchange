@@ -16,7 +16,7 @@ import React, { useEffect, useState } from "react";
 import { Stack, router, useNavigation } from "expo-router";
 import { useSession } from "../../context/AuthContext";
 import avatarDefault from "@assets/images/avatarDefault.jpg";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useSocketContext } from "../../context/SocketContext";
 import axios from "axios";
 

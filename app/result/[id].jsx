@@ -5,7 +5,7 @@ import { SafeAreaView, Alert, Image, TouchableOpacity } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { router } from "expo-router";
 import axios from "axios";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import CheckRefreshToken from '../../utils/checkrefreshtoken';
 
 const User = () => {

@@ -1,8 +1,7 @@
-import { View, Text, Dimensions } from "react-native";
-import { COLORS, FONTS } from "@constants";
-import { Image } from "expo-image";
 import favicon from "@assets/favicon.svg";
+import { Image } from "expo-image";
 import { router } from "expo-router";
+import { Text, View } from "react-native";
 import styles from "./screenheaderbtn.style";
 const ScreenHeaderBtn = ({ iconUrl, dimension }) => {
 	return (
