@@ -31,6 +31,23 @@ export const shuffleArray = (array) => {
 	return newArray;
 };
 
+export const getTopicUrl = (baseUrl, user) => {
+	if (!user || !user.learnTopicSkill) {
+		return `${baseUrl}/api/v1/user/find/topic?topics=`;
+	}
+
+	let topicUrl = `${baseUrl}/api/v1/user/find/topic?topics=`;
+	user.learnTopicSkill.forEach((topic, index) => {
+		topicUrl = `${topicUrl}${topic.name},`;
+	});
+	return topicUrl;
+};
+
+export const getUsersByTopic = async (baseUrl, user) => {
+	const url = getTopicUrl(baseUrl, user);
+	const data = await GetData(url);
+	return data;
+};
 
 const Home = () => {
 	const baseUrl = "https://se346-skillexchangebe.onrender.com";
@@ -77,34 +94,11 @@ const Home = () => {
 		}
 	}, [swipe]);
 
-	const getTopicUrl = () => {
-		let topicUrl = `${baseUrl}/api/v1/user/find/topic?topics=`;
-		user?.learnTopicSkill.forEach((topic, index) => {
-			topicUrl = `${topicUrl}${topic.name},`;
-		});
-		return topicUrl;
-	};
-
-
-
 	const getUsers = async () => {
-		const getUsersByTopic = async () => {
-			console.log("getUsersByTopic");
-			const url = getTopicUrl();
-			const data = await GetData(url);
-			return data;
-		};
-
-		const getAllUsers = async () => {
-			console.log("getAllUsers");
-			const data = await GetData(`${baseUrl}/api/v1/user/find`);
-			return data;
-		};
-
 		setIsLoading(true);
-		const usersByTopic = await getUsersByTopic();
+		const usersByTopic = await getUsersByTopic(baseUrl, user);
 		if (usersByTopic.length === 0) {
-			const allUsers = await getAllUsers();
+			const allUsers = await GetData(`${baseUrl}/api/v1/user/find`);
 			if (allUsers.length === 0) {
 				setIsEndUsers(true);
 				setIsLoading(false);

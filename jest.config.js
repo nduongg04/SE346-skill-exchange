@@ -3,6 +3,10 @@ const { defaults: tsjPreset } = require('ts-jest/presets');
 module.exports = {
   ...tsjPreset,
   preset: 'jest-expo',
+  testMatch: [
+    "**/__tests__/**/*.[jt]s?(x)",
+    "**/?(*.)+(spec|test).[jt]s?(x)"
+  ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/$1',
     '^@assets/(.*)$': '<rootDir>/assets/$1',

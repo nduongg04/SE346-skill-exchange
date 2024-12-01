@@ -3,6 +3,16 @@ import ProfileCard from "../cards/ProfileCard";
 import PostData from "../../../utils/postdata";
 import { useSession } from "../../../context/AuthContext";
 
+export const onSwipeRight = async (index) => {
+	let data;
+	do {
+		data = await PostData(`${baseUrl}/api/v1/request/create`, {
+			senderID: user.id,
+			receiverID: users[index].id,
+		});
+	} while (data === "Something went wrong");
+}
+
 const SwiperList = ({
 	users, // List user cần show để lướt
 	swiperRef, // Reference đến swiper (để lấy các property của thư viện swiper)
@@ -15,15 +25,7 @@ const SwiperList = ({
 	return (
 		<Swiper
 			ref={swiperRef}
-			onSwipedRight={async (index) => {
-				let data;
-				do {
-					data = await PostData(`${baseUrl}/api/v1/request/create`, {
-						senderID: user.id,
-						receiverID: users[index].id,
-					});
-				} while (data === "Something went wrong");
-			}}
+			onSwipedRight={onSwipeRight}
 			cardStyle={{ height: "100%", width: "100%" }}
 			cardHorizontalMargin={0}
 			backgroundColor="white"
