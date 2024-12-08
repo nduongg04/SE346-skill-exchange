@@ -9,6 +9,7 @@ import { scale } from 'react-native-size-matters';
 import BackButton from '../register/Button/BackButton';
 import CustomButton from '../register/Button/CustomButton';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import Notification from '../common/Notification';
 
 class ForgotPassword extends React.Component {
     state = {
@@ -205,7 +206,7 @@ render() {
                     placeholder='Confirm your new password'
                     onChangeText={(text)=>this.setState({confirmPassword: text})}
                     label='Confirm Password'
-                    error={this.state.errorPassword}
+                    error={'New '+this.state.errorPassword}
                     onFocus={()=>this.setState({errorPassword: null})}
                     password={true}
                     iconName='lock'/>
