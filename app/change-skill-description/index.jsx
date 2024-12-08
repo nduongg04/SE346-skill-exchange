@@ -21,36 +21,36 @@ import { useSession } from "../../context/AuthContext";
 import Spinner from "react-native-loading-spinner-overlay";
 import PatchData from "../../utils/patchdata";
 
+export const handleChangeSkillDescription = async (user, skill) => {
+	const baseUrl = "https://se346-skillexchangebe.onrender.com";
+	const data = await PatchData(`${baseUrl}/api/v1/user/update/${user.id}`, {
+		skill: [skill],
+	});
+	if (!data || data === "404" || data === "Something went wrong") {
+		alert("Something went wrong when updating user's skill");
+		return false;
+	}
+	alert("Update successfully");
+	return true
+};
+
 const ChangeSkillDescription = () => {
 	const [skill, setSkill] = useState("");
 	const { user, login } = useSession();
 	const [isUpdating, setIsUpdating] = useState(false);
 
-	const handleChangeSkillDescription = async () => {
+	const handle = async () => {
 		setIsUpdating(true);
-		const baseUrl = "https://se346-skillexchangebe.onrender.com";
-		const data = await PatchData(`${baseUrl}/api/v1/user/update/${user.id}`, {
-			skill: [skill],
-		});
-		if (!data || data === "404" || data === "Something went wrong") {
-			alert("Something went wrong when updating user's skill");
-			setIsUpdating(false);
-			return;
+	 	const check =  await handleChangeSkillDescription(user, skill);
+		if(check) {
+			router.replace("/profile");
+			login({
+				...user,
+				skill: [skill],
+			});
 		}
-		login({
-			...user,
-			skill: [skill],
-		});
-		Alert.alert("Successfully", "Update successfully", [
-			{
-				text: "OK",
-				onPress: () => {
-					router.replace("/profile");
-				},
-			},
-		]);
-        setIsUpdating(false);
-	};
+		setIsUpdating(false);
+	}
 	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 		<SafeAreaView
@@ -152,7 +152,7 @@ const ChangeSkillDescription = () => {
 							paddingVertical: 7,
 							marginTop: 16,
 						}}
-						onPress={handleChangeSkillDescription}
+						onPress={handle}
 					>
 						<Text
 							style={{

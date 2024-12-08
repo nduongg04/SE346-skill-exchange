@@ -13,6 +13,7 @@ import { ScrollView} from "react-native-gesture-handler";
 import Policy from "./Policy";
 import Spinner from "react-native-loading-spinner-overlay";
 import mime from 'react-native-mime-types';
+import Notification from "../common/Notification";
 class UploadInfo extends React.Component {
   state = {
       //Input fields
@@ -87,39 +88,8 @@ class UploadInfo extends React.Component {
 
     return newStr.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/\s+/g, '');
   }
-  uploadImage = async (imageUri, name) => {
-    const formData = new FormData();
-    const extension = imageUri.split('.').pop();
-    const type = mime.lookup(extension) || 'image/jpeg';
-    formData.append('image', {
-        name: `${name}`,
-        type: type,
-        uri: imageUri,
-    });
-    try{
-      const response = await fetch('https://se346-skillexchangebe.onrender.com/api/v1/upload/image', {
-          method: 'POST',
-          body: formData,
-          headers: {
-              'Content-Type': 'multipart/form-data',
-          },
-      });
-      if(response.ok){
-        const json = await response.json();
-        return json.image;
-      }
-      else{
-        console.log(JSON.stringify(response));
-        alert('Upload image failed: ' + response.status);
-        return false;
-      }
-    }
-    catch(error){
-      alert('Upload image failed: ' + error.message);
-      return false;
-    }
-  }
-  finishRegister = async (params) => {
+  
+  handleRegister = async () => {
     const email = this.state.email;
     const password = this.state.password;
     const confirmPassword = this.state.confirmPassword;
@@ -150,7 +120,7 @@ class UploadInfo extends React.Component {
         this.setState({loading: true});
         const passing = this.props.route.params;
         const name = this.normalizeName(passing.name);
-        const avatar = await this.uploadImage(passing.image, name + 'Avatar');
+        const avatar = await uploadImage(passing.image, name + 'Avatar');
         if(avatar === false){
           this.setState({loading: false});
           return;
@@ -160,7 +130,8 @@ class UploadInfo extends React.Component {
         }
         let imageCerti = [];
         for(let i = 0; i < passing.certification.length; i++){
-          const certi = await this.uploadImage(passing.certification[i], name + 'Certi' + i);
+          const certi = await uploadImage(passing.certification[i], name + 'Certi' + i);
+          console.log("Certi ", certi);
           if(certi!==false){
             imageCerti.push(certi);
           }
@@ -190,7 +161,6 @@ class UploadInfo extends React.Component {
               'Content-Type': 'application/json',
             },
             body: JSON.stringify(params)});
-            console.log(response);
             if(!response.ok){
               const json = await response.json();
               alert(json.message);
@@ -201,7 +171,6 @@ class UploadInfo extends React.Component {
               const json = await response.json();
               
               user = json.data;
-              console.log(user);
               this.setState({success: true}); 
               this.setState({loading: false});
               this.setState({alertMessage: 'Welcome ' + user.username + ' to Skill Exchange'});
@@ -269,12 +238,13 @@ class UploadInfo extends React.Component {
               error={this.state.birthDayError}
               editable={false}
               iconName='calendar'
-              value={this.state.birthDay? this.state.birthDay : "Your Birthday"}
+              value={this.state.birthDay? this.state.birthDay : "Your birthday"}
               />
           </TouchableOpacity>
         </ScrollView>
         {this.state.showPicker && <DateTimePicker
           display="spinner"
+          testID="dateTimePicker"
           value={this.state.date}
           mode="date"
           minimumDate={new Date(1900, 1, 1)}
@@ -286,7 +256,7 @@ class UploadInfo extends React.Component {
           <Text style={[styles.termText, {color: COLORS.orange, textDecorationLine: 'underline'}]}>Terms of Service and Privacy Policy</Text>
         </TouchableOpacity>
         
-        <CustomButton text='Finish' onPress={()=>this.finishRegister(params)} style={{marginBottom: 10}}></CustomButton>   
+        <CustomButton text='Finish' onPress={()=>this.handleRegister()} style={{marginBottom: 10}}></CustomButton>   
         <Modal 
           transparent={true}
           visible={this.state.showPolicy}
@@ -316,3 +286,35 @@ class UploadInfo extends React.Component {
   }
 }
 export default UploadInfo;
+
+export const uploadImage = async (imageUri, name) => {
+  const formData = new FormData();
+  const extension = imageUri.split('.').pop();
+  const type = mime.lookup(extension) || 'image/jpeg';
+  formData.append('image', {
+      name: `${name}`,
+      type: type,
+      uri: imageUri,
+  });
+  try{
+    const response = await fetch('https://se346-skillexchangebe.onrender.com/api/v1/upload/image', {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
+    if(response.ok){
+      const json = await response.json();
+      return json.image;
+    }
+    else{
+      alert('Upload image failed: ' + response.status);
+      return false;
+    }
+  }
+  catch(error){
+    alert('Upload image failed: ' + error.message);
+    return false;
+  }
+}

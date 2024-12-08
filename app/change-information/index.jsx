@@ -24,6 +24,31 @@ import Spinner from "react-native-loading-spinner-overlay";
 import PatchData from "../../utils/patchdata";
 import avatarDefault from "@assets/images/avatarDefault.jpg";
 
+
+export	const handleChangeInformation = async (user, username, email, phonenumber) => {
+	if (username === "" || email === "" || phonenumber === "") {
+		alert("Please fill all the fields");
+		return false;
+	}
+	else{
+		const baseUrl = "https://se346-skillexchangebe.onrender.com";
+		const data = await PatchData(`${baseUrl}/api/v1/user/update/${user.id}`, {
+			username: username,
+			email: email,
+			phoneNumber: phonenumber,
+		});
+		if (!data || data === "404" || data === "Something went wrong") {
+			alert("Something went wrong when updating user's skill");
+			return false;
+		}
+		else
+		{
+			alert("Updated successfully");
+			return true;
+		}
+	}
+};
+
 const ChangeInformation = () => {
 	const { name } = useLocalSearchParams();
 	const { mail } = useLocalSearchParams();
@@ -34,44 +59,21 @@ const ChangeInformation = () => {
 	const [username, setUserName] = useState(name);
 	const [email, setEmail] = useState(mail);
 	const [phonenumber, setPhoneNumber] = useState(number);
-	const handleChangeInformation = async () => {
-		if (username === "" || email === "" || phonenumber === "") {
-			Alert.alert("Error", "Please fill all the fields", [
-				{
-					text: "OK",
-				},
-			]);
-			return;
-		}
+	const handle = async () => {
 		setIsUpdating(true);
-		const baseUrl = "https://se346-skillexchangebe.onrender.com";
-		const data = await PatchData(`${baseUrl}/api/v1/user/update/${user.id}`, {
-			username: username,
-			email: email,
-			phoneNumber: phonenumber,
-		});
-		if (!data || data === "404" || data === "Something went wrong") {
-			alert("Something went wrong when updating user's skill");
-			setIsUpdating(false);
-			return;
+		const check = await handleChangeInformation(user, username, email, phonenumber);
+		if(check){
+			login({
+				...user,
+				username: username,
+				email: email,
+				phoneNumber: phonenumber,
+			});
+			router.replace('/profile');
 		}
-		login({
-			...user,
-			username: username,
-			email: email,
-			phoneNumber: phonenumber,
-		});
-		Alert.alert("Successfully", "Update successfully", [
-			{
-				text: "OK",
-				onPress: () => {
-					router.replace("/profile");
-				},
-			},
-		]);
+		
 		setIsUpdating(false);
 	};
-
 	return (
 		<TouchableWithoutFeedback onPress={Keyboard.dismiss}>
 			<SafeAreaView
@@ -176,7 +178,7 @@ const ChangeInformation = () => {
 								paddingVertical: 7,
 								marginTop: 16,
 							}}
-							onPress={handleChangeInformation}
+							onPress={handle}
 						>
 							<Text
 								style={{

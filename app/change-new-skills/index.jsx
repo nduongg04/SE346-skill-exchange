@@ -14,8 +14,30 @@ import { useSession } from "../../context/AuthContext";
 import PatchData from "../../utils/patchdata";
 import { Alert } from "react-native";
 
-const ChangeYourSkills = () => {
+export const handleChangeNewSkills = async (user, updatedTopics) => {
 	const baseUrl = "https://se346-skillexchangebe.onrender.com";
+	if (updatedTopics.length === 0) {
+		alert("Please choose at least one topic");
+		return;
+	}
+	const updatedJson = {
+		learnTopicSkill: updatedTopics,
+	};
+	const data = await PatchData(
+		`${baseUrl}/api/v1/user/update/${user.id}`,
+		updatedJson
+	);
+	if (data === "404") {
+		alert("User not found");
+	} else if (data === "Something went wrong") {
+		alert("Something went wrong");
+	} else {
+		alert("Updated successfully");
+		return true;
+	}
+};
+
+const ChangeYourSkills = () => {
 
 	const { user, login } = useSession();
 
@@ -75,39 +97,18 @@ const ChangeYourSkills = () => {
 		fetchTopics();
 	}, []);
 
-	const handleChangeYourSkills = async () => {
-		if (updatedTopics.length === 0) {
-			Alert.alert("Error", "Please choose at least one topic");
-			return;
-		}
+	const handle = async () => {
 		setIsUpdating(true);
-		const updatedJson = {
-			learnTopicSkill: updatedTopics,
-		};
-		const data = await PatchData(
-			`${baseUrl}/api/v1/user/update/${user.id}`,
-			updatedJson
-		);
-		setIsUpdating(false);
-		if (data === "404") {
-			alert("User not found");
-		} else if (data === "Something went wrong") {
-			alert("Something went wrong");
-		} else {
+		const check = await handleChangeYourSkills(updatedTopics, user);
+		if(check){
 			login({
 				...user,
 				learnTopicSkill: updatedTopics,
 			});
-			Alert.alert("Successfully", "Update successfully", [
-				{
-					text: "OK",
-					onPress: () => {
-						router.replace("/profile");
-					},
-				},
-			]);
+			router.replace('/profile');
 		}
-	};
+		setIsLoading(false);
+	}
 
 	return (
 		<SafeAreaView
@@ -215,7 +216,7 @@ const ChangeYourSkills = () => {
 						text="Done"
 						margin={false}
 						style={{ alignSelf: "flex-end", marginTop: 20, marginRight: 20 }}
-						onPress={handleChangeYourSkills}
+						onPress={handle}
 					/>
 				</View>
 			</GradienLayout>
