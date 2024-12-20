@@ -1,0 +1,18 @@
+appId: com.anonymous.skillexchange # This is an example app id. Replace it with your app id.
+---
+- launchApp
+
+- tapOn: 'Login'
+
+- tapOn: 'Enter your email address'
+- inputText: 'neban0444@gmail.com'
+- tapOn:  'Enter your password'
+- inputText: '12345678'
+
+- tapOn: 'Welcome'
+- tapOn: 'Login'
+- assertVisible: 'Welcome Dat Tran'
+- tapOn: 'OK'
+- assertVisible: 'Skill Exchange'
+
+
