@@ -7,7 +7,6 @@ import { loadFonts, styles } from "./mainRoom.style";
 import { MessageContext } from './messageContext';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
-import * as Permissions from 'expo-permissions';
 import { useNavigation,useIsFocused, useFocusEffect } from '@react-navigation/native';
 
 

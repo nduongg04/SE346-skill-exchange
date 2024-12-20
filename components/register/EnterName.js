@@ -190,7 +190,7 @@ const EnterName = ({ navigation }) => {
                             borderWidth: 0.5,
                         },
                     ]}>
-                    <Text style={[styles.buttonText, { color: COLORS.orange }]}>Login</Text>
+                    <Text style={[styles.buttonText, { color: COLORS.orange }]} id='loginButton'>Login</Text>
                 </TouchableOpacity>
             </View>
         </GradienLayout>

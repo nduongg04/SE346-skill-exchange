@@ -31,6 +31,7 @@
       "favicon": "./assets/favicon.svg"
     },
     "plugins": [
+      "@config-plugins/detox",
       "expo-router",
       [
         "expo-font",
@@ -53,8 +54,9 @@
         "origin": false
       },
       "eas": {
-        "projectId": "b7da9d64-22d2-4ca3-9e26-0971eb9c77e5"
+        "projectId": "012a4548-414f-48ce-b988-800d2d6986e4"
       }
-    }
+    },
+    "owner": "dattran.dev"
   }
 }
