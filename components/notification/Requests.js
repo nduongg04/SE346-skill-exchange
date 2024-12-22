@@ -7,6 +7,43 @@ import { router } from 'expo-router';
 import PostData from '../../utils/postdata';
 import HandleSessionExpired from '../../utils/handlesession';
 import { useSocketContext } from '../../context/SocketContext';
+export  const createChat = async (id1, id2) => {
+    const {socket} = useSocketContext();
+    const dataPost = {
+        "firstID": id1,
+        "secondID": id2
+      }
+    
+    if (dataPost) {
+        const url = 'https://se346-skillexchangebe.onrender.com/api/v1/chat/create';
+        const response = await PostData(url, dataPost);
+        if (response != 404 && response !== "Something went wrong" && response) {
+            const chatData = response.data
+            const recipientID = id1
+            const res={
+                recipientID,
+                chatData
+            }
+            socket.emit("acceptrequest", res)
+            return true
+        }
+        else {
+            Alert.alert(
+                'Alert',
+                'Friend request unsuccessful.',
+            )
+            return false
+        }
+    }
+    else {
+        Alert.alert(
+            'Alert',
+            'Friend request unsuccessful.',
+        )
+        return false
+    }
+
+}
 const Request = (props) => {
     
     const loadToken = async () => {
@@ -26,43 +63,8 @@ const Request = (props) => {
         }
     }
     const navigation = useNavigation();
-    const {socket} = useSocketContext();
-    const createChat = async (id1, id2) => {
-        const dataPost = {
-			"firstID": id1,
-            "secondID": id2
-		  }
-        
-        if (dataPost) {
-            const url = 'https://se346-skillexchangebe.onrender.com/api/v1/chat/create';
-            const response = await PostData(url, dataPost);
-            if (response != 404 && response !== "Something went wrong" && response) {
-                const chatData = response.data
-                const recipientID = id1
-                const res={
-                    recipientID,
-                    chatData
-                }
-                socket.emit("acceptrequest", res)
-                return true
-            }
-            else {
-                Alert.alert(
-                    'Alert',
-                    'Friend request unsuccessful.',
-                )
-                return false
-            }
-        }
-        else {
-            Alert.alert(
-                'Alert',
-                'Friend request unsuccessful.',
-            )
-            return false
-        }
-
-    }
+    
+    
     const deleteRequest = async () => {
         try {
             const token = await AsyncStorage.getItem('accessToken');
