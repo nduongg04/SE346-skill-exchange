@@ -1,18 +1,8 @@
 import { View, Text, Image, ImageBackground, TextInput, ScrollView, TouchableOpacity, FlatList, Linking, ActivityIndicator, Alert , KeyboardAvoidingView} from "react-native";
 import React, { useState, useEffect, useRef } from 'react';
 import { loadFonts, styles } from "./mainMess.style";
-import Expo from 'expo'
-import { name as appName } from "../../../app.json"
-import { AppRegistry } from "react-native";
-import { registerRootComponent } from 'expo';
 import { icons } from "@constants";
-// import SvgUri from 'react-native-svg-uri';
 import CardMessage from "./card_message";
-import { render } from "react-dom";
-import { useFonts } from 'expo-font';
-import { Message } from "../chat_room/message";
-import axios from 'axios';
-import { createStackNavigator } from '@react-navigation/native-stack';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import { useSocketContext } from "../../../context/SocketContext";
 import { useSession } from "../../../context/AuthContext";
