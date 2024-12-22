@@ -1,4 +1,4 @@
-import { KeyboardAvoidingView, Platform } from "react-native";
+import { KeyboardAvoidingView, LogBox, Platform } from "react-native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router/stack";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -21,8 +21,9 @@ const Layout = () => {
 	if (!fontsLoaded) {
 		return null;
 	}
-
+	LogBox.ignoreAllLogs()
 	return (
+		
 		<SafeAreaProvider>
 			<AuthProvider>
 				<SocketProvider>
